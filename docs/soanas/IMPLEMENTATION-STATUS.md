@@ -6,7 +6,7 @@
 **Strategy:** Retail Vertical Slice first — do **not** open empty packages.
 
 ```
-Blueprint coverage (IDs): ANALYZED 245 | IMPLEMENTED 47 | TESTED 11 | VALIDATED 0 / 303
+Blueprint coverage (IDs): ANALYZED 233 | IMPLEMENTED 52 | TESTED 18 | VALIDATED 0 / 303
 Validated (DoD completa): 0%
 ```
 
@@ -20,23 +20,23 @@ Progress = checklist items done / total. **Primary** product metric (not Bluepri
 |---|-------------|--------|
 | 1 | Cash register exists (CRUD) | done |
 | 2 | Cash session opens | done |
-| 3 | Product can be added to sale | not started |
-| 4 | Sale creates SalesOrder | not started |
-| 5 | Inventory is affected correctly | not started |
-| 6 | PaymentTender is recorded | not started |
-| 7 | Cash ledger is updated on sale | partial (`record_sale` command ready) |
-| 8 | PosTransaction completes | not started |
-| 9 | Receipt is generated (mock) | partial (cash movement receipt abstract) |
+| 3 | Product can be added to sale | done |
+| 4 | Sale creates SalesOrder | done (via `completePosSale`) |
+| 5 | Inventory is affected correctly | done (WMS adjust in saga) |
+| 6 | PaymentTender is recorded | done (CASH) |
+| 7 | Cash ledger is updated on sale | done (`record_sale`) |
+| 8 | PosTransaction completes | done |
+| 9 | Receipt is generated (mock) | done (`MockReceiptPrinter`) |
 | 10 | Cash session closes | done |
 | 11 | Expected vs counted cash reconciles | done |
 | 12 | Blind closing works | done |
-| 13 | Idempotent completeSale | not started |
-| 14 | Recovery after crash mid-complete | not started |
-| 15 | Concurrent stock contention deterministic | not started |
-| 16 | Sales history UI | not started |
-| 17 | E2E Playwright retail path | not started |
+| 13 | Idempotent completeSale | done (planner + orphan order adopt + unit tests) |
+| 14 | Recovery after crash mid-complete | done (`/recover` + checkpoints) |
+| 15 | Concurrent stock contention deterministic | done (policy + lock unit tests; full DB race pending env) |
+| 16 | Sales history UI | done |
+| 17 | E2E Playwright retail path | in progress (`TC-SOANAS-RETAIL-001` API spec written; needs migrations + ephemeral run) |
 
-**Retail Sale v1:** ~29% (5/17 done; 2 partial)  
+**Retail Sale v1:** ~94% (16/17 done; E2E executable pending migrate/ephemeral)  
 **Retail Sale + Pix:** 0%  
 **Retail Fiscal NFC-e:** 0%  
 **Retail Offline:** 0%  
@@ -46,34 +46,43 @@ Progress = checklist items done / total. **Primary** product metric (not Bluepri
 
 | Item | Status |
 |------|--------|
-| Register CRUD + policy limits | done |
-| Drawer CRUD | done (API; UI deferred) |
-| Open session + idempotency + unique open | done |
-| Withdrawal + dual custody + server limit | done (PIN factor still missing) |
-| Supply | done |
-| Reverse (contramovimento) | done |
-| Cash count | done |
-| Blind closing | done |
-| Reconciliation + discrepancy | done |
-| Approval records | done (create path; no separate approve workflow UI) |
-| record_sale movement (for POS) | done |
-| Basic UI (registers + session ops) | done |
-| Audit buildLog + events | done |
+| Register/Drawer/Session/Supply/Sangria/Reverse | done |
+| Count + blind close + reconciliation + approvals | done |
+| Basic UI | done |
 | Unit tests (36) | done |
-| Migration v2 applied on DB | pending (Ask First) |
+| Migration applied on DB | pending (Ask First) |
+
+## POS DoD (domain)
+
+| Item | Status |
+|------|--------|
+| PosTerminal CRUD + UI | done |
+| PosTransaction + lines + state machine | done |
+| PaymentTender CASH + change | done |
+| completePosSale saga (Sales+WMS+Cash) | done |
+| Recovery / replay | done |
+| Mock receipt | done |
+| Sell + history UI | done |
+| Unit tests (51) | done |
+| Integration API `TC-SOANAS-RETAIL-001` | written; run pending env |
+| Hold/resume | not done (not required for slice gate if draft cancel works) |
+| Migration applied on DB | pending (Ask First) |
 
 ## Priority order (locked)
 
-1. Finish Cash gaps that block POS (done enough to proceed)  
-2. Build `soanas-pos`  
-3. Integrate POS ↔ Sales ↔ WMS ↔ Cash  
-4. Validate first full sale + E2E  
-5. External contracts + mocks  
-6. Fiscal BR + Pix → Offline → Restaurant → Finance  
+1. ~~Finish Cash~~  
+2. ~~Build `soanas-pos` + integrations~~  
+3. Apply migrations in disposable DB + run `TC-SOANAS-RETAIL-001`  
+4. Mark Retail Vertical Slice v1 VALIDATED only after E2E green  
+5. External contracts + mocks (Pix/TEF/Fiscal) — **only after** step 4  
 
 ## Evidence
 
 - Review: `docs/soanas/audit/07-code-review-findings.md`
-- Cash package: `packages/soanas-cash/`
-- APIs: `/api/soanas_cash/registers|drawers|sessions/*|withdrawals|supplies|counts|movements/reverse`
-- UI: `/backend/soanas/cash/registers`, `/backend/soanas/cash/session`
+- ADR-007: `docs/soanas/adr/ADR-007-pos-completion-saga.md`
+- Cash: `packages/soanas-cash/`
+- POS: `packages/soanas-pos/`
+- APIs cash: `/api/soanas_cash/...`
+- APIs POS: `/api/soanas_pos/...`
+- UI: `/backend/soanas/cash/*`, `/backend/soanas/pos/*`
+- Scenario: `.ai/qa/scenarios/TC-SOANAS-RETAIL-001-cash-pos-sale.md`

@@ -2,6 +2,10 @@
 /**
  * Generates docs/soanas/BLUEPRINT-COVERAGE.md from the Soanas functional blueprint SSOT.
  * Run: node scripts/soanas-generate-blueprint-coverage.mjs
+ *
+ * WARNING: this regenerates the matrix structure and RESETS every row status to ANALYZED.
+ * Do NOT run it to "refresh progress". After a structural change, re-apply evidence statuses
+ * from git history / IMPLEMENTATION-STATUS.md before committing.
  */
 import fs from 'node:fs'
 import path from 'node:path'

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-15T06:40:46.062Z",
+  "generatedAt": "2026-09-15T08:50:02.401Z",
   "commit": "30d509eeb",
   "version": "0.7.0",
   "rows": [
@@ -225,7 +225,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": "não poluir Organization | soanas-core/establishments scaffold",
+      "notes": "FiscalEstablishment CRUD",
       "id": "EST-001",
       "domain": "Establishments",
       "feature": "FiscalEstablishment",
@@ -235,7 +235,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "razão/fantasia",
       "id": "EST-002",
       "domain": "Establishments",
       "feature": "Identificação",
@@ -245,7 +245,7 @@
     },
     {
       "status": "TESTED",
-      "notes": "NT 2026 | packages/soanas-* unit tests",
+      "notes": "CNPJ alfanumérico",
       "id": "EST-003",
       "domain": "Establishments",
       "feature": "Identificação",
@@ -325,7 +325,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": "secret | soanas-core/establishments scaffold",
+      "notes": "CSC ref only",
       "id": "EST-011",
       "domain": "Establishments",
       "feature": "Config fiscal",
@@ -335,7 +335,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": "soanas_fiscal_br | soanas-core/establishments scaffold",
+      "notes": "cert ref only",
       "id": "EST-012",
       "domain": "Establishments",
       "feature": "Config",
@@ -345,7 +345,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": "soanas_payments_br | soanas-core/establishments scaffold",
+      "notes": "PSP ref only",
       "id": "EST-013",
       "domain": "Establishments",
       "feature": "Config",
@@ -415,7 +415,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": "role seed | soanas-core/establishments scaffold",
+      "notes": "profiles list",
       "id": "AUTH-005",
       "domain": "Auth/RBAC",
       "feature": "Perfis",
@@ -425,7 +425,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "ACL catalog",
       "id": "AUTH-POS-001",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -435,7 +435,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "ACL catalog",
       "id": "AUTH-POS-002",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -445,7 +445,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "ACL catalog",
       "id": "AUTH-POS-003",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -455,7 +455,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "ACL catalog",
       "id": "AUTH-POS-004",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -465,7 +465,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "ACL catalog",
       "id": "AUTH-POS-005",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -475,7 +475,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "ACL catalog",
       "id": "AUTH-POS-006",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -485,7 +485,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "ACL catalog",
       "id": "AUTH-POS-007",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -495,7 +495,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "ACL catalog",
       "id": "AUTH-POS-008",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -505,7 +505,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "ACL catalog",
       "id": "AUTH-POS-009",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -515,7 +515,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "ACL catalog",
       "id": "AUTH-POS-010",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -525,7 +525,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "ACL catalog",
       "id": "AUTH-POS-011",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -535,7 +535,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "ACL catalog",
       "id": "AUTH-POS-012",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -545,7 +545,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "ACL catalog",
       "id": "AUTH-POS-013",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -555,7 +555,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "ACL catalog",
       "id": "AUTH-POS-014",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -565,7 +565,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "ACL catalog",
       "id": "AUTH-POS-015",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -575,7 +575,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "ACL catalog",
       "id": "AUTH-POS-016",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -585,7 +585,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "ACL feature; PIN UI pending",
       "id": "AUTH-APR-001",
       "domain": "Auth/RBAC",
       "feature": "Aprovação",
@@ -1114,8 +1114,8 @@
       "module": "soanas_procurement"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": "PosTerminal CRUD+API+UI",
       "id": "POS-001",
       "domain": "POS",
       "feature": "Terminal",
@@ -1124,8 +1124,8 @@
       "module": "soanas_pos"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": "PosTransaction+lines+state machine",
       "id": "POS-002",
       "domain": "POS",
       "feature": "Terminal",
@@ -1134,8 +1134,8 @@
       "module": "soanas_pos"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": "hold incomplete; draft cancel exists",
       "id": "POS-003",
       "domain": "POS",
       "feature": "Terminal",
@@ -1144,8 +1144,8 @@
       "module": "soanas_pos"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": "sell UI",
       "id": "POS-UI-001",
       "domain": "POS",
       "feature": "Venda",
@@ -1154,8 +1154,8 @@
       "module": "soanas_pos"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": "cart UI",
       "id": "POS-UI-002",
       "domain": "POS",
       "feature": "Venda",
@@ -1164,8 +1164,8 @@
       "module": "soanas_pos"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": "cash checkout",
       "id": "POS-UI-003",
       "domain": "POS",
       "feature": "Venda",
@@ -1174,8 +1174,8 @@
       "module": "soanas_pos"
     },
     {
-      "status": "ANALYZED",
-      "notes": "Sales totals + POS",
+      "status": "IMPLEMENTED",
+      "notes": "sales history",
       "id": "POS-UI-004",
       "domain": "POS",
       "feature": "Venda",
@@ -1184,8 +1184,8 @@
       "module": "soanas_pos"
     },
     {
-      "status": "ANALYZED",
-      "notes": "ADR",
+      "status": "TESTED",
+      "notes": "completePosSale saga",
       "id": "POS-TXN-001",
       "domain": "POS",
       "feature": "PosTransaction",
@@ -1194,8 +1194,8 @@
       "module": "soanas_pos"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": "recovery+replay",
       "id": "POS-TXN-002",
       "domain": "POS",
       "feature": "State machine",
@@ -1454,8 +1454,8 @@
       "module": "payment_gateways"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": "PaymentTender CASH + change tests",
       "id": "PAY-001",
       "domain": "Payments",
       "feature": "PaymentTender",
@@ -1464,8 +1464,8 @@
       "module": "soanas_payments_br"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": "PaymentTender CASH + change tests",
       "id": "PAY-CASH-001",
       "domain": "Payments",
       "feature": "Dinheiro",
@@ -1574,8 +1574,8 @@
       "module": "sales"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": "discounts",
       "id": "DISC-002",
       "domain": "Discounts",
       "feature": "Manual",
@@ -2885,7 +2885,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-core/establishments scaffold",
+      "notes": "soanas packages",
       "id": "ARCH-001",
       "domain": "Architecture",
       "feature": "Packages",
@@ -2905,7 +2905,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-cash scaffold",
+      "notes": "commands",
       "id": "ARCH-003",
       "domain": "Architecture",
       "feature": "Commands",
@@ -2925,7 +2925,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-cash scaffold",
+      "notes": "idempotency",
       "id": "ARCH-005",
       "domain": "Architecture",
       "feature": "Idempotency",
@@ -2934,8 +2934,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "IMPLEMENTED",
-      "notes": " | soanas-cash scaffold",
+      "status": "TESTED",
+      "notes": "ADR-007 saga",
       "id": "ARCH-006",
       "domain": "Architecture",
       "feature": "State machines",
@@ -2945,7 +2945,7 @@
     },
     {
       "status": "TESTED",
-      "notes": " | soanas-cash ledger/commands",
+      "notes": "bigint cents",
       "id": "ARCH-007",
       "domain": "Architecture",
       "feature": "Money",
@@ -2975,7 +2975,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": "docs/licenses | soanas-core/establishments scaffold",
+      "notes": "licenses",
       "id": "ARCH-010",
       "domain": "Architecture",
       "feature": "Licensing",
@@ -3025,7 +3025,7 @@
     },
     {
       "status": "TESTED",
-      "notes": " | packages/soanas-* unit tests",
+      "notes": "error model",
       "id": "ARCH-015",
       "domain": "Architecture",
       "feature": "Error model",
