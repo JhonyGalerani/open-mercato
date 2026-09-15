@@ -18,6 +18,7 @@ Produto operacional brasileiro de varejo/restaurante construído **sobre** Open 
 | `BLUEPRINT-COVERAGE.md` | Matriz rastreável (IDs) |
 | `blueprint-coverage.json` | Fonte machine-readable |
 | `RISK-REGISTER.md` | Riscos vivos |
+| `STATUS-FEITO-VS-FALTA.md` | **O que foi feito × o que falta** (visão executiva) |
 | `TECH-DEBT.md` | Dívidas explícitas |
 | `runbooks/` | Operação em incidente |
 | `../licenses/` | Licenças e notices |
