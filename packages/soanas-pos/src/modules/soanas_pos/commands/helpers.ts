@@ -13,6 +13,7 @@ import {
   type PosTransactionStatus,
 } from '../data/entities'
 import { recalculateCart } from '../lib/cart'
+import { fromScaledQuantity, toScaledQuantity } from '../lib/quantity'
 import { assertTransition, PosTransitionError } from '../lib/stateMachine'
 import { evaluateStock, type StockEvaluation } from '../lib/stockPolicy'
 
@@ -173,27 +174,6 @@ export async function transitionTo(
       createdAt: new Date(),
     }),
   )
-}
-
-const QUANTITY_SCALE = 4
-
-function toScaledQuantity(value: unknown): bigint {
-  if (value === null || value === undefined) return 0n
-  const raw = String(value).trim()
-  if (!/^-?\d+(\.\d+)?$/.test(raw)) return 0n
-  const negative = raw.startsWith('-')
-  const [whole, fraction = ''] = (negative ? raw.slice(1) : raw).split('.')
-  const digits = `${whole}${fraction.padEnd(QUANTITY_SCALE, '0').slice(0, QUANTITY_SCALE)}`
-  const magnitude = BigInt(digits)
-  return negative ? -magnitude : magnitude
-}
-
-function fromScaledQuantity(value: bigint): string {
-  const negative = value < 0n
-  const digits = (negative ? -value : value).toString().padStart(QUANTITY_SCALE + 1, '0')
-  const whole = digits.slice(0, digits.length - QUANTITY_SCALE)
-  const fraction = digits.slice(digits.length - QUANTITY_SCALE)
-  return `${negative ? '-' : ''}${whole}.${fraction}`
 }
 
 /**

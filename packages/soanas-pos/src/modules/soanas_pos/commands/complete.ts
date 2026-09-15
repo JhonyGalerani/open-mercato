@@ -4,7 +4,7 @@ import { withAtomicFlush } from '@open-mercato/shared/lib/commands/flush'
 import type { EntityManager } from '@mikro-orm/postgresql'
 import { badRequest, CrudHttpError } from '@open-mercato/shared/lib/crud/errors'
 import { resolveTranslations } from '@open-mercato/shared/lib/i18n/server'
-import { SalesPayment } from '@open-mercato/core/modules/sales/data/entities'
+import { SalesOrder, SalesPayment } from '@open-mercato/core/modules/sales/data/entities'
 import { InventoryBalance, WarehouseLocation } from '@open-mercato/core/modules/wms/data/entities'
 import {
   PaymentTender,
@@ -18,6 +18,7 @@ import {
 import { posCompleteSchema, type PosCompleteInput } from '../data/validators'
 import { centsToDecimalString } from '../lib/money'
 import { planCompleteSale } from '../lib/completeSale'
+import { planStockDeductions } from '../lib/quantity'
 import { buildSaleReceiptDocument, MockReceiptPrinter, type SaleReceiptDocument } from '../lib/receipt'
 import { posError } from '../lib/errors'
 import { emitSoanasPosEvent } from '../events'
@@ -128,14 +129,30 @@ async function runSalesStep(args: {
   terminal: PosTerminal
   lines: PosTransactionLine[]
   cashTenders: PaymentTender[]
-  createSalesOrder: boolean
   knownSalesOrderId: string | null
 }): Promise<string> {
   const { ctx, em, transaction, terminal, lines, cashTenders } = args
   const commandBus = ctx.container.resolve('commandBus') as CommandBus
   let salesOrderId = args.knownSalesOrderId
 
-  if (args.createSalesOrder || !salesOrderId) {
+  // A crash between `sales.orders.create` and the checkpoint flush would leave an order that
+  // no POS row points at. The external reference is derived from the transaction id, so it is
+  // the durable link that lets a retry adopt that order instead of creating a second one.
+  if (!salesOrderId) {
+    const orphan = await em.findOne(SalesOrder, {
+      tenantId: transaction.tenantId,
+      organizationId: transaction.organizationId,
+      externalReference: externalReferenceFor(transaction.id),
+    })
+    if (orphan) {
+      salesOrderId = orphan.id
+      transaction.salesOrderId = salesOrderId
+      transaction.updatedAt = new Date()
+      await em.flush()
+    }
+  }
+
+  if (!salesOrderId) {
     const { result } = await commandBus.execute('sales.orders.create', {
       input: {
         organizationId: transaction.organizationId,
@@ -226,28 +243,25 @@ async function runWmsStep(args: {
   const commandBus = ctx.container.resolve('commandBus') as CommandBus
   const movementIds: string[] = []
 
-  for (const line of lines) {
-    if (!line.catalogVariantId) continue
+  for (const deduction of planStockDeductions(lines)) {
     const locationId = await resolveAdjustLocationId(
       em,
       { tenantId: transaction.tenantId, organizationId: transaction.organizationId },
       terminal.warehouseId,
-      line.catalogVariantId,
+      deduction.catalogVariantId,
     )
     if (!locationId) {
       throw new Error('[internal] soanas_pos found no warehouse location to deduct stock from')
     }
-    // `wms.inventory.adjust` derives its own idempotency key from the reference and the
-    // quantity, so replaying the step never double-deducts. `referenceType` is limited to the
-    // WMS enum; the POS provenance travels in `metadata`.
+    // `referenceType` is limited to the WMS enum; the POS provenance travels in `metadata`.
     const { result } = await commandBus.execute('wms.inventory.adjust', {
       input: {
         organizationId: transaction.organizationId,
         tenantId: transaction.tenantId,
         warehouseId: terminal.warehouseId,
         locationId,
-        catalogVariantId: line.catalogVariantId,
-        delta: -Number(line.quantity),
+        catalogVariantId: deduction.catalogVariantId,
+        delta: `-${deduction.quantity}`,
         reason: `POS sale ${transaction.id}`,
         reasonCode: 'pos_sale',
         referenceType: 'so',
@@ -256,7 +270,7 @@ async function runWmsStep(args: {
         metadata: {
           source: POS_SALES_SOURCE,
           sourceTransactionId: transaction.id,
-          posLineId: line.id,
+          posLineIds: deduction.lineIds,
           correlationId: transaction.correlationId,
         },
       },
@@ -442,7 +456,6 @@ export async function completePosSale(
         terminal,
         lines,
         cashTenders,
-        createSalesOrder: plan.createSalesOrder,
         knownSalesOrderId: transaction.salesOrderId ?? recovery.salesOrderId ?? null,
       })
       await checkpoint(em, recovery, { lastStep: 'sales', salesOrderId })
