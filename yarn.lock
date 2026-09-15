@@ -8113,6 +8113,7 @@ __metadata:
     "@open-mercato/soanas-cash": "workspace:*"
     "@open-mercato/soanas-core": "workspace:*"
     "@open-mercato/soanas-establishments": "workspace:*"
+    "@open-mercato/soanas-pos": "workspace:*"
     "@open-mercato/sync-akeneo": "workspace:*"
     "@open-mercato/telemetry": "workspace:*"
     "@open-mercato/ui": "workspace:*"
@@ -8716,7 +8717,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@open-mercato/soanas-pos@workspace:packages/soanas-pos":
+"@open-mercato/soanas-pos@workspace:*, @open-mercato/soanas-pos@workspace:packages/soanas-pos":
   version: 0.0.0-use.local
   resolution: "@open-mercato/soanas-pos@workspace:packages/soanas-pos"
   dependencies:
