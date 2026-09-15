@@ -1,0 +1,12 @@
+{
+  "soanas_cash": {
+    "errors": {
+      "unauthorized": "Unauthorized",
+      "org_required": "Organization required",
+      "register_not_found": "Cash register not found",
+      "session_not_found": "Cash session not found",
+      "open_failed": "Failed to open cash session",
+      "withdrawal_failed": "Failed to create withdrawal"
+    }
+  }
+}

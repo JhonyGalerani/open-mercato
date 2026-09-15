@@ -8110,6 +8110,7 @@ __metadata:
     "@open-mercato/scheduler": "workspace:*"
     "@open-mercato/search": "workspace:*"
     "@open-mercato/shared": "workspace:*"
+    "@open-mercato/soanas-cash": "workspace:*"
     "@open-mercato/soanas-core": "workspace:*"
     "@open-mercato/soanas-establishments": "workspace:*"
     "@open-mercato/sync-akeneo": "workspace:*"
@@ -8648,6 +8649,25 @@ __metadata:
     ts-morph: "npm:^28.0.0"
     typescript: "npm:7.0.2"
     undici: "npm:^8.9.0"
+  languageName: unknown
+  linkType: soft
+
+"@open-mercato/soanas-cash@workspace:*, @open-mercato/soanas-cash@workspace:packages/soanas-cash":
+  version: 0.0.0-use.local
+  resolution: "@open-mercato/soanas-cash@workspace:packages/soanas-cash"
+  dependencies:
+    "@open-mercato/shared": "workspace:*"
+    "@open-mercato/soanas-core": "workspace:*"
+    "@types/jest": "npm:^30.0.0"
+    "@types/node": "npm:^26.1.2"
+    jest: "npm:^30.4.2"
+    ts-jest: "npm:^29.4.12"
+    typescript: "npm:7.0.2"
+    zod: "npm:4.4.3"
+  peerDependencies:
+    "@mikro-orm/core": ^7.0.14
+    "@open-mercato/shared": "workspace:*"
+    zod: ">=3.23.0"
   languageName: unknown
   linkType: soft
 

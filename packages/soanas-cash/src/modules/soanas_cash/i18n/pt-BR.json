@@ -1,0 +1,12 @@
+{
+  "soanas_cash": {
+    "errors": {
+      "unauthorized": "Não autorizado",
+      "org_required": "Organização obrigatória",
+      "register_not_found": "Caixa não encontrado",
+      "session_not_found": "Sessão de caixa não encontrada",
+      "open_failed": "Falha ao abrir caixa",
+      "withdrawal_failed": "Falha ao registrar sangria"
+    }
+  }
+}

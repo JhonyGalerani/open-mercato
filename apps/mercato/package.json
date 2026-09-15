@@ -50,6 +50,7 @@
     "@open-mercato/scheduler": "workspace:*",
     "@open-mercato/search": "workspace:*",
     "@open-mercato/shared": "workspace:*",
+    "@open-mercato/soanas-cash": "workspace:*",
     "@open-mercato/soanas-core": "workspace:*",
     "@open-mercato/soanas-establishments": "workspace:*",
     "@open-mercato/sync-akeneo": "workspace:*",

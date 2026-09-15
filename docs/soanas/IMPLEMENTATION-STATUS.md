@@ -5,28 +5,26 @@
 **Branch:** `cursor/soanas-blueprint-foundation-5019`
 
 ```
-Overall progress: ~0.7%   (TESTED+VALIDATED / 303 IDs; foundation IMPLEMENTED ~12%)
+Coverage (blueprint-coverage.json):
+  ANALYZED 250 | IMPLEMENTED 43 | TESTED 9 | VALIDATED 0 / 303
 ```
 
-| Domain group | Status |
-|--------------|--------|
-| Audit / docs / ADRs / coverage | Done (Phase 0.0) |
-| `soanas-core` package | Scaffolded — CNPJ validators TESTED; ACL POS catalog IMPLEMENTED |
-| `soanas-establishments` | FiscalEstablishment entity + CRUD API + commands + migration + unit tests |
-| POS / Cash / Fiscal / Offline / … | ANALYZED only |
+## Done
 
-## Evidence (Phase 0.1–0.2)
+| Milestone | Evidence |
+|-----------|----------|
+| Audit + coverage + ADRs | `docs/soanas/` |
+| `soanas-core` | CNPJ TESTED; POS ACL catalog |
+| `soanas-establishments` | FiscalEstablishment CRUD + migration |
+| `soanas-cash` | Ledger math TESTED; open session + sangria commands/APIs; migration |
 
-| Item | Path |
-|------|------|
-| CNPJ validator | `packages/soanas-core/src/lib/cnpj.ts` |
-| POS ACL features | `packages/soanas-core/src/modules/soanas_core/acl.ts` |
-| FiscalEstablishment | `packages/soanas-establishments/src/modules/soanas_establishments/data/entities.ts` |
-| API | `/api/soanas_establishments/establishments` |
-| Commands | `soanas_establishments.establishments.create\|update\|delete` |
-| Migration | `Migration20260915090000_soanas_fiscal_establishments.ts` |
-| Tests | `soanas-core` 4 PASS; `soanas-establishments` validators 2 PASS |
+## Cash APIs
+
+- `POST /api/soanas_cash/sessions/open`
+- `POST /api/soanas_cash/withdrawals`
 
 ## Next
 
-Phase 0.3+ — admin UI for establishments, feature toggles wiring, catalog/CRM BR CF seeds, then Phase 1.1 PosTerminal.
+1. Supply + close session + register CRUD UI
+2. `soanas-pos` PosTerminal / PosTransaction
+3. Continue Blueprint phases

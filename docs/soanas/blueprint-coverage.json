@@ -1224,8 +1224,8 @@
       "module": "soanas_pos"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": " | soanas-cash ledger/commands",
       "id": "CASH-001",
       "domain": "Cash",
       "feature": "Estrutura",
@@ -1234,8 +1234,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-cash scaffold",
       "id": "CASH-002",
       "domain": "Cash",
       "feature": "Caixa lógico",
@@ -1244,8 +1244,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": " | soanas-cash ledger/commands",
       "id": "CASH-OPEN-001",
       "domain": "Cash",
       "feature": "Abertura",
@@ -1254,8 +1254,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-cash scaffold",
       "id": "CASH-OPEN-002",
       "domain": "Cash",
       "feature": "Abertura",
@@ -1264,8 +1264,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-cash scaffold",
       "id": "CASH-OPEN-003",
       "domain": "Cash",
       "feature": "Abertura",
@@ -1274,8 +1274,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-cash scaffold",
       "id": "CASH-OPEN-004",
       "domain": "Cash",
       "feature": "Abertura",
@@ -1284,8 +1284,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": " | soanas-cash ledger/commands",
       "id": "CASH-SANGRIA-001",
       "domain": "Cash",
       "feature": "Sangria",
@@ -1294,8 +1294,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": " | soanas-cash ledger/commands",
       "id": "CASH-SANGRIA-002",
       "domain": "Cash",
       "feature": "Sangria",
@@ -1304,8 +1304,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": " | soanas-cash ledger/commands",
       "id": "CASH-SANGRIA-003",
       "domain": "Cash",
       "feature": "Sangria",
@@ -1314,8 +1314,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": " | soanas-cash ledger/commands",
       "id": "CASH-SANGRIA-004",
       "domain": "Cash",
       "feature": "Sangria",
@@ -1324,8 +1324,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-cash scaffold",
       "id": "CASH-SANGRIA-005",
       "domain": "Cash",
       "feature": "Sangria",
@@ -1334,8 +1334,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-cash scaffold",
       "id": "CASH-SANGRIA-006",
       "domain": "Cash",
       "feature": "Sangria",
@@ -1345,7 +1345,7 @@
     },
     {
       "status": "ANALYZED",
-      "notes": "",
+      "notes": "Entity/ledger ready; supply command pending",
       "id": "CASH-SUPPLY-001",
       "domain": "Cash",
       "feature": "Suprimento",
@@ -2904,8 +2904,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-cash scaffold",
       "id": "ARCH-003",
       "domain": "Architecture",
       "feature": "Commands",
@@ -2924,8 +2924,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-cash scaffold",
       "id": "ARCH-005",
       "domain": "Architecture",
       "feature": "Idempotency",
@@ -2934,8 +2934,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-cash scaffold",
       "id": "ARCH-006",
       "domain": "Architecture",
       "feature": "State machines",
@@ -2944,8 +2944,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": " | soanas-cash ledger/commands",
       "id": "ARCH-007",
       "domain": "Architecture",
       "feature": "Money",
