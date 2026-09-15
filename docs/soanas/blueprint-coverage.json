@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-15",
+  "generatedAt": "2026-09-15T06:40:46.062Z",
   "commit": "30d509eeb",
   "version": "0.7.0",
   "rows": [
@@ -1225,7 +1225,7 @@
     },
     {
       "status": "TESTED",
-      "notes": " | soanas-cash ledger/commands",
+      "notes": "entities+ledger rebuild tests | packages/soanas-cash",
       "id": "CASH-001",
       "domain": "Cash",
       "feature": "Estrutura",
@@ -1234,8 +1234,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "IMPLEMENTED",
-      "notes": " | soanas-cash scaffold",
+      "status": "TESTED",
+      "notes": "register CRUD API+commands+UI | /api/soanas_cash/registers",
       "id": "CASH-002",
       "domain": "Cash",
       "feature": "Caixa lógico",
@@ -1245,7 +1245,7 @@
     },
     {
       "status": "TESTED",
-      "notes": " | soanas-cash ledger/commands",
+      "notes": "open session command+policy | sessions.open",
       "id": "CASH-OPEN-001",
       "domain": "Cash",
       "feature": "Abertura",
@@ -1254,8 +1254,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "IMPLEMENTED",
-      "notes": " | soanas-cash scaffold",
+      "status": "TESTED",
+      "notes": "denomination validation | lib/denominations",
       "id": "CASH-OPEN-002",
       "domain": "Cash",
       "feature": "Abertura",
@@ -1265,7 +1265,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-cash scaffold",
+      "notes": "expected float on register; manager approval path partial",
       "id": "CASH-OPEN-003",
       "domain": "Cash",
       "feature": "Abertura",
@@ -1275,7 +1275,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-cash scaffold",
+      "notes": "one-open unique index + idempotency unique",
       "id": "CASH-OPEN-004",
       "domain": "Cash",
       "feature": "Abertura",
@@ -1285,7 +1285,7 @@
     },
     {
       "status": "TESTED",
-      "notes": " | soanas-cash ledger/commands",
+      "notes": "withdrawal create + receipt abstract",
       "id": "CASH-SANGRIA-001",
       "domain": "Cash",
       "feature": "Sangria",
@@ -1294,8 +1294,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "TESTED",
-      "notes": " | soanas-cash ledger/commands",
+      "status": "IMPLEMENTED",
+      "notes": "server policy limit+dual custody; PIN factor NOT implemented (REV-012)",
       "id": "CASH-SANGRIA-002",
       "domain": "Cash",
       "feature": "Sangria",
@@ -1305,7 +1305,7 @@
     },
     {
       "status": "TESTED",
-      "notes": " | soanas-cash ledger/commands",
+      "notes": "dual custody enforced server-side",
       "id": "CASH-SANGRIA-003",
       "domain": "Cash",
       "feature": "Sangria",
@@ -1315,7 +1315,7 @@
     },
     {
       "status": "TESTED",
-      "notes": " | soanas-cash ledger/commands",
+      "notes": "denominations+ledger",
       "id": "CASH-SANGRIA-004",
       "domain": "Cash",
       "feature": "Sangria",
@@ -1324,8 +1324,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "IMPLEMENTED",
-      "notes": " | soanas-cash scaffold",
+      "status": "TESTED",
+      "notes": "movements.reverse contraposto",
       "id": "CASH-SANGRIA-005",
       "domain": "Cash",
       "feature": "Sangria",
@@ -1335,7 +1335,7 @@
     },
     {
       "status": "IMPLEMENTED",
-      "notes": " | soanas-cash scaffold",
+      "notes": "abstract receipt+audit buildLog; thermal/print not wired",
       "id": "CASH-SANGRIA-006",
       "domain": "Cash",
       "feature": "Sangria",
@@ -1344,8 +1344,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "ANALYZED",
-      "notes": "Entity/ledger ready; supply command pending",
+      "status": "IMPLEMENTED",
+      "notes": "Supply command with origin, approval policy, denominations and idempotency",
       "id": "CASH-SUPPLY-001",
       "domain": "Cash",
       "feature": "Suprimento",
@@ -1354,8 +1354,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": "Abstract receipt payload + reversal; thermal rendering pending",
       "id": "CASH-SUPPLY-002",
       "domain": "Cash",
       "feature": "Suprimento",
@@ -1374,8 +1374,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | sessions.close+count+reconciliation",
       "id": "CASH-CLOSE-001",
       "domain": "Cash",
       "feature": "Fechamento",
@@ -1384,8 +1384,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": "Closing count with blind mode; multi-tender counting pending",
       "id": "CASH-CLOSE-002",
       "domain": "Cash",
       "feature": "Fechamento",
@@ -1394,8 +1394,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": "CashReconciliation expected vs counted with register tolerance",
       "id": "CASH-CLOSE-003",
       "domain": "Cash",
       "feature": "Fechamento",
@@ -1404,8 +1404,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | sessions.close+count+reconciliation",
       "id": "CASH-CLOSE-004",
       "domain": "Cash",
       "feature": "Fechamento",

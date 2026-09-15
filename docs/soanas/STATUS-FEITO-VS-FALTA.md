@@ -15,10 +15,12 @@
 | Pergunta | Resposta |
 |----------|----------|
 | Terminou o Blueprint? | **Não** |
+| Estratégia atual | **Retail Vertical Slice v1** (Cash → POS → Sale E2E) — não abrir pacotes vazios |
 | Tem fundação documental? | **Sim** |
-| Tem código Soanas? | **Sim — parcial** (3 pacotes) |
+| Tem código Soanas? | **Sim — parcial** (3 pacotes; Cash em conclusão) |
 | Pronto para SEFAZ / Pix / TEF / hardware real? | **Não** |
-| `%` IDs com algum código (`IMPLEMENTED`+`TESTED`) | **~17%** (52/303) |
+| Métrica principal | Checklist em `IMPLEMENTATION-STATUS.md` → Vertical Slices (não só % da matriz) |
+| `%` IDs com algum código (`IMPLEMENTED`+`TESTED`) | **~17%** (52/303) — secundário |
 | `%` `VALIDATED` (Definition of Done) | **0%** |
 
 ---

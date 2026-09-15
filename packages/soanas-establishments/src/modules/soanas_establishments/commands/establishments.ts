@@ -406,13 +406,25 @@ const deleteCommand: CommandHandler<FiscalEstablishmentDeleteInput, { establishm
   async prepare(input, ctx) {
     const id = requireId(input, 'Establishment id is required')
     const em = ctx.container.resolve('em') as EntityManager
-    const record = await em.findOne(FiscalEstablishment, { id, deletedAt: null })
+    const tenantId = typeof (input as { tenantId?: string }).tenantId === 'string'
+      ? (input as { tenantId: string }).tenantId
+      : undefined
+    const record = await em.findOne(FiscalEstablishment, {
+      id,
+      deletedAt: null,
+      ...(tenantId ? { tenantId } : {}),
+    })
     return { before: record ? toSnapshot(record) : null }
   },
   async execute(input, ctx) {
     const parsed = fiscalEstablishmentDeleteSchema.parse(input)
     const em = (ctx.container.resolve('em') as EntityManager).fork()
-    const record = await em.findOne(FiscalEstablishment, { id: parsed.id, deletedAt: null })
+    const record = await em.findOne(FiscalEstablishment, {
+      id: parsed.id,
+      tenantId: parsed.tenantId,
+      deletedAt: null,
+      ...(parsed.organizationId ? { organizationId: parsed.organizationId } : {}),
+    })
     if (!record) {
       const { translate } = await resolveTranslations()
       throw notFound(translate('soanas_establishments.errors.not_found', 'Establishment not found'))

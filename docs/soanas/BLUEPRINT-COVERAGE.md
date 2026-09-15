@@ -208,17 +208,17 @@ Percentuais de domínio em `IMPLEMENTATION-STATUS.md` são derivados desta matri
 | CASH-OPEN-003 | Cash | Abertura | Comparar fundo esperado / justificar / gerente | SOANAS | ANALYZED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | - | - |
 | CASH-OPEN-004 | Cash | Abertura | Sessão única / timestamps server+local / offline | SOANAS | ANALYZED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | - | - |
 | CASH-SANGRIA-001 | Cash | Sangria | Criar sangria (valor, motivo, destino, responsável) | SOANAS | ANALYZED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | - | - |
-| CASH-SANGRIA-002 | Cash | Sangria | Validar saldo físico / limites / aprovação / PIN | SOANAS | ANALYZED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | - | - |
+| CASH-SANGRIA-002 | Cash | Sangria | Validar saldo físico / limites / aprovação / PIN | SOANAS | IMPLEMENTED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | Server-side register limit + dual custody + physical balance check; PIN factor not implemented | Server-side register limit + dual custody + physical balance check; PIN factor not implemented |
 | CASH-SANGRIA-003 | Cash | Sangria | Dupla custódia / sessão aberta / sem edição pós-confirmação | SOANAS | ANALYZED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | - | - |
 | CASH-SANGRIA-004 | Cash | Sangria | Denominações / ledger / não alterar faturamento | SOANAS | ANALYZED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | - | - |
-| CASH-SANGRIA-005 | Cash | Sangria | Reversão (não exclusão) + vínculo | SOANAS | ANALYZED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | - | - |
+| CASH-SANGRIA-005 | Cash | Sangria | Reversão (não exclusão) + vínculo | SOANAS | IMPLEMENTED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | Reversal command appends a compensating movement and flags the original | Reversal command appends a compensating movement and flags the original |
 | CASH-SANGRIA-006 | Cash | Sangria | Comprovante térmico / auditoria / sync / alertas / relatórios | SOANAS | ANALYZED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | - | - |
-| CASH-SUPPLY-001 | Cash | Suprimento | Criar suprimento (origem, motivo, denominações, aprovação) | SOANAS | ANALYZED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | - | - |
-| CASH-SUPPLY-002 | Cash | Suprimento | Comprovante / saldo esperado / reversão / auditoria | SOANAS | ANALYZED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | - | - |
+| CASH-SUPPLY-001 | Cash | Suprimento | Criar suprimento (origem, motivo, denominações, aprovação) | SOANAS | IMPLEMENTED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | Supply command with origin, approval policy, denominations and idempotency | Supply command with origin, approval policy, denominations and idempotency |
+| CASH-SUPPLY-002 | Cash | Suprimento | Comprovante / saldo esperado / reversão / auditoria | SOANAS | IMPLEMENTED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | Abstract receipt payload + reversal; thermal rendering pending | Abstract receipt payload + reversal; thermal rendering pending |
 | CASH-DRAWER-001 | Cash | Gaveta | Abertura sem venda (permissão, motivo, evento, alertas) | SOANAS | ANALYZED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | - | - |
 | CASH-CLOSE-001 | Cash | Fechamento | Bloquear vendas / pendências Pix/cartão/fiscal/offline | SOANAS | ANALYZED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | - | - |
-| CASH-CLOSE-002 | Cash | Fechamento | Contagem meios + fechamento cego | SOANAS | ANALYZED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | - | - |
-| CASH-CLOSE-003 | Cash | Fechamento | Conciliação matemática expected vs counted | SOANAS | ANALYZED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | - | - |
+| CASH-CLOSE-002 | Cash | Fechamento | Contagem meios + fechamento cego | SOANAS | IMPLEMENTED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | Closing count with blind mode; multi-tender counting pending | Closing count with blind mode; multi-tender counting pending |
+| CASH-CLOSE-003 | Cash | Fechamento | Conciliação matemática expected vs counted | SOANAS | IMPLEMENTED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | CashReconciliation expected vs counted with register tolerance | CashReconciliation expected vs counted with register tolerance |
 | CASH-CLOSE-004 | Cash | Fechamento | Resultado por pagamento / PDF / e-mail / financeiro | SOANAS | ANALYZED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | - | - |
 | CASH-SHIFT-001 | Cash | Turno | Troca operador mantendo caixa / exigindo fechamento | SOANAS | ANALYZED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | - | - |
 | CASH-SHIFT-002 | Cash | Turno | Pausa / bloqueio / login rápido PIN / comissão | SOANAS | ANALYZED | soanas_cash | NO | NO | NO | NO | NO | AUDIT | - | - |

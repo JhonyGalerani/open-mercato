@@ -17,3 +17,6 @@
 | RISK-013 | Report queries starve POS | M | High | Read models / separate pool | Reporting | Open |
 | RISK-014 | Self-approval of sensitive ops | M | High | Dual custody rules | Auth | Open |
 | RISK-015 | Lost sale on crash | M | Extreme | Local journal + state machine | POS/Offline | Open |
+| RISK-016 | Client-controlled cash approval threshold | H | Extreme | Server-side register policy (REV-001) | Cash | Mitigating |
+| RISK-017 | Concurrent cash session / withdrawal races | H | Extreme | Partial unique + row lock (REV-004/005) | Cash | Mitigating |
+| RISK-018 | Coverage inflation without executable slice | H | Extreme | Vertical slice metrics in IMPLEMENTATION-STATUS | Process | Open |

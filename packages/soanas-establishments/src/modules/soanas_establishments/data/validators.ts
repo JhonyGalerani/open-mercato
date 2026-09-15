@@ -76,6 +76,8 @@ export const fiscalEstablishmentUpdateSchema = fiscalEstablishmentCreateSchema
 export const fiscalEstablishmentDeleteSchema = z
   .object({
     id: z.string().uuid(),
+    tenantId: z.string().uuid(),
+    organizationId: z.string().uuid().optional(),
   })
   .strict()
 

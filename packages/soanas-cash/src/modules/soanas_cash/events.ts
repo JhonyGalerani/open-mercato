@@ -5,6 +5,9 @@ const events = [
   { id: 'soanas.cash.session.closed', label: 'Cash session closed', entity: 'cash_session', category: 'custom' },
   { id: 'soanas.cash.withdrawal.created', label: 'Cash withdrawal created', entity: 'cash_movement', category: 'custom' },
   { id: 'soanas.cash.supply.created', label: 'Cash supply created', entity: 'cash_movement', category: 'custom' },
+  { id: 'soanas.cash.movement.reversed', label: 'Cash movement reversed', entity: 'cash_movement', category: 'custom' },
+  { id: 'soanas.cash.sale.recorded', label: 'Cash sale recorded', entity: 'cash_movement', category: 'custom' },
+  { id: 'soanas.cash.count.recorded', label: 'Cash count recorded', entity: 'cash_count', category: 'custom' },
   { id: 'soanas.cash.discrepancy.detected', label: 'Cash discrepancy detected', entity: 'cash_session', category: 'custom' },
 ] as const
 

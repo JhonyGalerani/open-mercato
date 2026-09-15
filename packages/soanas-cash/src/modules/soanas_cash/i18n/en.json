@@ -1,12 +1,167 @@
 {
   "soanas_cash": {
+    "nav": {
+      "group": "Cash"
+    },
     "errors": {
       "unauthorized": "Unauthorized",
       "org_required": "Organization required",
+      "invalid_payload": "Invalid payload",
+      "register_required": "registerId is required",
       "register_not_found": "Cash register not found",
+      "register_code_taken": "A cash register with this code already exists",
+      "register_has_open_session": "Close the open cash session before removing this register",
+      "register_already_open": "Register already has an active cash session",
+      "drawer_not_found": "Cash drawer not found",
+      "drawer_code_taken": "A drawer with this code already exists on the register",
       "session_not_found": "Cash session not found",
+      "session_not_open": "Cash session is not open",
+      "session_already_closed": "Cash session is already closed",
+      "movement_not_found": "Cash movement not found",
+      "movement_not_reversible": "Cash movement is already reversed",
+      "reversal_of_reversal": "A reversal movement cannot itself be reversed",
+      "denominations_mismatch": "Counted denominations do not match the declared amount",
+      "insufficient_cash": "Insufficient physical cash for this withdrawal",
+      "self_approval": "Operator cannot approve their own cash movement (dual custody)",
+      "approval_required": "Managerial approval required for this amount",
+      "approval_feature_required": "Caller is not allowed to authorize cash movements above the register limit",
+      "duplicate_open": "Duplicate cash session open",
+      "duplicate_withdrawal": "Duplicate withdrawal",
+      "duplicate_supply": "Duplicate supply",
+      "duplicate_reversal": "Duplicate reversal",
+      "duplicate_sale": "Duplicate cash sale",
       "open_failed": "Failed to open cash session",
-      "withdrawal_failed": "Failed to create withdrawal"
+      "close_failed": "Failed to close cash session",
+      "withdrawal_failed": "Failed to create withdrawal",
+      "supply_failed": "Failed to create cash supply",
+      "reverse_failed": "Failed to reverse cash movement",
+      "count_failed": "Failed to record cash count"
+    },
+    "audit": {
+      "register_create": "Create cash register",
+      "register_update": "Update cash register",
+      "register_delete": "Delete cash register",
+      "drawer_create": "Create cash drawer",
+      "drawer_update": "Update cash drawer",
+      "drawer_delete": "Delete cash drawer",
+      "session_open": "Open cash session",
+      "session_close": "Close cash session",
+      "withdrawal_create": "Create cash withdrawal (sangria)",
+      "supply_create": "Create cash supply (suprimento)",
+      "movement_reverse": "Reverse cash movement",
+      "sale_record": "Record cash sale",
+      "count_create": "Record cash count"
+    },
+    "registers": {
+      "page": {
+        "title": "Cash registers"
+      },
+      "create": {
+        "title": "Create cash register"
+      },
+      "list": {
+        "title": "Cash registers",
+        "searchPlaceholder": "Search by code or name",
+        "confirmDelete": "Remove this cash register?",
+        "alwaysApproval": "Always approval",
+        "columns": {
+          "code": "Code",
+          "name": "Name",
+          "withdrawalLimit": "Sangria limit",
+          "tolerance": "Tolerance",
+          "blindClosing": "Blind closing",
+          "active": "Active"
+        },
+        "actions": {
+          "create": "New register",
+          "session": "Open session view"
+        }
+      },
+      "form": {
+        "group": {
+          "identity": "Identification",
+          "policy": "Cash policy"
+        },
+        "field": {
+          "code": "Code",
+          "name": "Name",
+          "isActive": "Active",
+          "blindClosing": "Blind closing",
+          "blindClosingHelp": "The operator counts without seeing the expected amount.",
+          "withdrawalLimit": "Sangria limit without approval (BRL)",
+          "withdrawalLimitHelp": "Leave empty to require approval for every withdrawal.",
+          "supplyLimit": "Supply limit without approval (BRL)",
+          "tolerance": "Discrepancy tolerance (BRL)",
+          "expectedOpeningFloat": "Expected opening float (BRL)"
+        },
+        "action": {
+          "create": "Create register"
+        },
+        "errors": {
+          "required": "Code and name are required"
+        }
+      },
+      "flash": {
+        "created": "Cash register created",
+        "deleted": "Cash register removed",
+        "loadError": "Failed to load cash registers",
+        "deleteError": "Failed to remove cash register"
+      }
+    },
+    "session": {
+      "page": {
+        "title": "Cash session"
+      },
+      "loading": "Loading cash session…",
+      "field": {
+        "register": "Register",
+        "openingFloat": "Opening float (BRL)",
+        "withdrawal": "Withdrawal — sangria (BRL)",
+        "approver": "Approver user id (when required)",
+        "supply": "Supply — suprimento (BRL)",
+        "counted": "Counted cash (BRL)"
+      },
+      "open": {
+        "title": "Open cash session"
+      },
+      "summary": {
+        "title": "Open session",
+        "blind": "Blind closing",
+        "openingFloat": "Opening float",
+        "sales": "Cash sales",
+        "withdrawals": "Withdrawals",
+        "expected": "Expected in drawer",
+        "hidden": "Hidden (blind closing)"
+      },
+      "movements": {
+        "title": "Movements"
+      },
+      "close": {
+        "title": "Count and close"
+      },
+      "action": {
+        "open": "Open session",
+        "withdrawal": "Register withdrawal",
+        "supply": "Register supply",
+        "spotCount": "Record spot count",
+        "close": "Close session"
+      },
+      "errors": {
+        "invalidAmount": "Enter a valid amount"
+      },
+      "flash": {
+        "opened": "Cash session opened",
+        "openError": "Failed to open the cash session",
+        "closed": "Cash session closed",
+        "closeError": "Failed to close the cash session",
+        "withdrawalCreated": "Withdrawal registered",
+        "withdrawalError": "Failed to register the withdrawal",
+        "supplyCreated": "Supply registered",
+        "supplyError": "Failed to register the supply",
+        "countRecorded": "Count recorded",
+        "countError": "Failed to record the count",
+        "loadError": "Failed to load the cash session"
+      }
     }
   }
 }
