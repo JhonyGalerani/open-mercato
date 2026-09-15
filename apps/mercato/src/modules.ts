@@ -88,6 +88,9 @@ export const enabledModules: ModuleEntry[] = [
   { id: 'dictionaries', from: '@open-mercato/core' },
   { id: 'content', from: '@open-mercato/content' },
   { id: 'onboarding', from: '@open-mercato/onboarding' },
+  // Soanas product layer (Brazilian retail/restaurant ops) — ADR-001
+  { id: 'soanas_core', from: '@open-mercato/soanas-core' },
+  { id: 'soanas_establishments', from: '@open-mercato/soanas-establishments' },
   { id: 'api_docs', from: '@open-mercato/core' },
   // Live DS component gallery at /backend/design-system (feature-gated by
   // design_system.view). Disable by removing this line.

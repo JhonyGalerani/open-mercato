@@ -224,8 +224,8 @@
       "module": "soanas_establishments"
     },
     {
-      "status": "ANALYZED",
-      "notes": "não poluir Organization",
+      "status": "IMPLEMENTED",
+      "notes": "não poluir Organization | soanas-core/establishments scaffold",
       "id": "EST-001",
       "domain": "Establishments",
       "feature": "FiscalEstablishment",
@@ -234,8 +234,8 @@
       "module": "soanas_establishments"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "EST-002",
       "domain": "Establishments",
       "feature": "Identificação",
@@ -244,8 +244,8 @@
       "module": "soanas_establishments"
     },
     {
-      "status": "ANALYZED",
-      "notes": "NT 2026",
+      "status": "TESTED",
+      "notes": "NT 2026 | packages/soanas-* unit tests",
       "id": "EST-003",
       "domain": "Establishments",
       "feature": "Identificação",
@@ -254,8 +254,8 @@
       "module": "soanas_establishments"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "EST-004",
       "domain": "Establishments",
       "feature": "Identificação",
@@ -264,8 +264,8 @@
       "module": "soanas_establishments"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "EST-005",
       "domain": "Establishments",
       "feature": "Identificação",
@@ -274,8 +274,8 @@
       "module": "soanas_establishments"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "EST-006",
       "domain": "Establishments",
       "feature": "Endereço",
@@ -284,8 +284,8 @@
       "module": "soanas_establishments"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "EST-007",
       "domain": "Establishments",
       "feature": "Contador",
@@ -294,8 +294,8 @@
       "module": "soanas_establishments"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "EST-008",
       "domain": "Establishments",
       "feature": "Ambiente",
@@ -304,8 +304,8 @@
       "module": "soanas_establishments"
     },
     {
-      "status": "ANALYZED",
-      "notes": "FK IDs",
+      "status": "IMPLEMENTED",
+      "notes": "FK IDs | soanas-core/establishments scaffold",
       "id": "EST-009",
       "domain": "Establishments",
       "feature": "Config",
@@ -314,8 +314,8 @@
       "module": "soanas_establishments"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "EST-010",
       "domain": "Establishments",
       "feature": "Config fiscal",
@@ -324,8 +324,8 @@
       "module": "soanas_establishments"
     },
     {
-      "status": "ANALYZED",
-      "notes": "secret",
+      "status": "IMPLEMENTED",
+      "notes": "secret | soanas-core/establishments scaffold",
       "id": "EST-011",
       "domain": "Establishments",
       "feature": "Config fiscal",
@@ -334,8 +334,8 @@
       "module": "soanas_establishments"
     },
     {
-      "status": "ANALYZED",
-      "notes": "soanas_fiscal_br",
+      "status": "IMPLEMENTED",
+      "notes": "soanas_fiscal_br | soanas-core/establishments scaffold",
       "id": "EST-012",
       "domain": "Establishments",
       "feature": "Config",
@@ -344,8 +344,8 @@
       "module": "soanas_establishments"
     },
     {
-      "status": "ANALYZED",
-      "notes": "soanas_payments_br",
+      "status": "IMPLEMENTED",
+      "notes": "soanas_payments_br | soanas-core/establishments scaffold",
       "id": "EST-013",
       "domain": "Establishments",
       "feature": "Config",
@@ -354,8 +354,8 @@
       "module": "soanas_establishments"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "EST-014",
       "domain": "Establishments",
       "feature": "Config",
@@ -364,8 +364,8 @@
       "module": "soanas_establishments"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "EST-015",
       "domain": "Establishments",
       "feature": "Políticas",
@@ -414,8 +414,8 @@
       "module": "auth/staff"
     },
     {
-      "status": "ANALYZED",
-      "notes": "role seed",
+      "status": "IMPLEMENTED",
+      "notes": "role seed | soanas-core/establishments scaffold",
       "id": "AUTH-005",
       "domain": "Auth/RBAC",
       "feature": "Perfis",
@@ -424,8 +424,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "AUTH-POS-001",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -434,8 +434,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "AUTH-POS-002",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -444,8 +444,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "AUTH-POS-003",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -454,8 +454,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "AUTH-POS-004",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -464,8 +464,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "AUTH-POS-005",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -474,8 +474,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "AUTH-POS-006",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -484,8 +484,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "AUTH-POS-007",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -494,8 +494,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "AUTH-POS-008",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -504,8 +504,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "AUTH-POS-009",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -514,8 +514,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "AUTH-POS-010",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -524,8 +524,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "AUTH-POS-011",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -534,8 +534,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "AUTH-POS-012",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -544,8 +544,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "AUTH-POS-013",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -554,8 +554,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "AUTH-POS-014",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -564,8 +564,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "AUTH-POS-015",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -574,8 +574,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "AUTH-POS-016",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
@@ -584,8 +584,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "AUTH-APR-001",
       "domain": "Auth/RBAC",
       "feature": "Aprovação",
@@ -2884,8 +2884,8 @@
       "module": "qa"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
       "id": "ARCH-001",
       "domain": "Architecture",
       "feature": "Packages",
@@ -2974,8 +2974,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "docs/licenses",
+      "status": "IMPLEMENTED",
+      "notes": "docs/licenses | soanas-core/establishments scaffold",
       "id": "ARCH-010",
       "domain": "Architecture",
       "feature": "Licensing",
@@ -3024,8 +3024,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": " | packages/soanas-* unit tests",
       "id": "ARCH-015",
       "domain": "Architecture",
       "feature": "Error model",

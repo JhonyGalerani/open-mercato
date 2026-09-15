@@ -1,0 +1,15 @@
+{
+  "soanas_establishments": {
+    "errors": {
+      "not_found": "Fiscal establishment not found"
+    },
+    "audit": {
+      "create": "Create fiscal establishment",
+      "update": "Update fiscal establishment",
+      "delete": "Delete fiscal establishment"
+    },
+    "nav": {
+      "title": "Establishments"
+    }
+  }
+}

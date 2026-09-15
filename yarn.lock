@@ -8110,6 +8110,8 @@ __metadata:
     "@open-mercato/scheduler": "workspace:*"
     "@open-mercato/search": "workspace:*"
     "@open-mercato/shared": "workspace:*"
+    "@open-mercato/soanas-core": "workspace:*"
+    "@open-mercato/soanas-establishments": "workspace:*"
     "@open-mercato/sync-akeneo": "workspace:*"
     "@open-mercato/telemetry": "workspace:*"
     "@open-mercato/ui": "workspace:*"
@@ -8646,6 +8648,42 @@ __metadata:
     ts-morph: "npm:^28.0.0"
     typescript: "npm:7.0.2"
     undici: "npm:^8.9.0"
+  languageName: unknown
+  linkType: soft
+
+"@open-mercato/soanas-core@workspace:*, @open-mercato/soanas-core@workspace:packages/soanas-core":
+  version: 0.0.0-use.local
+  resolution: "@open-mercato/soanas-core@workspace:packages/soanas-core"
+  dependencies:
+    "@open-mercato/shared": "workspace:*"
+    "@types/jest": "npm:^30.0.0"
+    "@types/node": "npm:^26.1.2"
+    jest: "npm:^30.4.2"
+    ts-jest: "npm:^29.4.12"
+    typescript: "npm:7.0.2"
+    zod: "npm:4.4.3"
+  peerDependencies:
+    "@open-mercato/shared": "workspace:*"
+    zod: ">=3.23.0"
+  languageName: unknown
+  linkType: soft
+
+"@open-mercato/soanas-establishments@workspace:*, @open-mercato/soanas-establishments@workspace:packages/soanas-establishments":
+  version: 0.0.0-use.local
+  resolution: "@open-mercato/soanas-establishments@workspace:packages/soanas-establishments"
+  dependencies:
+    "@open-mercato/shared": "workspace:*"
+    "@open-mercato/soanas-core": "workspace:*"
+    "@types/jest": "npm:^30.0.0"
+    "@types/node": "npm:^26.1.2"
+    jest: "npm:^30.4.2"
+    ts-jest: "npm:^29.4.12"
+    typescript: "npm:7.0.2"
+    zod: "npm:4.4.3"
+  peerDependencies:
+    "@mikro-orm/core": ^7.0.14
+    "@open-mercato/shared": "workspace:*"
+    zod: ">=3.23.0"
   languageName: unknown
   linkType: soft
 

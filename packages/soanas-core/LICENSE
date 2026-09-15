@@ -1,0 +1,6 @@
+# @open-mercato/soanas-core
+
+Proprietary Soanas product code. All rights reserved.
+
+Depends on Open Mercato OSS packages (MIT) without copying Enterprise sources.
+See `docs/licenses/DEPENDENCY_LICENSES.md`.

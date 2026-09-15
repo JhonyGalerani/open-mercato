@@ -10,11 +10,11 @@
 | Métrica | Valor |
 |--------|------:|
 | Total de IDs | 303 |
-| ANALYZED | 303 |
+| ANALYZED | ~267 |
 | NOT_STARTED | 0 |
 | IN_PROGRESS | 0 |
-| IMPLEMENTED | 0 |
-| TESTED | 0 |
+| IMPLEMENTED | ~34 |
+| TESTED | ~2 |
 | VALIDATED | 0 |
 | BLOCKED_EXTERNAL | 0 |
 | Origem MERCATO / MERCATO+SOANAS | 53 |
@@ -23,8 +23,8 @@
 ### Progresso overall
 
 ```
-Overall progress: 0.0%  (VALIDATED / total)
-Foundation readiness: audit+coverage complete; implementation not started
+Overall progress: 0.0% VALIDATED (gate)
+Foundation: packages soanas-core + soanas-establishments scaffolded; see blueprint-coverage.json
 ```
 
 Percentuais de domínio em `IMPLEMENTATION-STATUS.md` são derivados desta matriz.
@@ -401,3 +401,4 @@ Percentuais de domínio em `IMPLEMENTATION-STATUS.md` são derivados desta matri
 | Data | Nota |
 |------|------|
 | 2026-09-15 | Matriz inicial pós-auditoria — todos IDs em ANALYZED |
+| 2026-09-15 | Phase 0.1–0.2: soanas-core + soanas-establishments — ver `blueprint-coverage.json` |

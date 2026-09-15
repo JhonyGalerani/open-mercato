@@ -1,34 +1,32 @@
 # Soanas — Implementation Status
 
 **Updated:** 2026-09-15  
-**Base:** Open Mercato 0.7.0 @ `30d509eeb`
+**Base:** Open Mercato 0.7.0 @ `30d509eeb`  
+**Branch:** `cursor/soanas-blueprint-foundation-5019`
 
 ```
-Overall progress: 0.0%   (VALIDATED / 303 IDs)
+Overall progress: ~0.7%   (TESTED+VALIDATED / 303 IDs; foundation IMPLEMENTED ~12%)
 ```
 
-| Domain group | IDs (approx) | ANALYZED | IMPLEMENTED+ | VALIDATED | % |
-|--------------|-------------:|---------:|-------------:|----------:|--:|
-| Foundation (Tenant/Est/Auth/Arch/Licenses) | — | yes | 0 | 0 | 0 |
-| POS | — | yes | 0 | 0 | 0 |
-| Cash | 21 | 21 | 0 | 0 | 0 |
-| Fiscal BR | 13 | 13 | 0 | 0 | 0 |
-| Payments BR | — | yes | 0 | 0 | 0 |
-| Offline | 6 | 6 | 0 | 0 | 0 |
-| Hardware | 9 | 9 | 0 | 0 | 0 |
-| Restaurant | 10 | 10 | 0 | 0 | 0 |
-| KDS | 4 | 4 | 0 | 0 | 0 |
-| Procurement | 11 | 11 | 0 | 0 | 0 |
-| Finance | 9 | 9 | 0 | 0 | 0 |
-| Reporting | 7 | 7 | 0 | 0 | 0 |
+| Domain group | Status |
+|--------------|--------|
+| Audit / docs / ADRs / coverage | Done (Phase 0.0) |
+| `soanas-core` package | Scaffolded — CNPJ validators TESTED; ACL POS catalog IMPLEMENTED |
+| `soanas-establishments` | FiscalEstablishment entity + CRUD API + commands + migration + unit tests |
+| POS / Cash / Fiscal / Offline / … | ANALYZED only |
 
-> Percentuais oficiais: recalcular de `blueprint-coverage.json` (`status === 'VALIDATED'`).
+## Evidence (Phase 0.1–0.2)
 
-## Current milestone
-
-**Phase 0.0 — Audit complete**  
-Artifacts: `docs/soanas/audit/*`, `BLUEPRINT-COVERAGE.md`, ADRs, roadmap, licenses.
+| Item | Path |
+|------|------|
+| CNPJ validator | `packages/soanas-core/src/lib/cnpj.ts` |
+| POS ACL features | `packages/soanas-core/src/modules/soanas_core/acl.ts` |
+| FiscalEstablishment | `packages/soanas-establishments/src/modules/soanas_establishments/data/entities.ts` |
+| API | `/api/soanas_establishments/establishments` |
+| Commands | `soanas_establishments.establishments.create\|update\|delete` |
+| Migration | `Migration20260915090000_soanas_fiscal_establishments.ts` |
+| Tests | `soanas-core` 4 PASS; `soanas-establishments` validators 2 PASS |
 
 ## Next
 
-Phase 0.1 — scaffold `packages/soanas-core`.
+Phase 0.3+ — admin UI for establishments, feature toggles wiring, catalog/CRM BR CF seeds, then Phase 1.1 PosTerminal.
