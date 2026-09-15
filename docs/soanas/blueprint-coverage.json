@@ -1,0 +1,3037 @@
+{
+  "generatedAt": "2026-09-15T08:50:02.401Z",
+  "commit": "30d509eeb",
+  "version": "0.7.0",
+  "rows": [
+    {
+      "status": "ANALYZED",
+      "notes": "directory.Tenant",
+      "id": "TENANT-001",
+      "domain": "Tenant/Org",
+      "feature": "Tenant",
+      "sub": "Criar tenant",
+      "origin": "MERCATO",
+      "module": "directory"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "isActive / soft patterns",
+      "id": "TENANT-002",
+      "domain": "Tenant/Org",
+      "feature": "Tenant",
+      "sub": "Ativar/desativar tenant",
+      "origin": "MERCATO",
+      "module": "directory"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "Organization hierarchy",
+      "id": "TENANT-007",
+      "domain": "Tenant/Org",
+      "feature": "Organization",
+      "sub": "Criar organização matriz",
+      "origin": "MERCATO",
+      "module": "directory"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "parent/ancestors",
+      "id": "TENANT-008",
+      "domain": "Tenant/Org",
+      "feature": "Organization",
+      "sub": "Criar filiais",
+      "origin": "MERCATO",
+      "module": "directory"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "org tree",
+      "id": "TENANT-009",
+      "domain": "Tenant/Org",
+      "feature": "Organization",
+      "sub": "Criar unidades operacionais",
+      "origin": "MERCATO",
+      "module": "directory"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "raiz/ancestrais/descendentes",
+      "id": "TENANT-010",
+      "domain": "Tenant/Org",
+      "feature": "Organization",
+      "sub": "Organizar hierarquia",
+      "origin": "MERCATO",
+      "module": "directory"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "auth ACL org scope",
+      "id": "TENANT-011",
+      "domain": "Tenant/Org",
+      "feature": "Visibility",
+      "sub": "Usuário ver uma ou várias orgs",
+      "origin": "MERCATO",
+      "module": "directory"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "org descendants",
+      "id": "TENANT-012",
+      "domain": "Tenant/Org",
+      "feature": "Visibility",
+      "sub": "Visão consolidada de grupo",
+      "origin": "MERCATO",
+      "module": "directory"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "org switcher UI",
+      "id": "TENANT-013",
+      "domain": "Tenant/Org",
+      "feature": "UX",
+      "sub": "Troca rápida de organização",
+      "origin": "MERCATO",
+      "module": "directory"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "tenant_id scoping",
+      "id": "TENANT-014",
+      "domain": "Tenant/Org",
+      "feature": "Security",
+      "sub": "Bloquear dados entre tenants",
+      "origin": "MERCATO",
+      "module": "directory"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "soanas_saas",
+      "id": "TENANT-003",
+      "domain": "Tenant/Org",
+      "feature": "Billing",
+      "sub": "Suspender tenant por billing",
+      "origin": "SOANAS",
+      "module": "soanas_saas"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "soanas_saas",
+      "id": "TENANT-004",
+      "domain": "Tenant/Org",
+      "feature": "Billing",
+      "sub": "Definir plano contratado",
+      "origin": "SOANAS",
+      "module": "soanas_saas"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "feature toggles + quotas",
+      "id": "TENANT-005",
+      "domain": "Tenant/Org",
+      "feature": "Billing",
+      "sub": "Definir limites do plano",
+      "origin": "SOANAS",
+      "module": "soanas_saas"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "plan limits",
+      "id": "TENANT-006",
+      "domain": "Tenant/Org",
+      "feature": "Billing",
+      "sub": "Definir organizações permitidas",
+      "origin": "SOANAS",
+      "module": "soanas_saas"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "FiscalEstablishment",
+      "id": "TENANT-015",
+      "domain": "Tenant/Org",
+      "feature": "Isolation",
+      "sub": "Isolar dados fiscais por estabelecimento",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "CashRegister scope",
+      "id": "TENANT-016",
+      "domain": "Tenant/Org",
+      "feature": "Isolation",
+      "sub": "Isolar caixa por estabelecimento",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "WMS warehouse + establishment",
+      "id": "TENANT-017",
+      "domain": "Tenant/Org",
+      "feature": "Isolation",
+      "sub": "Isolar estoque por estabelecimento/depósito",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "config flag",
+      "id": "TENANT-018",
+      "domain": "Tenant/Org",
+      "feature": "Config",
+      "sub": "Estoque compartilhado entre unidades",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "catalog price + org",
+      "id": "TENANT-019",
+      "domain": "Tenant/Org",
+      "feature": "Config",
+      "sub": "Preços diferentes por unidade",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "soanas_restaurant",
+      "id": "TENANT-020",
+      "domain": "Tenant/Org",
+      "feature": "Config",
+      "sub": "Cardápios diferentes por unidade",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "soanas_payments_br",
+      "id": "TENANT-021",
+      "domain": "Tenant/Org",
+      "feature": "Config",
+      "sub": "Meios de pagamento por unidade",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "FiscalEstablishment",
+      "id": "TENANT-022",
+      "domain": "Tenant/Org",
+      "feature": "Config",
+      "sub": "Tributação diferente por CNPJ",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "FiscalEstablishment CRUD",
+      "id": "EST-001",
+      "domain": "Establishments",
+      "feature": "FiscalEstablishment",
+      "sub": "Entidade FiscalEstablishment",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "razão/fantasia",
+      "id": "EST-002",
+      "domain": "Establishments",
+      "feature": "Identificação",
+      "sub": "Razão social / nome fantasia",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "TESTED",
+      "notes": "CNPJ alfanumérico",
+      "id": "EST-003",
+      "domain": "Establishments",
+      "feature": "Identificação",
+      "sub": "CNPJ como string alfanumérico",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
+      "id": "EST-004",
+      "domain": "Establishments",
+      "feature": "Identificação",
+      "sub": "IE / IM / CNAE principal e secundários",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
+      "id": "EST-005",
+      "domain": "Establishments",
+      "feature": "Identificação",
+      "sub": "CRT / regime tributário / regime especial",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
+      "id": "EST-006",
+      "domain": "Establishments",
+      "feature": "Endereço",
+      "sub": "IBGE / UF / endereço / CEP / telefone / e-mail fiscal",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
+      "id": "EST-007",
+      "domain": "Establishments",
+      "feature": "Contador",
+      "sub": "Contador responsável + CRC",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
+      "id": "EST-008",
+      "domain": "Establishments",
+      "feature": "Ambiente",
+      "sub": "Homologação / produção",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "FK IDs | soanas-core/establishments scaffold",
+      "id": "EST-009",
+      "domain": "Establishments",
+      "feature": "Config",
+      "sub": "Depósito principal / tabela preço / canal padrão",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
+      "id": "EST-010",
+      "domain": "Establishments",
+      "feature": "Config fiscal",
+      "sub": "Séries e numeração NFC-e / NF-e",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "CSC ref only",
+      "id": "EST-011",
+      "domain": "Establishments",
+      "feature": "Config fiscal",
+      "sub": "CSC NFC-e + ID CSC",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "cert ref only",
+      "id": "EST-012",
+      "domain": "Establishments",
+      "feature": "Config",
+      "sub": "Certificado digital referência",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "PSP ref only",
+      "id": "EST-013",
+      "domain": "Establishments",
+      "feature": "Config",
+      "sub": "PSP Pix / adquirentes",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
+      "id": "EST-014",
+      "domain": "Establishments",
+      "feature": "Config",
+      "sub": "Impressora padrão / timezone / moeda BRL",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": " | soanas-core/establishments scaffold",
+      "id": "EST-015",
+      "domain": "Establishments",
+      "feature": "Políticas",
+      "sub": "Estoque negativo / caixa / descontos / cancelamentos",
+      "origin": "SOANAS",
+      "module": "soanas_establishments"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "auth module",
+      "id": "AUTH-001",
+      "domain": "Auth/RBAC",
+      "feature": "Auth",
+      "sub": "Autenticação usuários",
+      "origin": "MERCATO",
+      "module": "auth/staff"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "staff module",
+      "id": "AUTH-002",
+      "domain": "Auth/RBAC",
+      "feature": "Staff",
+      "sub": "Funcionários / times",
+      "origin": "MERCATO",
+      "module": "auth/staff"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "acl.ts pattern",
+      "id": "AUTH-003",
+      "domain": "Auth/RBAC",
+      "feature": "RBAC",
+      "sub": "ACL feature-based",
+      "origin": "MERCATO",
+      "module": "auth/staff"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "audit_logs",
+      "id": "AUTH-004",
+      "domain": "Auth/RBAC",
+      "feature": "Audit",
+      "sub": "Audit logs base",
+      "origin": "MERCATO",
+      "module": "auth/staff"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "profiles list",
+      "id": "AUTH-005",
+      "domain": "Auth/RBAC",
+      "feature": "Perfis",
+      "sub": "Perfis padrão Soanas (proprietário…suporte)",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "ACL catalog",
+      "id": "AUTH-POS-001",
+      "domain": "Auth/RBAC",
+      "feature": "Permissão POS",
+      "sub": "abrir/fechar caixa",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "ACL catalog",
+      "id": "AUTH-POS-002",
+      "domain": "Auth/RBAC",
+      "feature": "Permissão POS",
+      "sub": "sangria / suprimento",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "ACL catalog",
+      "id": "AUTH-POS-003",
+      "domain": "Auth/RBAC",
+      "feature": "Permissão POS",
+      "sub": "abrir gaveta sem venda",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "ACL catalog",
+      "id": "AUTH-POS-004",
+      "domain": "Auth/RBAC",
+      "feature": "Permissão POS",
+      "sub": "cancelar item / venda",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "ACL catalog",
+      "id": "AUTH-POS-005",
+      "domain": "Auth/RBAC",
+      "feature": "Permissão POS",
+      "sub": "desconto + limite percentual",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "ACL catalog",
+      "id": "AUTH-POS-006",
+      "domain": "Auth/RBAC",
+      "feature": "Permissão POS",
+      "sub": "desconto acima limite com aprovação",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "ACL catalog",
+      "id": "AUTH-POS-007",
+      "domain": "Auth/RBAC",
+      "feature": "Permissão POS",
+      "sub": "alterar preço / vender abaixo custo",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "ACL catalog",
+      "id": "AUTH-POS-008",
+      "domain": "Auth/RBAC",
+      "feature": "Permissão POS",
+      "sub": "vender sem estoque",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "ACL catalog",
+      "id": "AUTH-POS-009",
+      "domain": "Auth/RBAC",
+      "feature": "Permissão POS",
+      "sub": "editar/reabrir venda",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "ACL catalog",
+      "id": "AUTH-POS-010",
+      "domain": "Auth/RBAC",
+      "feature": "Permissão POS",
+      "sub": "estornar pagamento / devolver / crédito",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "ACL catalog",
+      "id": "AUTH-POS-011",
+      "domain": "Auth/RBAC",
+      "feature": "Permissão POS",
+      "sub": "cancelar documento fiscal / inutilizar",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "ACL catalog",
+      "id": "AUTH-POS-012",
+      "domain": "Auth/RBAC",
+      "feature": "Permissão POS",
+      "sub": "ajustar/inventariar estoque",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "ACL catalog",
+      "id": "AUTH-POS-013",
+      "domain": "Auth/RBAC",
+      "feature": "Permissão POS",
+      "sub": "visualizar custo/margem/faturamento/lucro",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "ACL catalog",
+      "id": "AUTH-POS-014",
+      "domain": "Auth/RBAC",
+      "feature": "Permissão POS",
+      "sub": "visualizar fechamento outros caixas",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "ACL catalog",
+      "id": "AUTH-POS-015",
+      "domain": "Auth/RBAC",
+      "feature": "Permissão POS",
+      "sub": "cadastrar clientes / limite crédito / fiado",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "ACL catalog",
+      "id": "AUTH-POS-016",
+      "domain": "Auth/RBAC",
+      "feature": "Permissão POS",
+      "sub": "editar config fiscal / hardware",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "ACL feature; PIN UI pending",
+      "id": "AUTH-APR-001",
+      "domain": "Auth/RBAC",
+      "feature": "Aprovação",
+      "sub": "PIN gerente / senha / supervisor",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "AUTH-APR-002",
+      "domain": "Auth/RBAC",
+      "feature": "Aprovação",
+      "sub": "Aprovação remota",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "AUTH-APR-003",
+      "domain": "Auth/RBAC",
+      "feature": "Aprovação",
+      "sub": "Motivo + quem solicitou/aprovou + terminal + hora",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "AUTH-APR-004",
+      "domain": "Auth/RBAC",
+      "feature": "Aprovação",
+      "sub": "Valor antes/depois",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "AUTH-APR-005",
+      "domain": "Auth/RBAC",
+      "feature": "Aprovação",
+      "sub": "Dupla custódia (impedir self-approve)",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "catalog products",
+      "id": "CAT-001",
+      "domain": "Catalog",
+      "feature": "Produto",
+      "sub": "Cadastro básico (nome, SKU, GTIN, categoria…)",
+      "origin": "MERCATO",
+      "module": "catalog"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "CAT-002",
+      "domain": "Catalog",
+      "feature": "Produto",
+      "sub": "Imagens / status / disponibilidade canais",
+      "origin": "MERCATO",
+      "module": "catalog"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "CatalogProductVariant",
+      "id": "CAT-003",
+      "domain": "Catalog",
+      "feature": "Variantes",
+      "sub": "Variantes/SKU/preço/estoque próprio",
+      "origin": "MERCATO",
+      "module": "catalog"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "CAT-004",
+      "domain": "Catalog",
+      "feature": "Preços",
+      "sub": "Price kinds / faixas / validade / moeda",
+      "origin": "MERCATO",
+      "module": "catalog"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "extension + CF",
+      "id": "CAT-005",
+      "domain": "Catalog",
+      "feature": "Tipos",
+      "sub": "Tipos produto (kit, combo, peso, serial, lote…)",
+      "origin": "SOANAS",
+      "module": "soanas_core/catalog-extension"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "CAT-FISCAL-001",
+      "domain": "Catalog",
+      "feature": "Fiscal produto",
+      "sub": "NCM/CEST/origem/CFOP/CST/CSOSN",
+      "origin": "SOANAS",
+      "module": "soanas_core/catalog-extension"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "CAT-FISCAL-002",
+      "domain": "Catalog",
+      "feature": "Fiscal produto",
+      "sub": "ICMS/ST/FCP/PIS/COFINS/IPI",
+      "origin": "SOANAS",
+      "module": "soanas_core/catalog-extension"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "Reforma 2026",
+      "id": "CAT-FISCAL-003",
+      "domain": "Catalog",
+      "feature": "Fiscal produto",
+      "sub": "IBS/CBS/IS / classificação RTC",
+      "origin": "SOANAS",
+      "module": "soanas_core/catalog-extension"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "CAT-FISCAL-004",
+      "domain": "Catalog",
+      "feature": "Fiscal produto",
+      "sub": "Benefícios / códigos estaduais / GTIN tributável",
+      "origin": "SOANAS",
+      "module": "soanas_core/catalog-extension"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "FiscalRule",
+      "id": "CAT-FISCAL-005",
+      "domain": "Catalog",
+      "feature": "Fiscal produto",
+      "sub": "Tributação por UF/regime + versionamento",
+      "origin": "SOANAS",
+      "module": "soanas_core/catalog-extension"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "CAT-006",
+      "domain": "Catalog",
+      "feature": "Códigos",
+      "sub": "PLU / código barras secundário / código interno",
+      "origin": "SOANAS",
+      "module": "soanas_core/catalog-extension"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "flags",
+      "id": "CAT-007",
+      "domain": "Catalog",
+      "feature": "Canais",
+      "sub": "Disponível PDV / ecommerce / delivery",
+      "origin": "SOANAS",
+      "module": "soanas_core/catalog-extension"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PRICE-001",
+      "domain": "Prices",
+      "feature": "Tabelas",
+      "sub": "Preço padrão / kinds / faixas",
+      "origin": "MERCATO",
+      "module": "catalog"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PRICE-002",
+      "domain": "Prices",
+      "feature": "Regras",
+      "sub": "Validade temporal de preços",
+      "origin": "MERCATO",
+      "module": "catalog"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PRICE-003",
+      "domain": "Prices",
+      "feature": "Tabelas",
+      "sub": "Atacado/varejo/ecommerce/delivery/filial/canal/grupo",
+      "origin": "SOANAS",
+      "module": "soanas_pos/soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PRICE-004",
+      "domain": "Prices",
+      "feature": "Tabelas",
+      "sub": "Especial/temporário/promocional/quantidade",
+      "origin": "SOANAS",
+      "module": "soanas_pos/soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PRICE-005",
+      "domain": "Prices",
+      "feature": "Regras",
+      "sub": "Dia semana / horário / min-max qty / prioridade",
+      "origin": "SOANAS",
+      "module": "soanas_pos/soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PRICE-006",
+      "domain": "Prices",
+      "feature": "Regras",
+      "sub": "Fallback / impedir negativo / alerta abaixo custo",
+      "origin": "SOANAS",
+      "module": "soanas_pos/soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PRICE-007",
+      "domain": "Prices",
+      "feature": "Regras",
+      "sub": "Margem mínima / aprovação preço manual",
+      "origin": "SOANAS",
+      "module": "soanas_pos/soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "WMS phase 1",
+      "id": "INV-001",
+      "domain": "Inventory",
+      "feature": "Depósitos",
+      "sub": "Warehouse / zones / locations",
+      "origin": "MERCATO",
+      "module": "wms"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "InventoryBalance",
+      "id": "INV-002",
+      "domain": "Inventory",
+      "feature": "Saldo",
+      "sub": "Físico/reservado/alocado/disponível",
+      "origin": "MERCATO",
+      "module": "wms"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "InventoryMovement",
+      "id": "INV-003",
+      "domain": "Inventory",
+      "feature": "Movimentos",
+      "sub": "Ledger append-only",
+      "origin": "MERCATO",
+      "module": "wms"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "InventoryLot",
+      "id": "INV-004",
+      "domain": "Inventory",
+      "feature": "Lotes",
+      "sub": "Lot / validade / status",
+      "origin": "MERCATO",
+      "module": "wms"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "profile flags",
+      "id": "INV-005",
+      "domain": "Inventory",
+      "feature": "Seriais",
+      "sub": "Serial tracking base",
+      "origin": "MERCATO",
+      "module": "wms"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "ProductInventoryProfile",
+      "id": "INV-006",
+      "domain": "Inventory",
+      "feature": "Reorder",
+      "sub": "Reorder point / safety stock",
+      "origin": "MERCATO",
+      "module": "wms"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "config overlay",
+      "id": "INV-007",
+      "domain": "Inventory",
+      "feature": "Depósitos tipados",
+      "sub": "Vendas/cozinha/bar/recebimento/avarias/quarentena/central/trânsito",
+      "origin": "SOANAS",
+      "module": "soanas_core/wms-ux"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "INV-008",
+      "domain": "Inventory",
+      "feature": "Saldo estendido",
+      "sub": "Em trânsito/avariado/bloqueado/vencido/futuro",
+      "origin": "SOANAS",
+      "module": "soanas_core/wms-ux"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "orchestration",
+      "id": "INV-009",
+      "domain": "Inventory",
+      "feature": "Movimentos UX",
+      "sub": "Venda/devolução/perda/quebra/produção/desmontagem",
+      "origin": "SOANAS",
+      "module": "soanas_core/wms-ux"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "INV-010",
+      "domain": "Inventory",
+      "feature": "Lotes avançados",
+      "sub": "FEFO / bloquear vencido / rastrear venda",
+      "origin": "SOANAS",
+      "module": "soanas_core/wms-ux"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "INV-011",
+      "domain": "Inventory",
+      "feature": "Seriais avançados",
+      "sub": "Garantia / histórico / cliente comprador",
+      "origin": "SOANAS",
+      "module": "soanas_core/wms-ux"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "INV-012",
+      "domain": "Inventory",
+      "feature": "Alertas",
+      "sub": "Mín/máx/segurança/reposição/lead time/sugestão compra",
+      "origin": "SOANAS",
+      "module": "soanas_core/wms-ux"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "cycle-count API existe; UX inventário Soanas não",
+      "id": "INVCOUNT-001",
+      "domain": "InventoryCount",
+      "feature": "Inventário",
+      "sub": "Abrir inventário / escopo loja-depósito-categoria",
+      "origin": "MERCATO+SOANAS",
+      "module": "soanas_core/wms-ux"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "INVCOUNT-002",
+      "domain": "InventoryCount",
+      "feature": "Contagem",
+      "sub": "Total/parcial/cega/visível",
+      "origin": "SOANAS",
+      "module": "soanas_core/wms-ux"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "INVCOUNT-003",
+      "domain": "InventoryCount",
+      "feature": "Fluxo",
+      "sub": "1ª contagem / recontagem / divergência / aprovação",
+      "origin": "SOANAS",
+      "module": "soanas_core/wms-ux"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "INVCOUNT-004",
+      "domain": "InventoryCount",
+      "feature": "Ops",
+      "sub": "Bloqueio movimentação / contínuo / rotativo",
+      "origin": "SOANAS",
+      "module": "soanas_core/wms-ux"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "INVCOUNT-005",
+      "domain": "InventoryCount",
+      "feature": "Captura",
+      "sub": "Barcode / mobile / import-export planilha",
+      "origin": "SOANAS",
+      "module": "soanas_core/wms-ux"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "INVCOUNT-006",
+      "domain": "InventoryCount",
+      "feature": "Audit",
+      "sub": "Auditor / motivo / perdas / trilha",
+      "origin": "SOANAS",
+      "module": "soanas_core/wms-ux"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "CRM company + SupplierProfile",
+      "id": "PROC-SUP-001",
+      "domain": "Procurement",
+      "feature": "Fornecedor",
+      "sub": "Cadastro completo (CNPJ, IE, contatos, prazos…)",
+      "origin": "SOANAS",
+      "module": "soanas_procurement"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PROC-SUP-002",
+      "domain": "Procurement",
+      "feature": "Fornecedor",
+      "sub": "Produtos fornecidos / código fornecedor / preços",
+      "origin": "SOANAS",
+      "module": "soanas_procurement"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PROC-SUP-003",
+      "domain": "Procurement",
+      "feature": "Fornecedor",
+      "sub": "Avaliação / status / histórico preços",
+      "origin": "SOANAS",
+      "module": "soanas_procurement"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PROC-REQ-001",
+      "domain": "Procurement",
+      "feature": "Solicitação",
+      "sub": "Manual / auto mínimo / previsão / ruptura / produção",
+      "origin": "SOANAS",
+      "module": "soanas_procurement"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PROC-REQ-002",
+      "domain": "Procurement",
+      "feature": "Solicitação",
+      "sub": "Prioridade / solicitante / justificativa / aprovação",
+      "origin": "SOANAS",
+      "module": "soanas_procurement"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PROC-RFQ-001",
+      "domain": "Procurement",
+      "feature": "Cotação",
+      "sub": "Múltiplos fornecedores / comparação / seleção",
+      "origin": "SOANAS",
+      "module": "soanas_procurement"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PROC-PO-001",
+      "domain": "Procurement",
+      "feature": "Pedido compra",
+      "sub": "PO completo + aprovação + PDF + e-mail/WhatsApp",
+      "origin": "SOANAS",
+      "module": "soanas_procurement"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PROC-RCV-001",
+      "domain": "Procurement",
+      "feature": "Recebimento",
+      "sub": "Parcial/integral/divergência/cego/lotes/seriais",
+      "origin": "SOANAS",
+      "module": "soanas_procurement"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "WMS receive",
+      "id": "PROC-RCV-002",
+      "domain": "Procurement",
+      "feature": "Recebimento",
+      "sub": "Entrada estoque + custo atualizado",
+      "origin": "SOANAS",
+      "module": "soanas_procurement"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PROC-NFE-001",
+      "domain": "Procurement",
+      "feature": "NF-e entrada",
+      "sub": "Importar XML / chave / mapear SKU / AP",
+      "origin": "SOANAS",
+      "module": "soanas_procurement"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PROC-NFE-002",
+      "domain": "Procurement",
+      "feature": "NF-e entrada",
+      "sub": "Validar qty / gerar entrada / AP / arquivar / duplicidade",
+      "origin": "SOANAS",
+      "module": "soanas_procurement"
+    },
+    {
+      "status": "TESTED",
+      "notes": "PosTerminal CRUD+API+UI",
+      "id": "POS-001",
+      "domain": "POS",
+      "feature": "Terminal",
+      "sub": "Entidade PosTerminal",
+      "origin": "SOANAS",
+      "module": "soanas_pos"
+    },
+    {
+      "status": "TESTED",
+      "notes": "PosTransaction+lines+state machine",
+      "id": "POS-002",
+      "domain": "POS",
+      "feature": "Terminal",
+      "sub": "Cadastro (código, estabelecimento, hardware, versão…)",
+      "origin": "SOANAS",
+      "module": "soanas_pos"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "hold incomplete; draft cancel exists",
+      "id": "POS-003",
+      "domain": "POS",
+      "feature": "Terminal",
+      "sub": "Online/offline / ativo/bloqueado / versão mínima",
+      "origin": "SOANAS",
+      "module": "soanas_pos"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "sell UI",
+      "id": "POS-UI-001",
+      "domain": "POS",
+      "feature": "Venda",
+      "sub": "Busca barcode/SKU/PLU/nome/fuzzy/favoritos/teclas",
+      "origin": "SOANAS",
+      "module": "soanas_pos"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "cart UI",
+      "id": "POS-UI-002",
+      "domain": "POS",
+      "feature": "Venda",
+      "sub": "Adicionar item (qty, peso, variante, lote, serial…)",
+      "origin": "SOANAS",
+      "module": "soanas_pos"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "cash checkout",
+      "id": "POS-UI-003",
+      "domain": "POS",
+      "feature": "Venda",
+      "sub": "Alterar/remover/cancelar item com motivo",
+      "origin": "SOANAS",
+      "module": "soanas_pos"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "sales history",
+      "id": "POS-UI-004",
+      "domain": "POS",
+      "feature": "Venda",
+      "sub": "Totais (subtotal, descontos, impostos, troco…)",
+      "origin": "SOANAS",
+      "module": "soanas_pos"
+    },
+    {
+      "status": "TESTED",
+      "notes": "completePosSale saga",
+      "id": "POS-TXN-001",
+      "domain": "POS",
+      "feature": "PosTransaction",
+      "sub": "Orquestrador (não duplicar SalesOrder)",
+      "origin": "SOANAS",
+      "module": "soanas_pos"
+    },
+    {
+      "status": "TESTED",
+      "notes": "recovery+replay",
+      "id": "POS-TXN-002",
+      "domain": "POS",
+      "feature": "State machine",
+      "sub": "DRAFT→…→COMPLETED + failure states",
+      "origin": "SOANAS",
+      "module": "soanas_pos"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "POS-HOLD-001",
+      "domain": "POS",
+      "feature": "Pré-venda",
+      "sub": "Suspender/nomear/retomar/transferir/expirar",
+      "origin": "SOANAS",
+      "module": "soanas_pos"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "POS-HOLD-002",
+      "domain": "POS",
+      "feature": "Pré-venda",
+      "sub": "Reservar estoque opcional / auditar",
+      "origin": "SOANAS",
+      "module": "soanas_pos"
+    },
+    {
+      "status": "TESTED",
+      "notes": "entities+ledger rebuild tests | packages/soanas-cash",
+      "id": "CASH-001",
+      "domain": "Cash",
+      "feature": "Estrutura",
+      "sub": "CashRegister / Drawer / Session / Movement / Count / Reconciliation / Approval",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "TESTED",
+      "notes": "register CRUD API+commands+UI | /api/soanas_cash/registers",
+      "id": "CASH-002",
+      "domain": "Cash",
+      "feature": "Caixa lógico",
+      "sub": "Código / estabelecimento / terminal / gaveta / depósito",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "TESTED",
+      "notes": "open session command+policy | sessions.open",
+      "id": "CASH-OPEN-001",
+      "domain": "Cash",
+      "feature": "Abertura",
+      "sub": "Selecionar caixa / operador / fundo inicial",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "TESTED",
+      "notes": "denomination validation | lib/denominations",
+      "id": "CASH-OPEN-002",
+      "domain": "Cash",
+      "feature": "Abertura",
+      "sub": "Contagem por denominações BRL",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "expected float on register; manager approval path partial",
+      "id": "CASH-OPEN-003",
+      "domain": "Cash",
+      "feature": "Abertura",
+      "sub": "Comparar fundo esperado / justificar / gerente",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "one-open unique index + idempotency unique",
+      "id": "CASH-OPEN-004",
+      "domain": "Cash",
+      "feature": "Abertura",
+      "sub": "Sessão única / timestamps server+local / offline",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "TESTED",
+      "notes": "withdrawal create + receipt abstract",
+      "id": "CASH-SANGRIA-001",
+      "domain": "Cash",
+      "feature": "Sangria",
+      "sub": "Criar sangria (valor, motivo, destino, responsável)",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "server policy limit+dual custody; PIN factor NOT implemented (REV-012)",
+      "id": "CASH-SANGRIA-002",
+      "domain": "Cash",
+      "feature": "Sangria",
+      "sub": "Validar saldo físico / limites / aprovação / PIN",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "TESTED",
+      "notes": "dual custody enforced server-side",
+      "id": "CASH-SANGRIA-003",
+      "domain": "Cash",
+      "feature": "Sangria",
+      "sub": "Dupla custódia / sessão aberta / sem edição pós-confirmação",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "TESTED",
+      "notes": "denominations+ledger",
+      "id": "CASH-SANGRIA-004",
+      "domain": "Cash",
+      "feature": "Sangria",
+      "sub": "Denominações / ledger / não alterar faturamento",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "TESTED",
+      "notes": "movements.reverse contraposto",
+      "id": "CASH-SANGRIA-005",
+      "domain": "Cash",
+      "feature": "Sangria",
+      "sub": "Reversão (não exclusão) + vínculo",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "abstract receipt+audit buildLog; thermal/print not wired",
+      "id": "CASH-SANGRIA-006",
+      "domain": "Cash",
+      "feature": "Sangria",
+      "sub": "Comprovante térmico / auditoria / sync / alertas / relatórios",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "Supply command with origin, approval policy, denominations and idempotency",
+      "id": "CASH-SUPPLY-001",
+      "domain": "Cash",
+      "feature": "Suprimento",
+      "sub": "Criar suprimento (origem, motivo, denominações, aprovação)",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "Abstract receipt payload + reversal; thermal rendering pending",
+      "id": "CASH-SUPPLY-002",
+      "domain": "Cash",
+      "feature": "Suprimento",
+      "sub": "Comprovante / saldo esperado / reversão / auditoria",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "CASH-DRAWER-001",
+      "domain": "Cash",
+      "feature": "Gaveta",
+      "sub": "Abertura sem venda (permissão, motivo, evento, alertas)",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": " | sessions.close+count+reconciliation",
+      "id": "CASH-CLOSE-001",
+      "domain": "Cash",
+      "feature": "Fechamento",
+      "sub": "Bloquear vendas / pendências Pix/cartão/fiscal/offline",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "Closing count with blind mode; multi-tender counting pending",
+      "id": "CASH-CLOSE-002",
+      "domain": "Cash",
+      "feature": "Fechamento",
+      "sub": "Contagem meios + fechamento cego",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "CashReconciliation expected vs counted with register tolerance",
+      "id": "CASH-CLOSE-003",
+      "domain": "Cash",
+      "feature": "Fechamento",
+      "sub": "Conciliação matemática expected vs counted",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": " | sessions.close+count+reconciliation",
+      "id": "CASH-CLOSE-004",
+      "domain": "Cash",
+      "feature": "Fechamento",
+      "sub": "Resultado por pagamento / PDF / e-mail / financeiro",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "CASH-SHIFT-001",
+      "domain": "Cash",
+      "feature": "Turno",
+      "sub": "Troca operador mantendo caixa / exigindo fechamento",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "CASH-SHIFT-002",
+      "domain": "Cash",
+      "feature": "Turno",
+      "sub": "Pausa / bloqueio / login rápido PIN / comissão",
+      "origin": "SOANAS",
+      "module": "soanas_cash"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PAY-GW-001",
+      "domain": "Payments",
+      "feature": "Gateway Hub",
+      "sub": "Sessão / auth-capture / cancel / refund / webhooks / idempotência",
+      "origin": "MERCATO",
+      "module": "payment_gateways"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "sales",
+      "id": "PAY-SALES-001",
+      "domain": "Payments",
+      "feature": "SalesPayment",
+      "sub": "Pagamentos comerciais + allocations",
+      "origin": "MERCATO",
+      "module": "payment_gateways"
+    },
+    {
+      "status": "TESTED",
+      "notes": "PaymentTender CASH + change tests",
+      "id": "PAY-001",
+      "domain": "Payments",
+      "feature": "PaymentTender",
+      "sub": "Tender operacional POS separado de SalesPayment",
+      "origin": "SOANAS",
+      "module": "soanas_payments_br"
+    },
+    {
+      "status": "TESTED",
+      "notes": "PaymentTender CASH + change tests",
+      "id": "PAY-CASH-001",
+      "domain": "Payments",
+      "feature": "Dinheiro",
+      "sub": "Recebido / troco / limite / arredondamento / cédulas",
+      "origin": "SOANAS",
+      "module": "soanas_payments_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PAY-CARD-001",
+      "domain": "Payments",
+      "feature": "Débito/Crédito",
+      "sub": "TEF/SmartPOS/POS externo / NSU / bandeira / parcelas",
+      "origin": "SOANAS",
+      "module": "soanas_payments_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PAY-PIX-001",
+      "domain": "Payments",
+      "feature": "Pix",
+      "sub": "QR dinâmico / copia-cola / txid / expiração / webhook / polling",
+      "origin": "SOANAS",
+      "module": "soanas_payments_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PAY-PIX-002",
+      "domain": "Payments",
+      "feature": "Pix",
+      "sub": "Conciliação / duplicidade / devolução parcial / recibo",
+      "origin": "SOANAS",
+      "module": "soanas_payments_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PAY-SPLIT-001",
+      "domain": "Payments",
+      "feature": "Split",
+      "sub": "N formas / restante tempo real / cancelar parcela",
+      "origin": "SOANAS",
+      "module": "soanas_payments_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PAY-VOUCHER-001",
+      "domain": "Payments",
+      "feature": "Voucher",
+      "sub": "VR/VA/interno/convênio/gift",
+      "origin": "SOANAS",
+      "module": "soanas_payments_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PAY-ERR-001",
+      "domain": "Payments",
+      "feature": "Erros",
+      "sub": "Estados iniciado…requer conciliação",
+      "origin": "SOANAS",
+      "module": "soanas_payments_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PAY-ERR-002",
+      "domain": "Payments",
+      "feature": "Erros",
+      "sub": "PAYMENT_UNKNOWN — não re-cobrar / idempotency / conciliação",
+      "origin": "SOANAS",
+      "module": "soanas_payments_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "orchestration",
+      "id": "PAY-CANCEL-001",
+      "domain": "Payments",
+      "feature": "Cancelamento venda",
+      "sub": "Antes/depois pagamento e fiscal / estorno / estoque",
+      "origin": "SOANAS",
+      "module": "soanas_payments_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "Sales credit memo + UX",
+      "id": "PAY-RETURN-001",
+      "domain": "Payments",
+      "feature": "Devolução",
+      "sub": "Localizar venda / parcial / restituição / auditoria",
+      "origin": "MERCATO+SOANAS",
+      "module": "soanas_payments_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "DISC-001",
+      "domain": "Discounts",
+      "feature": "Adjustments",
+      "sub": "Desconto/acréscimo sales adjustments",
+      "origin": "MERCATO",
+      "module": "sales"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "discounts",
+      "id": "DISC-002",
+      "domain": "Discounts",
+      "feature": "Manual",
+      "sub": "Percentual/valor/item/venda + limites/aprovação",
+      "origin": "SOANAS",
+      "module": "soanas_pos/business_rules"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "business_rules",
+      "id": "DISC-003",
+      "domain": "Discounts",
+      "feature": "Promoções",
+      "sub": "X por Y / leve-pague / combo / happy hour / cupom…",
+      "origin": "SOANAS",
+      "module": "soanas_pos/business_rules"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "DISC-004",
+      "domain": "Discounts",
+      "feature": "Promoções",
+      "sub": "Prioridade / empilhamento / limites uso",
+      "origin": "SOANAS",
+      "module": "soanas_pos/business_rules"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "CRM-001",
+      "domain": "Customers",
+      "feature": "CRM",
+      "sub": "Pessoas / empresas / endereços / tags / atividades",
+      "origin": "MERCATO",
+      "module": "customers"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "entities",
+      "id": "CRM-002",
+      "domain": "Customers",
+      "feature": "CRM",
+      "sub": "Custom fields",
+      "origin": "MERCATO",
+      "module": "customers"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "CF + validators",
+      "id": "CRM-003",
+      "domain": "Customers",
+      "feature": "Brasil PF",
+      "sub": "CPF / nascimento / WhatsApp / LGPD consent",
+      "origin": "SOANAS",
+      "module": "soanas_core/customers-extension"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "CRM-004",
+      "domain": "Customers",
+      "feature": "Brasil PJ",
+      "sub": "CNPJ / IE / indicador IE",
+      "origin": "SOANAS",
+      "module": "soanas_core/customers-extension"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "reporting + loyalty",
+      "id": "CRM-005",
+      "domain": "Customers",
+      "feature": "Histórico",
+      "sub": "Compras / ticket / favoritos / pontos / crédito",
+      "origin": "SOANAS",
+      "module": "soanas_core/customers-extension"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "LOY-001",
+      "domain": "Loyalty",
+      "feature": "Pontos",
+      "sub": "Acúmulo / resgate / validade / níveis",
+      "origin": "SOANAS",
+      "module": "soanas_loyalty"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "LOY-002",
+      "domain": "Loyalty",
+      "feature": "Cashback",
+      "sub": "Saldo / extrato / estorno devolução",
+      "origin": "SOANAS",
+      "module": "soanas_loyalty"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "LOY-003",
+      "domain": "Loyalty",
+      "feature": "Campanhas",
+      "sub": "Aniversário / indicação / antifraude",
+      "origin": "SOANAS",
+      "module": "soanas_loyalty"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FIN-CREDIT-001",
+      "domain": "Finance",
+      "feature": "Fiado",
+      "sub": "Limite / saldo / vencimento / parcelas / aprovação",
+      "origin": "SOANAS",
+      "module": "soanas_finance"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FIN-CREDIT-002",
+      "domain": "Finance",
+      "feature": "Fiado",
+      "sub": "Juros/multa/renegociação/parcial/inadimplência",
+      "origin": "SOANAS",
+      "module": "soanas_finance"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FISCAL-001",
+      "domain": "FiscalBR",
+      "feature": "Arquitetura",
+      "sub": "FiscalCore / TaxEngine / adapters / Certificate / Sefaz / Queue / Storage",
+      "origin": "SOANAS",
+      "module": "soanas_fiscal_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FISCAL-RULE-001",
+      "domain": "FiscalBR",
+      "feature": "FiscalRule",
+      "sub": "Regra versionada (estabelecimento, UF, NCM, vigência…)",
+      "origin": "SOANAS",
+      "module": "soanas_fiscal_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "nunca recalcular histórico",
+      "id": "FISCAL-ENG-001",
+      "domain": "FiscalBR",
+      "feature": "Engine",
+      "sub": "Calcular / simular / explicar / TaxSnapshot",
+      "origin": "SOANAS",
+      "module": "soanas_fiscal_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FISCAL-CERT-001",
+      "domain": "FiscalBR",
+      "feature": "Certificado",
+      "sub": "A1 PFX upload / senha criptografada / validar CNPJ",
+      "origin": "SOANAS",
+      "module": "soanas_fiscal_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FISCAL-CERT-002",
+      "domain": "FiscalBR",
+      "feature": "Certificado",
+      "sub": "Alertas 60/30/15/7/vencido / rotação / trilha",
+      "origin": "SOANAS",
+      "module": "soanas_fiscal_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "SP 2026",
+      "id": "FISCAL-NFCE-001",
+      "domain": "FiscalBR",
+      "feature": "NFC-e",
+      "sub": "Emissão modelo 65 completa",
+      "origin": "SOANAS",
+      "module": "soanas_fiscal_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FISCAL-NFCE-002",
+      "domain": "FiscalBR",
+      "feature": "NFC-e",
+      "sub": "Status / rejeições amigáveis / correção",
+      "origin": "SOANAS",
+      "module": "soanas_fiscal_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FISCAL-NFCE-003",
+      "domain": "FiscalBR",
+      "feature": "NFC-e",
+      "sub": "Contingência + fila retransmissão + idempotência",
+      "origin": "SOANAS",
+      "module": "soanas_fiscal_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FISCAL-NFCE-004",
+      "domain": "FiscalBR",
+      "feature": "NFC-e",
+      "sub": "Cancelamento / inutilização / XML storage",
+      "origin": "SOANAS",
+      "module": "soanas_fiscal_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FISCAL-NFE-001",
+      "domain": "FiscalBR",
+      "feature": "NF-e",
+      "sub": "Modelo 55 B2B/transferência/devolução/remessa…",
+      "origin": "SOANAS",
+      "module": "soanas_fiscal_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FISCAL-NFE-002",
+      "domain": "FiscalBR",
+      "feature": "NF-e",
+      "sub": "CC-e / contingência / IBS-CBS / schemas versionados",
+      "origin": "SOANAS",
+      "module": "soanas_fiscal_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FISCAL-NFSE-001",
+      "domain": "FiscalBR",
+      "feature": "NFS-e",
+      "sub": "Padrão nacional + adaptadores municipais",
+      "origin": "SOANAS",
+      "module": "soanas_fiscal_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FISCAL-NFSE-002",
+      "domain": "FiscalBR",
+      "feature": "NFS-e",
+      "sub": "ISS / retenções / IBS-CBS / cancelamento",
+      "origin": "SOANAS",
+      "module": "soanas_fiscal_br"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "não usar devices Mercato",
+      "id": "HW-001",
+      "domain": "Hardware",
+      "feature": "Agent",
+      "sub": "Soanas Device Agent local",
+      "origin": "SOANAS",
+      "module": "soanas_hardware"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "HW-PRT-001",
+      "domain": "Hardware",
+      "feature": "Impressora",
+      "sub": "ESC/POS multi-transport / fabricantes",
+      "origin": "SOANAS",
+      "module": "soanas_hardware"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "HW-PRT-002",
+      "domain": "Hardware",
+      "feature": "Impressão",
+      "sub": "Cupom/DANFE/cozinha/sangria/fechamento…",
+      "origin": "SOANAS",
+      "module": "soanas_hardware"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "HW-PRT-003",
+      "domain": "Hardware",
+      "feature": "Spool",
+      "sub": "PrintJob queue estados + retry + reimpressão",
+      "origin": "SOANAS",
+      "module": "soanas_hardware"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "HW-DRW-001",
+      "domain": "Hardware",
+      "feature": "Gaveta",
+      "sub": "Pulso / abrir em dinheiro/sangria/suprimento/manual",
+      "origin": "SOANAS",
+      "module": "soanas_hardware"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "HW-SCN-001",
+      "domain": "Hardware",
+      "feature": "Leitor",
+      "sub": "HID/serial / pesável / debounce",
+      "origin": "SOANAS",
+      "module": "soanas_hardware"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "HW-SCL-001",
+      "domain": "Hardware",
+      "feature": "Balança",
+      "sub": "Protocolos / estabilidade / tara / kg-g",
+      "origin": "SOANAS",
+      "module": "soanas_hardware"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "HW-TEF-001",
+      "domain": "Hardware",
+      "feature": "Pinpad/TEF",
+      "sub": "PaymentTerminalProvider abstraction",
+      "origin": "SOANAS",
+      "module": "soanas_hardware"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "HW-DSP-001",
+      "domain": "Hardware",
+      "feature": "Display cliente",
+      "sub": "Produto/totais/QR Pix/agradecimento",
+      "origin": "SOANAS",
+      "module": "soanas_hardware"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "OFFLINE-001",
+      "domain": "Offline",
+      "feature": "Local DB",
+      "sub": "SQLite criptografado + catálogo/preços/caixa/vendas",
+      "origin": "SOANAS",
+      "module": "soanas_offline"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "OFFLINE-002",
+      "domain": "Offline",
+      "feature": "Outbox",
+      "sub": "OfflineOutboxEntry completo + estados",
+      "origin": "SOANAS",
+      "module": "soanas_offline"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "OFFLINE-003",
+      "domain": "Offline",
+      "feature": "Sync",
+      "sub": "Push/pull incremental / cursor / retry / backoff",
+      "origin": "SOANAS",
+      "module": "soanas_offline"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "OFFLINE-004",
+      "domain": "Offline",
+      "feature": "Conflitos",
+      "sub": "Políticas determinísticas (não LWW dinheiro/fiscal/estoque)",
+      "origin": "SOANAS",
+      "module": "soanas_offline"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "OFFLINE-005",
+      "domain": "Offline",
+      "feature": "Health UI",
+      "sub": "Online/offline/sync/pendências/erros",
+      "origin": "SOANAS",
+      "module": "soanas_offline"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "OFFLINE-006",
+      "domain": "Offline",
+      "feature": "Resiliência",
+      "sub": "Recuperação crash / journal / confirmação cloud",
+      "origin": "SOANAS",
+      "module": "soanas_offline"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "REST-001",
+      "domain": "Restaurant",
+      "feature": "Áreas",
+      "sub": "Salão/varanda/bar/…",
+      "origin": "SOANAS",
+      "module": "soanas_restaurant"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "REST-002",
+      "domain": "Restaurant",
+      "feature": "Mesas",
+      "sub": "Mapa visual / estados / unir / transferir",
+      "origin": "SOANAS",
+      "module": "soanas_restaurant"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "REST-003",
+      "domain": "Restaurant",
+      "feature": "Comanda",
+      "sub": "Abertura / consumo / transferências / divisão conta",
+      "origin": "SOANAS",
+      "module": "soanas_restaurant"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "REST-004",
+      "domain": "Restaurant",
+      "feature": "Cardápio",
+      "sub": "Categorias / disponibilidade / 86 / limite diário",
+      "origin": "SOANAS",
+      "module": "soanas_restaurant"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "REST-005",
+      "domain": "Restaurant",
+      "feature": "Modificadores",
+      "sub": "Grupos obrigatórios/opcionais / preço / estoque",
+      "origin": "SOANAS",
+      "module": "soanas_restaurant"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "WMS",
+      "id": "REST-006",
+      "domain": "Restaurant",
+      "feature": "Receita",
+      "sub": "Ficha técnica / rendimento / baixa estoque",
+      "origin": "SOANAS",
+      "module": "soanas_restaurant"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "REST-007",
+      "domain": "Restaurant",
+      "feature": "Garçom",
+      "sub": "PWA login PIN / mesas / pedidos / offline LAN",
+      "origin": "SOANAS",
+      "module": "soanas_restaurant"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "REST-008",
+      "domain": "Restaurant",
+      "feature": "Taxa/gorjeta",
+      "sub": "Percentual / remoção / rateio / fiscal",
+      "origin": "SOANAS",
+      "module": "soanas_restaurant"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "REST-009",
+      "domain": "Restaurant",
+      "feature": "Reservas",
+      "sub": "Reservas + waitlist + no-show",
+      "origin": "SOANAS",
+      "module": "soanas_restaurant"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "REST-010",
+      "domain": "Restaurant",
+      "feature": "Balcão/senha",
+      "sub": "Pedido rápido / painel chamadas",
+      "origin": "SOANAS",
+      "module": "soanas_restaurant"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "KDS-001",
+      "domain": "KDS",
+      "feature": "Estações",
+      "sub": "Cozinha/bar/chapa/… + roteamento",
+      "origin": "SOANAS",
+      "module": "soanas_kds"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "KDS-002",
+      "domain": "KDS",
+      "feature": "Tickets",
+      "sub": "Ticket/itens / status / recall / prioridade",
+      "origin": "SOANAS",
+      "module": "soanas_kds"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "KDS-003",
+      "domain": "KDS",
+      "feature": "Tempos",
+      "sub": "SLA amarelo/vermelho / médias / gargalo",
+      "origin": "SOANAS",
+      "module": "soanas_kds"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "events",
+      "id": "KDS-004",
+      "domain": "KDS",
+      "feature": "Realtime",
+      "sub": "SSE/WebSocket preferido a polling agressivo",
+      "origin": "SOANAS",
+      "module": "soanas_kds"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "Sales + Soanas",
+      "id": "DEL-001",
+      "domain": "Delivery",
+      "feature": "Pedido",
+      "sub": "Entrega/retirada/agendado + taxa + zona",
+      "origin": "SOANAS",
+      "module": "soanas_delivery"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "DEL-002",
+      "domain": "Delivery",
+      "feature": "Fluxo",
+      "sub": "Recebido→entregue / cancelado",
+      "origin": "SOANAS",
+      "module": "soanas_delivery"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "DEL-003",
+      "domain": "Delivery",
+      "feature": "Entregador",
+      "sub": "Cadastro / atribuição / comissão",
+      "origin": "SOANAS",
+      "module": "soanas_delivery"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "catalog variants",
+      "id": "RETAIL-001",
+      "domain": "Retail",
+      "feature": "Roupas",
+      "sub": "Grade cor/tamanho/coleção / etiqueta",
+      "origin": "SOANAS",
+      "module": "soanas_pos"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "RETAIL-002",
+      "domain": "Retail",
+      "feature": "Mercado",
+      "sub": "Peso / balança / pesável / atacarejo",
+      "origin": "SOANAS",
+      "module": "soanas_pos"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "RETAIL-003",
+      "domain": "Retail",
+      "feature": "Construção",
+      "sub": "m/m²/volume / encomenda / obra / NF-e",
+      "origin": "SOANAS",
+      "module": "soanas_pos"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "SALES-QUOTE-001",
+      "domain": "SalesDocs",
+      "feature": "Orçamento",
+      "sub": "SalesQuote completo",
+      "origin": "MERCATO",
+      "module": "sales"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "SALES-ORDER-001",
+      "domain": "SalesDocs",
+      "feature": "Pedido",
+      "sub": "SalesOrder lifecycle",
+      "origin": "MERCATO",
+      "module": "sales"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "extensão UX",
+      "id": "SALES-QUOTE-002",
+      "domain": "SalesDocs",
+      "feature": "Orçamento UX",
+      "sub": "PDF/WhatsApp/converter/reservar/expirar",
+      "origin": "SOANAS",
+      "module": "soanas_pos"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "WMS roadmap — verificar",
+      "id": "SALES-PICK-001",
+      "domain": "SalesDocs",
+      "feature": "Picking",
+      "sub": "Onda/tarefa/divergência/pack/despacho",
+      "origin": "SOANAS",
+      "module": "soanas_pos"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "SALES-XFER-001",
+      "domain": "SalesDocs",
+      "feature": "Transferência lojas",
+      "sub": "Solicitação→trânsito→recebimento→fiscal",
+      "origin": "SOANAS",
+      "module": "soanas_pos"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FIN-AR-001",
+      "domain": "Finance",
+      "feature": "Contas a receber",
+      "sub": "Origem venda / parcelas / baixa / inadimplência",
+      "origin": "SOANAS",
+      "module": "soanas_finance"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FIN-AP-001",
+      "domain": "Finance",
+      "feature": "Contas a pagar",
+      "sub": "Fornecedor / compra / aprovação / pagamento",
+      "origin": "SOANAS",
+      "module": "soanas_finance"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "≠ cash register",
+      "id": "FIN-CASH-001",
+      "domain": "Finance",
+      "feature": "Caixa financeiro",
+      "sub": "Contas / banco / Pix / cartão a receber",
+      "origin": "SOANAS",
+      "module": "soanas_finance"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FIN-CARD-001",
+      "domain": "Finance",
+      "feature": "Conciliação cartão",
+      "sub": "NSU/MDR/líquido/chargeback/antecipação",
+      "origin": "SOANAS",
+      "module": "soanas_finance"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FIN-PIX-001",
+      "domain": "Finance",
+      "feature": "Conciliação Pix",
+      "sub": "txid/e2eId / duplicidade / manual",
+      "origin": "SOANAS",
+      "module": "soanas_finance"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FIN-COST-001",
+      "domain": "Finance",
+      "feature": "Custo/margem",
+      "sub": "Médio/último/lote/ficha / margem",
+      "origin": "SOANAS",
+      "module": "soanas_finance"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "FIN-COMM-001",
+      "domain": "Finance",
+      "feature": "Comissões",
+      "sub": "Vendedor/garçom / regras / estorno",
+      "origin": "SOANAS",
+      "module": "soanas_finance"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "REPORT-SALES-001",
+      "domain": "Reporting",
+      "feature": "Vendas",
+      "sub": "Por dia/hora/loja/caixa/operador/produto/canal…",
+      "origin": "SOANAS",
+      "module": "soanas_reporting"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "REPORT-CASH-001",
+      "domain": "Reporting",
+      "feature": "Caixa",
+      "sub": "Abertura/sangrias/divergências/turnos…",
+      "origin": "SOANAS",
+      "module": "soanas_reporting"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "REPORT-INV-001",
+      "domain": "Reporting",
+      "feature": "Estoque",
+      "sub": "Saldo/giro/ABC/validade/perdas…",
+      "origin": "SOANAS",
+      "module": "soanas_reporting"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "REPORT-REST-001",
+      "domain": "Reporting",
+      "feature": "Restaurante",
+      "sub": "Ticket/giro mesa/KDS/gorjeta…",
+      "origin": "SOANAS",
+      "module": "soanas_reporting"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "REPORT-FISCAL-001",
+      "domain": "Reporting",
+      "feature": "Fiscal",
+      "sub": "NFC-e/NF-e/NFS-e status / XML faltante…",
+      "origin": "SOANAS",
+      "module": "soanas_reporting"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "dashboards framework",
+      "id": "DASH-001",
+      "domain": "Reporting",
+      "feature": "Dashboard proprietário",
+      "sub": "Faturamento/margem/críticos/pendências",
+      "origin": "SOANAS",
+      "module": "soanas_reporting"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "DASH-002",
+      "domain": "Reporting",
+      "feature": "Dashboard restaurante",
+      "sub": "Mesas/KDS/atrasos/faturamento",
+      "origin": "SOANAS",
+      "module": "soanas_reporting"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "AUD-001",
+      "domain": "Audit",
+      "feature": "Audit base",
+      "sub": "audit_logs action/access",
+      "origin": "MERCATO",
+      "module": "audit_logs"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "AUD-002",
+      "domain": "Audit",
+      "feature": "Eventos sensíveis",
+      "sub": "Caixa/desconto/fiscal/estoque/certificado…",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "AUD-003",
+      "domain": "Audit",
+      "feature": "Campos",
+      "sub": "who/what/when/where/old/new/reason/approver/terminal",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "LGPD-001",
+      "domain": "LGPD",
+      "feature": "Consentimento",
+      "sub": "Finalidade / consent record",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "LGPD-002",
+      "domain": "LGPD",
+      "feature": "Direitos",
+      "sub": "Exportação / anonimização / exclusão c/ hold fiscal",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "LGPD-003",
+      "domain": "LGPD",
+      "feature": "Controles",
+      "sub": "Minimização / retenção / criptografia / DPO canal",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "enterprise MFA optional — não copiar EE",
+      "id": "SEC-001",
+      "domain": "Security",
+      "feature": "Auth hardening",
+      "sub": "MFA admin / sessões / rate limit",
+      "origin": "MERCATO+SOANAS",
+      "module": "auth/soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "SEC-002",
+      "domain": "Security",
+      "feature": "RBAC",
+      "sub": "Menor privilégio / tenant segregation",
+      "origin": "MERCATO+SOANAS",
+      "module": "auth/soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "SEC-003",
+      "domain": "Security",
+      "feature": "Crypto",
+      "sub": "TLS / secrets / A1 / backups",
+      "origin": "MERCATO+SOANAS",
+      "module": "auth/soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "SEC-004",
+      "domain": "Security",
+      "feature": "AppSec",
+      "sub": "CSP/CSRF/XSS/SQLi / SAST / dependency scan",
+      "origin": "MERCATO+SOANAS",
+      "module": "auth/soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "SEC-005",
+      "domain": "Security",
+      "feature": "Card data",
+      "sub": "Nunca armazenar PAN/CVV/PIN/trilha",
+      "origin": "MERCATO+SOANAS",
+      "module": "auth/soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "AUTO-001",
+      "domain": "Automation",
+      "feature": "Workflows/Rules",
+      "sub": "Motor genérico",
+      "origin": "MERCATO",
+      "module": "workflows/business_rules/notifications"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "NOTIF-001",
+      "domain": "Automation",
+      "feature": "Notifications",
+      "sub": "In-app / push / channels",
+      "origin": "MERCATO",
+      "module": "workflows/business_rules/notifications"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "AUTO-002",
+      "domain": "Automation",
+      "feature": "Regras Soanas",
+      "sub": "Estoque baixo / sangria sugerida / certificado…",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "NOTIF-002",
+      "domain": "Automation",
+      "feature": "Canais Soanas",
+      "sub": "WhatsApp integração / som KDS / agrupamento",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "sync_excel + Soanas",
+      "id": "IO-IMP-001",
+      "domain": "IO",
+      "feature": "Importação",
+      "sub": "Excel/CSV produtos/clientes/estoque/XML…",
+      "origin": "MERCATO+SOANAS",
+      "module": "data_sync/soanas_integrations"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "IO-EXP-001",
+      "domain": "IO",
+      "feature": "Exportação",
+      "sub": "CSV/Excel/PDF/XML/JSON async + audit",
+      "origin": "MERCATO+SOANAS",
+      "module": "data_sync/soanas_integrations"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "core api_keys",
+      "id": "API-001",
+      "domain": "IO",
+      "feature": "API",
+      "sub": "REST OpenAPI / auth / scopes / idempotência / versionamento",
+      "origin": "MERCATO+SOANAS",
+      "module": "data_sync/soanas_integrations"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "webhooks package",
+      "id": "WH-001",
+      "domain": "IO",
+      "feature": "Webhooks",
+      "sub": "Eventos Soanas + assinatura Standard Webhooks",
+      "origin": "MERCATO+SOANAS",
+      "module": "data_sync/soanas_integrations"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "mock+adapter",
+      "id": "INT-PAY-001",
+      "domain": "Integrations",
+      "feature": "Pagamento BR",
+      "sub": "Adapters Stone/Cielo/Rede/PagBank/MP/InfinitePay + Pix PSP",
+      "origin": "SOANAS",
+      "module": "soanas_integrations"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "INT-TEF-001",
+      "domain": "Integrations",
+      "feature": "TEF providers",
+      "sub": "Provider abstraction",
+      "origin": "SOANAS",
+      "module": "soanas_integrations"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "INT-ECOM-001",
+      "domain": "Integrations",
+      "feature": "Ecommerce",
+      "sub": "Shopify/Woo/ML/loja própria",
+      "origin": "SOANAS",
+      "module": "soanas_integrations"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "BLOCKED_EXTERNAL potencial",
+      "id": "INT-DEL-001",
+      "domain": "Integrations",
+      "feature": "Delivery agg",
+      "sub": "iFood e agregadores quando parceria",
+      "origin": "SOANAS",
+      "module": "soanas_integrations"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "INT-ACC-001",
+      "domain": "Integrations",
+      "feature": "Contabilidade",
+      "sub": "Alterdata / XML / exportação fiscal",
+      "origin": "SOANAS",
+      "module": "soanas_integrations"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PRT-PROD-001",
+      "domain": "Printing",
+      "feature": "Impressão produção",
+      "sub": "Roteamento produto→estação / fallback / anti-dup",
+      "origin": "SOANAS",
+      "module": "soanas_hardware"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PRT-RCPT-001",
+      "domain": "Printing",
+      "feature": "Cupom não fiscal",
+      "sub": "Template 58/80mm customizável",
+      "origin": "SOANAS",
+      "module": "soanas_hardware"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "PRT-REPRINT-001",
+      "domain": "Printing",
+      "feature": "Reimpressão",
+      "sub": "2ª via auditada com motivo",
+      "origin": "SOANAS",
+      "module": "soanas_hardware"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "feature_toggles",
+      "id": "SAAS-001",
+      "domain": "SaaS",
+      "feature": "Planos",
+      "sub": "Trial/mensal/anual / lojas/caixas/módulos / add-ons",
+      "origin": "SOANAS",
+      "module": "soanas_saas"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "SAAS-002",
+      "domain": "SaaS",
+      "feature": "Lifecycle",
+      "sub": "Suspensão / grace / reativação",
+      "origin": "SOANAS",
+      "module": "soanas_saas"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "onboarding package + Soanas",
+      "id": "ONB-001",
+      "domain": "SaaS",
+      "feature": "Onboarding",
+      "sub": "Wizard 11 etapas → produção",
+      "origin": "SOANAS",
+      "module": "soanas_saas"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "HEALTH-001",
+      "domain": "SaaS",
+      "feature": "Health PDV",
+      "sub": "Checklist pré-abertura + Diagnosticar",
+      "origin": "SOANAS",
+      "module": "soanas_saas"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "UPD-001",
+      "domain": "SaaS",
+      "feature": "Update client",
+      "sub": "Semver / rollout / rollback / migrate local DB",
+      "origin": "SOANAS",
+      "module": "soanas_saas"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "ops",
+      "id": "DR-001",
+      "domain": "SaaS",
+      "feature": "Backup Cloud",
+      "sub": "Automático / PITR / restore test",
+      "origin": "SOANAS",
+      "module": "soanas_saas"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "DR-002",
+      "domain": "SaaS",
+      "feature": "Backup Local",
+      "sub": "POS DB + outbox preserve",
+      "origin": "SOANAS",
+      "module": "soanas_saas"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "telemetry package",
+      "id": "OBS-001",
+      "domain": "Observability",
+      "feature": "Logs/metrics/traces",
+      "sub": "Correlation ID ponta a ponta",
+      "origin": "MERCATO+SOANAS",
+      "module": "telemetry/soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "OBS-002",
+      "domain": "Observability",
+      "feature": "Alertas",
+      "sub": "API/fiscal/pagamento/hardware/sync/print",
+      "origin": "MERCATO+SOANAS",
+      "module": "telemetry/soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "benchmarks",
+      "id": "PERF-001",
+      "domain": "Observability",
+      "feature": "Performance POS",
+      "sub": "Add item / search local / finish cash instantâneo",
+      "origin": "MERCATO+SOANAS",
+      "module": "telemetry/soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "A11Y-001",
+      "domain": "Observability",
+      "feature": "Acessibilidade POS",
+      "sub": "Touch/teclado/foco/contraste/F-keys",
+      "origin": "MERCATO+SOANAS",
+      "module": "telemetry/soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "SHORT-001",
+      "domain": "Observability",
+      "feature": "Atalhos",
+      "sub": "F1–F10 / Esc / Enter configuráveis",
+      "origin": "MERCATO+SOANAS",
+      "module": "telemetry/soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "ai-assistant",
+      "id": "AI-001",
+      "domain": "Observability",
+      "feature": "IA Soanas",
+      "sub": "Consultas gestor / Safe Actions — fora do caminho crítico",
+      "origin": "MERCATO+SOANAS",
+      "module": "telemetry/soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "TEST-CAT-001",
+      "domain": "Testing",
+      "feature": "Testes catálogo",
+      "sub": "Simples/variante/preço/lote/serial/duplicados",
+      "origin": "SOANAS",
+      "module": "qa"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "TEST-SALE-001",
+      "domain": "Testing",
+      "feature": "Testes venda",
+      "sub": "1–100 itens / peso / split / cancel / devolução",
+      "origin": "SOANAS",
+      "module": "qa"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "TEST-CASH-001",
+      "domain": "Testing",
+      "feature": "Testes caixa",
+      "sub": "Open/sangria/suprimento/close/cego/crash/offline",
+      "origin": "SOANAS",
+      "module": "qa"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "TEST-PAY-001",
+      "domain": "Testing",
+      "feature": "Testes pagamento",
+      "sub": "Dinheiro/Pix/cartão/timeout/unknown/dup",
+      "origin": "SOANAS",
+      "module": "qa"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "TEST-FISCAL-001",
+      "domain": "Testing",
+      "feature": "Testes fiscal",
+      "sub": "Homolog/produção/contingência/IBS-CBS/CNPJ alfa",
+      "origin": "SOANAS",
+      "module": "qa"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "TEST-HW-001",
+      "domain": "Testing",
+      "feature": "Testes hardware",
+      "sub": "Printer/gaveta/leitor/balança/TEF/restart",
+      "origin": "SOANAS",
+      "module": "qa"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "TEST-REST-001",
+      "domain": "Testing",
+      "feature": "Testes restaurante",
+      "sub": "Mesa/comanda/KDS/dividir/pago parcial",
+      "origin": "SOANAS",
+      "module": "qa"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "TEST-E2E-001",
+      "domain": "Testing",
+      "feature": "E2E varejo",
+      "sub": "Fluxo completo §108",
+      "origin": "SOANAS",
+      "module": "qa"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "TEST-E2E-002",
+      "domain": "Testing",
+      "feature": "E2E restaurante",
+      "sub": "Fluxo completo §109",
+      "origin": "SOANAS",
+      "module": "qa"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "TEST-E2E-003",
+      "domain": "Testing",
+      "feature": "E2E offline",
+      "sub": "Fluxo completo §110",
+      "origin": "SOANAS",
+      "module": "qa"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "TEST-E2E-004",
+      "domain": "Testing",
+      "feature": "E2E falhas",
+      "sub": "Fluxo completo §111",
+      "origin": "SOANAS",
+      "module": "qa"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "soanas packages",
+      "id": "ARCH-001",
+      "domain": "Architecture",
+      "feature": "Packages",
+      "sub": "Pacotes soanas-* sem poluir packages/core",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "ARCH-002",
+      "domain": "Architecture",
+      "feature": "No duplication",
+      "sub": "Não duplicar Product/Customer/Order/Stock",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "commands",
+      "id": "ARCH-003",
+      "domain": "Architecture",
+      "feature": "Commands",
+      "sub": "Commands explícitos por mutação crítica",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "ARCH-004",
+      "domain": "Architecture",
+      "feature": "Events",
+      "sub": "Eventos versionados §107",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "idempotency",
+      "id": "ARCH-005",
+      "domain": "Architecture",
+      "feature": "Idempotency",
+      "sub": "Ops críticas idempotentes",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "TESTED",
+      "notes": "ADR-007 saga",
+      "id": "ARCH-006",
+      "domain": "Architecture",
+      "feature": "State machines",
+      "sub": "Venda/Caixa/Fiscal/KDS explícitas",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "TESTED",
+      "notes": "bigint cents",
+      "id": "ARCH-007",
+      "domain": "Architecture",
+      "feature": "Money",
+      "sub": "Decimal/numeric — sem float descontrolado",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "ARCH-008",
+      "domain": "Architecture",
+      "feature": "Concurrency",
+      "sub": "Locks/optimistic/idempotency em corridas",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "ARCH-009",
+      "domain": "Architecture",
+      "feature": "i18n",
+      "sub": "pt-BR via i18n — sem hardcode",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "IMPLEMENTED",
+      "notes": "licenses",
+      "id": "ARCH-010",
+      "domain": "Architecture",
+      "feature": "Licensing",
+      "sub": "MIT deps; sem copiar enterprise; notices",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "ARCH-011",
+      "domain": "Architecture",
+      "feature": "Mocks",
+      "sub": "MockPix/Tef/Fiscal/Printer/Scale oficiais",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "ARCH-012",
+      "domain": "Architecture",
+      "feature": "Contracts",
+      "sub": "Interfaces provider versionadas",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "ARCH-013",
+      "domain": "Architecture",
+      "feature": "Client versions",
+      "sub": "minimumSupportedVersion / BLOCKED",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "ANALYZED",
+      "notes": "",
+      "id": "ARCH-014",
+      "domain": "Architecture",
+      "feature": "Human IDs",
+      "sub": "SALE-/CASH-/FISC- + UUID interno",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    },
+    {
+      "status": "TESTED",
+      "notes": "error model",
+      "id": "ARCH-015",
+      "domain": "Architecture",
+      "feature": "Error model",
+      "sub": "errorCode/correlationId/retryable/operatorAction",
+      "origin": "SOANAS",
+      "module": "soanas_core"
+    }
+  ]
+}

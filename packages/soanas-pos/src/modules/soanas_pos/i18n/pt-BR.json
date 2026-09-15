@@ -1,0 +1,198 @@
+{
+  "soanas_pos": {
+    "nav": {
+      "group": "PDV"
+    },
+    "errors": {
+      "unauthorized": "Não autorizado",
+      "org_required": "Organização obrigatória",
+      "invalid_payload": "Dados inválidos",
+      "terminal_not_found": "Terminal PDV não encontrado",
+      "terminal_code_taken": "Já existe um terminal PDV com este código",
+      "terminal_has_open_transaction": "Finalize ou cancele as vendas abertas antes de remover este terminal",
+      "transaction_not_found": "Venda PDV não encontrada",
+      "transaction_not_editable": "Esta venda PDV não pode mais ser editada",
+      "transaction_not_payable": "Esta venda PDV não aceita pagamentos",
+      "line_not_found": "Item da venda não encontrado",
+      "empty_cart": "Não é possível fechar uma venda sem itens",
+      "invalid_transition": "Transição de estado inválida na venda PDV",
+      "not_fully_paid": "A venda PDV precisa estar totalmente paga antes da conclusão",
+      "discount_forbidden": "Você não tem permissão para conceder descontos no PDV",
+      "discount_approval_required": "Este desconto excede seu limite e precisa de aprovação gerencial",
+      "stock_not_available": "ESTOQUE_INDISPONIVEL",
+      "stock_warn_approval_required": "Vender abaixo do estoque disponível exige aprovação gerencial",
+      "completed_not_cancellable": "Uma venda PDV concluída não pode ser cancelada; registre uma devolução de venda",
+      "duplicate_tender": "Pagamento PDV duplicado",
+      "complete_failed_action": "Tente concluir novamente pela ação de recuperação do PDV",
+      "list_failed": "Falha ao carregar as vendas PDV",
+      "detail_failed": "Falha ao carregar a venda PDV",
+      "create_failed": "Falha ao abrir a venda PDV",
+      "add_line_failed": "Falha ao adicionar o item",
+      "update_line_failed": "Falha ao atualizar o item",
+      "remove_line_failed": "Falha ao remover o item",
+      "discount_failed": "Falha ao aplicar o desconto",
+      "set_customer_failed": "Falha ao vincular o cliente",
+      "checkout_failed": "Falha ao fechar a venda",
+      "tender_failed": "Falha ao registrar o pagamento em dinheiro",
+      "complete_failed": "Falha ao concluir a venda PDV",
+      "recover_failed": "Falha ao recuperar a venda PDV",
+      "cancel_failed": "Falha ao cancelar a venda PDV",
+      "catalog_search_failed": "Falha ao pesquisar o catálogo"
+    },
+    "audit": {
+      "terminal_create": "Criar terminal PDV",
+      "terminal_update": "Atualizar terminal PDV",
+      "terminal_delete": "Excluir terminal PDV",
+      "transaction_create": "Abrir venda PDV"
+    },
+    "terminals": {
+      "page": {
+        "title": "Terminais PDV"
+      },
+      "create": {
+        "title": "Criar terminal PDV"
+      },
+      "list": {
+        "title": "Terminais PDV",
+        "searchPlaceholder": "Pesquisar por código ou nome",
+        "confirmDelete": "Remover este terminal PDV?",
+        "columns": {
+          "code": "Código",
+          "name": "Nome",
+          "warehouse": "Depósito",
+          "cashRegister": "Caixa",
+          "stockPolicy": "Política de estoque",
+          "status": "Situação"
+        },
+        "actions": {
+          "create": "Novo terminal",
+          "sell": "Abrir PDV"
+        },
+        "none": "—"
+      },
+      "form": {
+        "group": {
+          "identity": "Identificação",
+          "operations": "Operação"
+        },
+        "field": {
+          "code": "Código",
+          "name": "Nome",
+          "warehouseId": "Id do depósito",
+          "salesChannelId": "Id do canal de vendas",
+          "priceKindId": "Id da tabela de preço",
+          "cashRegisterId": "Id do caixa",
+          "stockPolicy": "Política de estoque",
+          "stockPolicyHelp": "BLOCK recusa a venda sem estoque, WARN exige aprovação, ALLOW sempre vende.",
+          "status": "Situação"
+        },
+        "action": {
+          "create": "Criar terminal"
+        },
+        "errors": {
+          "required": "Código e nome são obrigatórios"
+        }
+      },
+      "status": {
+        "active": "Ativo",
+        "inactive": "Inativo"
+      },
+      "flash": {
+        "created": "Terminal PDV criado",
+        "deleted": "Terminal PDV removido",
+        "loadError": "Falha ao carregar os terminais PDV",
+        "deleteError": "Falha ao remover o terminal PDV"
+      }
+    },
+    "sell": {
+      "page": {
+        "title": "Vender"
+      },
+      "terminal": {
+        "label": "Terminal",
+        "placeholder": "Selecione um terminal",
+        "cashSession": "Id da sessão de caixa (opcional)"
+      },
+      "search": {
+        "label": "Busca de produtos",
+        "placeholder": "SKU, código de barras ou nome",
+        "action": "Pesquisar",
+        "empty": "Nenhum produto encontrado",
+        "add": "Adicionar"
+      },
+      "cart": {
+        "title": "Carrinho",
+        "empty": "O carrinho está vazio",
+        "columns": {
+          "product": "Produto",
+          "quantity": "Qtd",
+          "unitPrice": "Unitário",
+          "total": "Total"
+        },
+        "remove": "Remover",
+        "subtotal": "Subtotal",
+        "discount": "Desconto",
+        "grandTotal": "Total"
+      },
+      "customer": {
+        "label": "Id do cliente (opcional)",
+        "apply": "Vincular cliente"
+      },
+      "discount": {
+        "label": "Desconto no carrinho (BRL)",
+        "apply": "Aplicar desconto"
+      },
+      "actions": {
+        "start": "Iniciar venda",
+        "checkout": "Fechar venda",
+        "complete": "Concluir venda",
+        "recover": "Tentar concluir novamente",
+        "cancel": "Cancelar venda"
+      },
+      "payment": {
+        "title": "Pagamento em dinheiro",
+        "received": "Valor recebido (BRL)",
+        "change": "Troco",
+        "due": "Valor devido",
+        "confirm": "Registrar pagamento"
+      },
+      "receipt": {
+        "title": "Comprovante",
+        "close": "Fechar"
+      },
+      "status": {
+        "label": "Situação"
+      },
+      "flash": {
+        "started": "Venda iniciada",
+        "lineAdded": "Item adicionado",
+        "lineRemoved": "Item removido",
+        "checkedOut": "Pronto para pagamento",
+        "paid": "Pagamento registrado",
+        "completed": "Venda concluída",
+        "cancelled": "Venda cancelada",
+        "error": "A operação do PDV falhou"
+      }
+    },
+    "sales": {
+      "page": {
+        "title": "Vendas PDV"
+      },
+      "list": {
+        "title": "Histórico de vendas PDV",
+        "searchPlaceholder": "Pesquisar pelo id de correlação",
+        "columns": {
+          "createdAt": "Data",
+          "status": "Situação",
+          "terminal": "Terminal",
+          "total": "Total",
+          "paid": "Pago",
+          "salesOrder": "Pedido"
+        }
+      },
+      "flash": {
+        "loadError": "Falha ao carregar as vendas PDV"
+      }
+    }
+  }
+}

@@ -1,0 +1,198 @@
+{
+  "soanas_pos": {
+    "nav": {
+      "group": "POS"
+    },
+    "errors": {
+      "unauthorized": "Unauthorized",
+      "org_required": "Organization required",
+      "invalid_payload": "Invalid payload",
+      "terminal_not_found": "POS terminal not found",
+      "terminal_code_taken": "A POS terminal with this code already exists",
+      "terminal_has_open_transaction": "Finish or cancel the open POS transactions before removing this terminal",
+      "transaction_not_found": "POS transaction not found",
+      "transaction_not_editable": "This POS transaction can no longer be edited",
+      "transaction_not_payable": "This POS transaction is not accepting payments",
+      "line_not_found": "POS line not found",
+      "empty_cart": "Cannot check out an empty cart",
+      "invalid_transition": "Illegal POS transaction transition",
+      "not_fully_paid": "The POS transaction must be fully paid before completion",
+      "discount_forbidden": "You are not allowed to grant POS discounts",
+      "discount_approval_required": "This discount exceeds your limit and needs a manager approval",
+      "stock_not_available": "STOCK_NOT_AVAILABLE",
+      "stock_warn_approval_required": "Selling below the available stock requires a manager approval",
+      "completed_not_cancellable": "A completed POS sale cannot be cancelled; register a sales return instead",
+      "duplicate_tender": "Duplicate POS tender",
+      "complete_failed_action": "Retry the completion from the POS recovery action",
+      "list_failed": "Failed to load POS transactions",
+      "detail_failed": "Failed to load the POS transaction",
+      "create_failed": "Failed to open POS transaction",
+      "add_line_failed": "Failed to add the POS line",
+      "update_line_failed": "Failed to update the POS line",
+      "remove_line_failed": "Failed to remove the POS line",
+      "discount_failed": "Failed to apply the discount",
+      "set_customer_failed": "Failed to set the POS customer",
+      "checkout_failed": "Failed to check out the POS transaction",
+      "tender_failed": "Failed to register the cash tender",
+      "complete_failed": "Failed to complete the POS sale",
+      "recover_failed": "Failed to recover the POS sale",
+      "cancel_failed": "Failed to cancel the POS transaction",
+      "catalog_search_failed": "Failed to search the catalog"
+    },
+    "audit": {
+      "terminal_create": "Create POS terminal",
+      "terminal_update": "Update POS terminal",
+      "terminal_delete": "Delete POS terminal",
+      "transaction_create": "Open POS transaction"
+    },
+    "terminals": {
+      "page": {
+        "title": "POS terminals"
+      },
+      "create": {
+        "title": "Create POS terminal"
+      },
+      "list": {
+        "title": "POS terminals",
+        "searchPlaceholder": "Search by code or name",
+        "confirmDelete": "Remove this POS terminal?",
+        "columns": {
+          "code": "Code",
+          "name": "Name",
+          "warehouse": "Warehouse",
+          "cashRegister": "Cash register",
+          "stockPolicy": "Stock policy",
+          "status": "Status"
+        },
+        "actions": {
+          "create": "New terminal",
+          "sell": "Open POS"
+        },
+        "none": "—"
+      },
+      "form": {
+        "group": {
+          "identity": "Identification",
+          "operations": "Operations"
+        },
+        "field": {
+          "code": "Code",
+          "name": "Name",
+          "warehouseId": "Warehouse id",
+          "salesChannelId": "Sales channel id",
+          "priceKindId": "Price kind id",
+          "cashRegisterId": "Cash register id",
+          "stockPolicy": "Stock policy",
+          "stockPolicyHelp": "BLOCK refuses a sale without stock, WARN needs an approval, ALLOW always sells.",
+          "status": "Status"
+        },
+        "action": {
+          "create": "Create terminal"
+        },
+        "errors": {
+          "required": "Code and name are required"
+        }
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "flash": {
+        "created": "POS terminal created",
+        "deleted": "POS terminal removed",
+        "loadError": "Failed to load POS terminals",
+        "deleteError": "Failed to remove the POS terminal"
+      }
+    },
+    "sell": {
+      "page": {
+        "title": "Sell"
+      },
+      "terminal": {
+        "label": "Terminal",
+        "placeholder": "Select a terminal",
+        "cashSession": "Cash session id (optional)"
+      },
+      "search": {
+        "label": "Product search",
+        "placeholder": "SKU, barcode or name",
+        "action": "Search",
+        "empty": "No products found",
+        "add": "Add"
+      },
+      "cart": {
+        "title": "Cart",
+        "empty": "The cart is empty",
+        "columns": {
+          "product": "Product",
+          "quantity": "Qty",
+          "unitPrice": "Unit",
+          "total": "Total"
+        },
+        "remove": "Remove",
+        "subtotal": "Subtotal",
+        "discount": "Discount",
+        "grandTotal": "Total"
+      },
+      "customer": {
+        "label": "Customer id (optional)",
+        "apply": "Attach customer"
+      },
+      "discount": {
+        "label": "Cart discount (BRL)",
+        "apply": "Apply discount"
+      },
+      "actions": {
+        "start": "Start sale",
+        "checkout": "Checkout",
+        "complete": "Complete sale",
+        "recover": "Retry completion",
+        "cancel": "Cancel sale"
+      },
+      "payment": {
+        "title": "Cash payment",
+        "received": "Amount received (BRL)",
+        "change": "Change",
+        "due": "Amount due",
+        "confirm": "Register payment"
+      },
+      "receipt": {
+        "title": "Receipt",
+        "close": "Close"
+      },
+      "status": {
+        "label": "Status"
+      },
+      "flash": {
+        "started": "Sale started",
+        "lineAdded": "Item added",
+        "lineRemoved": "Item removed",
+        "checkedOut": "Ready for payment",
+        "paid": "Payment registered",
+        "completed": "Sale completed",
+        "cancelled": "Sale cancelled",
+        "error": "The POS operation failed"
+      }
+    },
+    "sales": {
+      "page": {
+        "title": "POS sales"
+      },
+      "list": {
+        "title": "POS sales history",
+        "searchPlaceholder": "Search by correlation id",
+        "columns": {
+          "createdAt": "Date",
+          "status": "Status",
+          "terminal": "Terminal",
+          "total": "Total",
+          "paid": "Paid",
+          "salesOrder": "Sales order"
+        }
+      },
+      "flash": {
+        "loadError": "Failed to load POS sales"
+      }
+    }
+  }
+}

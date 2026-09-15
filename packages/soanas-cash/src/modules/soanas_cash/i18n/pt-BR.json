@@ -1,0 +1,167 @@
+{
+  "soanas_cash": {
+    "nav": {
+      "group": "Caixa"
+    },
+    "errors": {
+      "unauthorized": "Não autorizado",
+      "org_required": "Organização obrigatória",
+      "invalid_payload": "Dados inválidos",
+      "register_required": "registerId é obrigatório",
+      "register_not_found": "Caixa não encontrado",
+      "register_code_taken": "Já existe um caixa com este código",
+      "register_has_open_session": "Feche a sessão de caixa aberta antes de remover este caixa",
+      "register_already_open": "O caixa já possui uma sessão ativa",
+      "drawer_not_found": "Gaveta não encontrada",
+      "drawer_code_taken": "Já existe uma gaveta com este código no caixa",
+      "session_not_found": "Sessão de caixa não encontrada",
+      "session_not_open": "A sessão de caixa não está aberta",
+      "session_already_closed": "A sessão de caixa já está fechada",
+      "movement_not_found": "Movimento de caixa não encontrado",
+      "movement_not_reversible": "O movimento de caixa já foi estornado",
+      "reversal_of_reversal": "Um estorno não pode ser estornado",
+      "denominations_mismatch": "As cédulas informadas não correspondem ao valor declarado",
+      "insufficient_cash": "Numerário insuficiente para esta sangria",
+      "self_approval": "O operador não pode aprovar o próprio movimento (dupla custódia)",
+      "approval_required": "Aprovação gerencial obrigatória para este valor",
+      "approval_feature_required": "O usuário não pode autorizar movimentos acima do limite do caixa",
+      "duplicate_open": "Abertura de caixa duplicada",
+      "duplicate_withdrawal": "Sangria duplicada",
+      "duplicate_supply": "Suprimento duplicado",
+      "duplicate_reversal": "Estorno duplicado",
+      "duplicate_sale": "Venda em dinheiro duplicada",
+      "open_failed": "Falha ao abrir caixa",
+      "close_failed": "Falha ao fechar o caixa",
+      "withdrawal_failed": "Falha ao registrar sangria",
+      "supply_failed": "Falha ao registrar suprimento",
+      "reverse_failed": "Falha ao estornar o movimento de caixa",
+      "count_failed": "Falha ao registrar a conferência de caixa"
+    },
+    "audit": {
+      "register_create": "Criar caixa",
+      "register_update": "Atualizar caixa",
+      "register_delete": "Remover caixa",
+      "drawer_create": "Criar gaveta",
+      "drawer_update": "Atualizar gaveta",
+      "drawer_delete": "Remover gaveta",
+      "session_open": "Abrir sessão de caixa",
+      "session_close": "Fechar sessão de caixa",
+      "withdrawal_create": "Registrar sangria",
+      "supply_create": "Registrar suprimento",
+      "movement_reverse": "Estornar movimento de caixa",
+      "sale_record": "Registrar venda em dinheiro",
+      "count_create": "Registrar conferência de caixa"
+    },
+    "registers": {
+      "page": {
+        "title": "Caixas"
+      },
+      "create": {
+        "title": "Criar caixa"
+      },
+      "list": {
+        "title": "Caixas",
+        "searchPlaceholder": "Buscar por código ou nome",
+        "confirmDelete": "Remover este caixa?",
+        "alwaysApproval": "Sempre com aprovação",
+        "columns": {
+          "code": "Código",
+          "name": "Nome",
+          "withdrawalLimit": "Limite de sangria",
+          "tolerance": "Tolerância",
+          "blindClosing": "Fechamento cego",
+          "active": "Ativo"
+        },
+        "actions": {
+          "create": "Novo caixa",
+          "session": "Abrir visão da sessão"
+        }
+      },
+      "form": {
+        "group": {
+          "identity": "Identificação",
+          "policy": "Política de caixa"
+        },
+        "field": {
+          "code": "Código",
+          "name": "Nome",
+          "isActive": "Ativo",
+          "blindClosing": "Fechamento cego",
+          "blindClosingHelp": "O operador confere sem ver o valor esperado.",
+          "withdrawalLimit": "Limite de sangria sem aprovação (BRL)",
+          "withdrawalLimitHelp": "Deixe vazio para exigir aprovação em toda sangria.",
+          "supplyLimit": "Limite de suprimento sem aprovação (BRL)",
+          "tolerance": "Tolerância de divergência (BRL)",
+          "expectedOpeningFloat": "Fundo de troco esperado (BRL)"
+        },
+        "action": {
+          "create": "Criar caixa"
+        },
+        "errors": {
+          "required": "Código e nome são obrigatórios"
+        }
+      },
+      "flash": {
+        "created": "Caixa criado",
+        "deleted": "Caixa removido",
+        "loadError": "Falha ao carregar os caixas",
+        "deleteError": "Falha ao remover o caixa"
+      }
+    },
+    "session": {
+      "page": {
+        "title": "Sessão de caixa"
+      },
+      "loading": "Carregando a sessão de caixa…",
+      "field": {
+        "register": "Caixa",
+        "openingFloat": "Fundo de troco (BRL)",
+        "withdrawal": "Sangria (BRL)",
+        "approver": "ID do usuário aprovador (quando exigido)",
+        "supply": "Suprimento (BRL)",
+        "counted": "Valor conferido (BRL)"
+      },
+      "open": {
+        "title": "Abrir sessão de caixa"
+      },
+      "summary": {
+        "title": "Sessão aberta",
+        "blind": "Fechamento cego",
+        "openingFloat": "Fundo de troco",
+        "sales": "Vendas em dinheiro",
+        "withdrawals": "Sangrias",
+        "expected": "Esperado na gaveta",
+        "hidden": "Oculto (fechamento cego)"
+      },
+      "movements": {
+        "title": "Movimentos"
+      },
+      "close": {
+        "title": "Conferir e fechar"
+      },
+      "action": {
+        "open": "Abrir sessão",
+        "withdrawal": "Registrar sangria",
+        "supply": "Registrar suprimento",
+        "spotCount": "Registrar conferência",
+        "close": "Fechar sessão"
+      },
+      "errors": {
+        "invalidAmount": "Informe um valor válido"
+      },
+      "flash": {
+        "opened": "Sessão de caixa aberta",
+        "openError": "Falha ao abrir a sessão de caixa",
+        "closed": "Sessão de caixa fechada",
+        "closeError": "Falha ao fechar a sessão de caixa",
+        "withdrawalCreated": "Sangria registrada",
+        "withdrawalError": "Falha ao registrar a sangria",
+        "supplyCreated": "Suprimento registrado",
+        "supplyError": "Falha ao registrar o suprimento",
+        "countRecorded": "Conferência registrada",
+        "countError": "Falha ao registrar a conferência",
+        "loadError": "Falha ao carregar a sessão de caixa"
+      }
+    }
+  }
+}

@@ -1,0 +1,134 @@
+import { NextResponse } from 'next/server'
+import { z } from 'zod'
+import type { EntityManager } from '@mikro-orm/postgresql'
+import { resolveTranslations } from '@open-mercato/shared/lib/i18n/server'
+import {
+  PaymentTender,
+  PosRecoveryState,
+  PosTransaction,
+  PosTransactionLine,
+} from '../../../data/entities'
+import { posScopeErrorResponse, resolvePosRequestScope } from '../../utils'
+
+export const metadata = {
+  path: '/soanas_pos/transactions/[id]',
+  GET: { requireAuth: true, requireFeatures: ['soanas_pos.transactions.view'] },
+}
+
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> | { id: string } }) {
+  const { translate } = await resolveTranslations()
+  try {
+    const scope = await resolvePosRequestScope(req)
+    const { id } = await params
+    const em = (scope.container.resolve('em') as EntityManager).fork()
+    const transaction = await em.findOne(PosTransaction, {
+      id,
+      tenantId: scope.tenantId,
+      organizationId: scope.organizationId,
+      deletedAt: null,
+    })
+    if (!transaction) {
+      return NextResponse.json(
+        { error: translate('soanas_pos.errors.transaction_not_found', 'POS transaction not found') },
+        { status: 404 },
+      )
+    }
+    const lines = await em.find(
+      PosTransactionLine,
+      { transactionId: transaction.id, tenantId: transaction.tenantId },
+      { orderBy: { sortOrder: 'asc' } },
+    )
+    const tenders = await em.find(
+      PaymentTender,
+      { posTransactionId: transaction.id, tenantId: transaction.tenantId },
+      { orderBy: { createdAt: 'asc' } },
+    )
+    const recovery = await em.findOne(PosRecoveryState, {
+      transactionId: transaction.id,
+      tenantId: transaction.tenantId,
+    })
+
+    return NextResponse.json({
+      id: transaction.id,
+      terminalId: transaction.terminalId,
+      cashSessionId: transaction.cashSessionId ?? null,
+      operatorUserId: transaction.operatorUserId,
+      customerId: transaction.customerId ?? null,
+      salesOrderId: transaction.salesOrderId ?? null,
+      status: transaction.status,
+      currencyCode: transaction.currencyCode,
+      subtotalCents: transaction.subtotalCents,
+      discountTotalCents: transaction.discountTotalCents,
+      surchargeTotalCents: transaction.surchargeTotalCents,
+      taxTotalCents: transaction.taxTotalCents,
+      grandTotalCents: transaction.grandTotalCents,
+      amountPaidCents: transaction.amountPaidCents,
+      changeAmountCents: transaction.changeAmountCents,
+      correlationId: transaction.correlationId,
+      createdAt: transaction.createdAt.toISOString(),
+      updatedAt: transaction.updatedAt.toISOString(),
+      completedAt: transaction.completedAt ? transaction.completedAt.toISOString() : null,
+      lines: lines.map((line) => ({
+        id: line.id,
+        catalogProductId: line.catalogProductId ?? null,
+        catalogVariantId: line.catalogVariantId ?? null,
+        sku: line.sku,
+        nameSnapshot: line.nameSnapshot,
+        quantity: line.quantity,
+        unitPriceCents: line.unitPriceCents,
+        discountAmountCents: line.discountAmountCents,
+        lineTotalCents: line.lineTotalCents,
+        unit: line.unit ?? null,
+        sortOrder: line.sortOrder,
+      })),
+      tenders: tenders.map((tender) => ({
+        id: tender.id,
+        type: tender.type,
+        amountAppliedCents: tender.amountAppliedCents,
+        amountReceivedCents: tender.amountReceivedCents ?? null,
+        changeAmountCents: tender.changeAmountCents ?? null,
+        status: tender.status,
+      })),
+      recovery: recovery
+        ? {
+            lastStep: recovery.lastStep,
+            salesOrderId: recovery.salesOrderId ?? null,
+            wmsMovementId: recovery.wmsMovementId ?? null,
+            cashMovementId: recovery.cashMovementId ?? null,
+            errorCode: recovery.errorCode ?? null,
+            errorMessage: recovery.errorMessage ?? null,
+          }
+        : null,
+    })
+  } catch (err) {
+    const scopeResponse = posScopeErrorResponse(err)
+    if (scopeResponse) return scopeResponse
+    return NextResponse.json(
+      { error: translate('soanas_pos.errors.detail_failed', 'Failed to load the POS transaction') },
+      { status: 500 },
+    )
+  }
+}
+
+export const openApi = {
+  tag: 'Soanas POS',
+  summary: 'POS transaction detail',
+  pathParams: z.object({ id: z.string().uuid() }),
+  methods: {
+    GET: {
+      summary: 'Get a POS transaction with its lines, tenders and recovery checkpoint',
+      responses: [
+        {
+          status: 200,
+          schema: z.object({
+            id: z.string().uuid(),
+            status: z.string(),
+            grandTotalCents: z.string(),
+            lines: z.array(z.object({ id: z.string().uuid(), sku: z.string() })),
+            tenders: z.array(z.object({ id: z.string().uuid(), type: z.string() })),
+          }),
+        },
+      ],
+    },
+  },
+}
