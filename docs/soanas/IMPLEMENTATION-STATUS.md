@@ -1,14 +1,16 @@
 # Soanas — Implementation Status
 
-**Updated:** 2026-09-15  
+**Updated:** 2026-09-16  
 **Base:** Open Mercato 0.7.0 @ `30d509eeb`  
-**Branch:** `cursor/soanas-blueprint-foundation-5019`  
+**Branch:** `cursor/soanas-retail-gate-validation-4347`  
 **Strategy:** Retail Vertical Slice first — do **not** open empty packages.
 
+<!-- soanas:derived-counts:start -->
 ```
 Blueprint coverage (IDs): ANALYZED 233 | IMPLEMENTED 52 | TESTED 18 | VALIDATED 0 / 303
-Validated (DoD completa): 0%
+Validated (DoD completa): 0.0%
 ```
+<!-- soanas:derived-counts:end -->
 
 ## Vertical Slices
 

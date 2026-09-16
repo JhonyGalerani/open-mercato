@@ -32,5 +32,8 @@ Produto operacional brasileiro de varejo/restaurante construído **sobre** Open 
 ## Regenerar coverage
 
 ```bash
-node scripts/soanas-generate-blueprint-coverage.mjs
+node scripts/soanas-generate-blueprint-coverage.mjs   # estrutura (CUIDADO: reseta status)
+node scripts/soanas-sync-status-docs.mjs             # deriva contadores → docs de status
 ```
+
+Nunca edite manualmente os blocos `<!-- soanas:derived-counts:* -->` / `<!-- soanas:coverage-summary:* -->`.

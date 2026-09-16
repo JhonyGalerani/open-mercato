@@ -7,5 +7,7 @@
 | TD-003 | SPEC-022 Mercato POS still Proposed | Historical | Confusion for contributors | ADR-006 supersede note + link | Phase 0 |
 | TD-004 | Baseline full `yarn test` may be truncated in agent env | Time/memory | Incomplete baseline signal | Re-run full suite in CI | Phase 0 |
 | TD-005 | No real SEFAZ/Pix credentials | External | Production fiscal/pay blocked | Adapters+mocks; BLOCKED_EXTERNAL only for cert | Phase 2+ |
+| TD-006 | POS reads WMS `InventoryBalance` ORM to plan multi-location adjust | WMS has no public consume-split command yet | Cross-module ORM coupling | Replace with WMS consume/pick API when available (ADR-008) | Phase 1→3 |
+| TD-007 | Receipt print is in-process Mock via DI, not durable PrintJob | Hardware Agent not built | No paper-confirm / spooler | soanas-hardware PrintJob + ESC/POS (ADR-009) | Phase 3 |
 
 Regra: toda solução temporária nova ganha linha aqui no mesmo PR.

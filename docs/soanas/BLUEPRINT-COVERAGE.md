@@ -7,24 +7,30 @@
 
 ## Summary
 
+<!-- soanas:coverage-summary:start -->
 | Métrica | Valor |
 |--------|------:|
 | Total de IDs | 303 |
-| ANALYZED | ~267 |
+| ANALYZED | 233 |
 | NOT_STARTED | 0 |
 | IN_PROGRESS | 0 |
-| IMPLEMENTED | ~34 |
-| TESTED | ~2 |
+| IMPLEMENTED | 52 |
+| TESTED | 18 |
 | VALIDATED | 0 |
 | BLOCKED_EXTERNAL | 0 |
-| Origem MERCATO / MERCATO+SOANAS | 53 |
-| Origem SOANAS only | 250 |
+
+```
+Blueprint coverage (IDs): ANALYZED 233 | IMPLEMENTED 52 | TESTED 18 | VALIDATED 0 / 303
+Validated (DoD completa): 0.0%
+Derived at commit: 6ceabbfb9
+```
+<!-- soanas:coverage-summary:end -->
 
 ### Progresso overall
 
 ```
 Overall progress: 0.0% VALIDATED (gate)
-Foundation: packages soanas-core + soanas-establishments scaffolded; see blueprint-coverage.json
+Derived from blueprint-coverage.json @ 6ceabbfb9
 ```
 
 Percentuais de domínio em `IMPLEMENTATION-STATUS.md` são derivados desta matriz.

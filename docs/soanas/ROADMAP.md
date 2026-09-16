@@ -1,9 +1,9 @@
 # Soanas — Technical Roadmap
 
 Derived from Blueprint §108 and master prompt §66–67.  
-Coverage tracked in `BLUEPRINT-COVERAGE.md` (303 IDs @ 2026-09-15).
+Coverage tracked in `BLUEPRINT-COVERAGE.md` (303 IDs). Contadores derivados: `node scripts/soanas-sync-status-docs.mjs`.
 
-## Phase 0 — Foundation (current)
+## Phase 0 — Foundation (done)
 
 | Subphase | Deliverable | Coverage IDs (sample) |
 |----------|-------------|------------------------|
@@ -18,9 +18,21 @@ Coverage tracked in `BLUEPRINT-COVERAGE.md` (303 IDs @ 2026-09-15).
 
 **Exit:** packages build, modules discoverable, coverage IDs for foundation → IMPLEMENTED/TESTED where applicable.
 
-## Phase 1 — Retail POS + Cash
+## Phase 1 — Retail POS + Cash (**current**)
 
-1.1 PosTerminal → 1.2 CashRegister → 1.3 CashSession → 1.4 POS cart → 1.5 PaymentTender cash/manual card → 1.6 Sangria → 1.7 Suprimento → 1.8 Closing → 1.9 Basic reports → 1.10 Hardening
+1.1–1.9 Cash + POS + completeSale saga — **código pronto**  
+1.10 Hardening gate (in progress on `cursor/soanas-retail-gate-validation-4347`):
+
+- [x] Docs coverage sync (no manual counter drift)
+- [x] WMS `referenceType=so` → `salesOrderId` (ADR-008)
+- [x] Multi-location stock split (ADR-008)
+- [x] ReceiptPrinter DI port (ADR-009)
+- [ ] Migrations on ephemeral PostgreSQL
+- [ ] `TC-SOANAS-RETAIL-001` green (API + stock/cash/sales asserts)
+- [ ] Real DB concurrency (stock=1, two terminals)
+- [ ] Crash/recovery failure injection
+- [ ] Browser E2E operator path
+- [ ] Retail Sale v1 → VALIDATED
 
 ## Phase 2 — Fiscal SP + Pix
 

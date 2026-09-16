@@ -1,8 +1,8 @@
 # Soanas — O que foi feito
 
-**Data:** 2026-09-15  
+**Data:** 2026-09-16  
 **Base:** Open Mercato `0.7.0` @ `30d509eeb`  
-**Branch:** `cursor/soanas-blueprint-foundation-5019`  
+**Branch:** `cursor/soanas-retail-gate-validation-4347`  
 **PR:** https://github.com/JhonyGalerani/open-mercato/pull/1  
 
 Documento de entrega: o que já existe no repositório.  
@@ -18,6 +18,7 @@ Foi entregue a **fundação Soanas** (auditoria + matriz + ADRs) e o **Retail Ve
 
 ## 2. Números
 
+<!-- soanas:derived-counts:start -->
 | Métrica | Valor |
 |---------|------:|
 | IDs do Blueprint | 303 |
@@ -25,10 +26,7 @@ Foi entregue a **fundação Soanas** (auditoria + matriz + ADRs) e o **Retail Ve
 | IMPLEMENTED | 52 |
 | TESTED | 18 |
 | VALIDATED | **0** |
-| Retail Sale v1 (checklist) | **~94%** (16/17) |
-| Pacotes Soanas | **4** |
-| Testes unitários cash | 36 PASS |
-| Testes unitários POS | 51 PASS |
+<!-- soanas:derived-counts:end -->
 
 **Métrica principal do produto:** checklist Vertical Slice em [`IMPLEMENTATION-STATUS.md`](./IMPLEMENTATION-STATUS.md) — não o percentual bruto da matriz.
 
@@ -71,6 +69,8 @@ Foi entregue a **fundação Soanas** (auditoria + matriz + ADRs) e o **Retail Ve
 | 005 | POS local-first / sync |
 | 006 | SPEC-022 não no core; Soanas POS é o produto |
 | 007 | Saga idempotente POS → Sales → WMS → Cash (sem TX global) |
+| 008 | Consumo WMS retail: `referenceId=salesOrderId` + split multi-location |
+| 009 | `ReceiptPrinter` via DI (`receiptPrinter`); default Mock |
 
 ---
 

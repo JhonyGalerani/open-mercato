@@ -16,7 +16,7 @@ There is **no global distributed transaction** across Sales, WMS, and Soanas Cas
 4. Apply WMS inventory adjust (idempotent by movement key / referenceId)
 5. Record cash_sale movement on open CashSession (idempotent by `soanas_cash.movements.record_sale`)
 6. Mark PosTransaction `COMPLETED` + write recovery checkpoint clear
-7. Emit receipt via `MockReceiptPrinter`
+7. Emit receipt via DI `receiptPrinter` port (default `MockReceiptPrinter`, ADR-009)
 
 Each step records progress on `PosRecoveryState` / `PosStateTransition` with a shared **correlationId**.
 

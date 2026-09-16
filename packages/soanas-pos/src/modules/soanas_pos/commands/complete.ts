@@ -19,14 +19,34 @@ import { posCompleteSchema, type PosCompleteInput } from '../data/validators'
 import { centsToDecimalString } from '../lib/money'
 import { planCompleteSale } from '../lib/completeSale'
 import { planStockDeductions } from '../lib/quantity'
-import { buildSaleReceiptDocument, MockReceiptPrinter, type SaleReceiptDocument } from '../lib/receipt'
+import { planLocationDeductions } from '../lib/stockAllocation'
+import {
+  buildSaleReceiptDocument,
+  MockReceiptPrinter,
+  type ReceiptPrinter,
+  type SaleReceiptDocument,
+} from '../lib/receipt'
 import { posError } from '../lib/errors'
 import { emitSoanasPosEvent } from '../events'
+import { RECEIPT_PRINTER_DI_KEY } from '../di'
 import { forkEm, loadLines, loadTransactionForUpdate, transitionTo } from './helpers'
 
 export const POS_SALES_SOURCE = 'soanas_pos'
 
-const receiptPrinter = new MockReceiptPrinter()
+/**
+ * Resolves the ReceiptPrinter port from the request container (ADR-009). Falls back to a
+ * process-local MockReceiptPrinter only when DI has not registered the key yet (unit tests /
+ * partial boots), so the saga never hard-depends on a concrete ESC/POS driver.
+ */
+function resolveReceiptPrinter(ctx: CommandRuntimeContext): ReceiptPrinter {
+  try {
+    const printer = ctx.container.resolve(RECEIPT_PRINTER_DI_KEY) as ReceiptPrinter | undefined
+    if (printer && typeof printer.print === 'function') return printer
+  } catch {
+    // Container may not have the registrar in isolated command unit tests.
+  }
+  return new MockReceiptPrinter()
+}
 
 export type CompletePosSaleResult = {
   transactionId: string
@@ -86,16 +106,26 @@ async function checkpoint(
 }
 
 /**
- * WMS adjustments are per location, so the sale is deducted from the location that actually
- * holds the variant (most stock first) and falls back to any active location of the
- * warehouse when no balance bucket exists yet.
+ * Loads WMS balance buckets for a variant. Direct ORM read is intentional and documented in
+ * ADR-008: WMS has no public multi-location consume command yet; writes still go through
+ * `wms.inventory.adjust`. Coupling surface is limited to this helper.
  */
-async function resolveAdjustLocationId(
+async function loadVariantBalanceBuckets(
   em: EntityManager,
   scope: { tenantId: string; organizationId: string },
   warehouseId: string,
   catalogVariantId: string,
-): Promise<string | null> {
+): Promise<{
+  buckets: Array<{
+    locationId: string
+    quantityOnHand: string
+    quantityReserved: string
+    quantityAllocated: string
+    lotId: string | null
+    serialNumber: string | null
+  }>
+  fallbackLocationId: string | null
+}> {
   const balances = await em.find(InventoryBalance, {
     tenantId: scope.tenantId,
     organizationId: scope.organizationId,
@@ -103,23 +133,31 @@ async function resolveAdjustLocationId(
     catalogVariantId,
     deletedAt: null,
   })
-  const best = balances
-    .map((balance) => ({
-      locationId: typeof balance.location === 'string' ? balance.location : balance.location?.id,
-      quantity: Number(balance.quantityOnHand ?? 0),
-    }))
-    .filter((entry): entry is { locationId: string; quantity: number } => Boolean(entry.locationId))
-    .sort((a, b) => b.quantity - a.quantity)[0]
-  if (best) return best.locationId
+  const buckets = balances
+    .map((balance) => {
+      const locationId = typeof balance.location === 'string' ? balance.location : balance.location?.id
+      if (!locationId) return null
+      const lotRaw = balance.lot ?? null
+      const lotId = typeof lotRaw === 'string' ? lotRaw : lotRaw?.id ?? null
+      return {
+        locationId,
+        quantityOnHand: String(balance.quantityOnHand ?? '0'),
+        quantityReserved: String(balance.quantityReserved ?? '0'),
+        quantityAllocated: String(balance.quantityAllocated ?? '0'),
+        lotId,
+        serialNumber: balance.serialNumber ?? null,
+      }
+    })
+    .filter((row): row is NonNullable<typeof row> => row !== null)
 
-  const location = await em.findOne(WarehouseLocation, {
+  const fallback = await em.findOne(WarehouseLocation, {
     tenantId: scope.tenantId,
     organizationId: scope.organizationId,
     warehouse: warehouseId,
     isActive: true,
     deletedAt: null,
   })
-  return location?.id ?? null
+  return { buckets, fallbackLocationId: fallback?.id ?? null }
 }
 
 async function runSalesStep(args: {
@@ -237,47 +275,69 @@ async function runWmsStep(args: {
   transaction: PosTransaction
   terminal: PosTerminal
   lines: PosTransactionLine[]
+  salesOrderId: string | null
 }): Promise<string[]> {
   const { ctx, em, transaction, terminal, lines } = args
   if (!terminal.warehouseId) return []
+  const salesOrderId = args.salesOrderId
+  if (!salesOrderId) {
+    throw new Error('[internal] soanas_pos WMS step requires salesOrderId for referenceType=so')
+  }
   const commandBus = ctx.container.resolve('commandBus') as CommandBus
   const movementIds: string[] = []
+  const allowShortage = terminal.stockPolicy === 'ALLOW'
 
   for (const deduction of planStockDeductions(lines)) {
-    const locationId = await resolveAdjustLocationId(
+    const { buckets, fallbackLocationId } = await loadVariantBalanceBuckets(
       em,
       { tenantId: transaction.tenantId, organizationId: transaction.organizationId },
       terminal.warehouseId,
       deduction.catalogVariantId,
     )
-    if (!locationId) {
+    const plan = planLocationDeductions({
+      quantity: deduction.quantity,
+      balances: buckets,
+      fallbackLocationId,
+      allowShortage,
+    })
+    if (plan.shortfall !== '0.0000' && !allowShortage) {
+      throw new Error(
+        `[internal] soanas_pos multi-location plan shortfall=${plan.shortfall} for variant ${deduction.catalogVariantId}`,
+      )
+    }
+    if (!plan.deductions.length) {
       throw new Error('[internal] soanas_pos found no warehouse location to deduct stock from')
     }
-    // `referenceType` is limited to the WMS enum; the POS provenance travels in `metadata`.
-    const { result } = await commandBus.execute('wms.inventory.adjust', {
-      input: {
-        organizationId: transaction.organizationId,
-        tenantId: transaction.tenantId,
-        warehouseId: terminal.warehouseId,
-        locationId,
-        catalogVariantId: deduction.catalogVariantId,
-        delta: `-${deduction.quantity}`,
-        reason: `POS sale ${transaction.id}`,
-        reasonCode: 'pos_sale',
-        referenceType: 'so',
-        referenceId: transaction.id,
-        performedBy: transaction.operatorUserId,
-        metadata: {
-          source: POS_SALES_SOURCE,
-          sourceTransactionId: transaction.id,
-          posLineIds: deduction.lineIds,
-          correlationId: transaction.correlationId,
+
+    for (const locationDeduction of plan.deductions) {
+      // referenceType 'so' → Sales Order id. POS provenance stays in metadata (ADR-008).
+      const { result } = await commandBus.execute('wms.inventory.adjust', {
+        input: {
+          organizationId: transaction.organizationId,
+          tenantId: transaction.tenantId,
+          warehouseId: terminal.warehouseId,
+          locationId: locationDeduction.locationId,
+          catalogVariantId: deduction.catalogVariantId,
+          lotId: locationDeduction.lotId ?? undefined,
+          serialNumber: locationDeduction.serialNumber ?? undefined,
+          delta: `-${locationDeduction.quantity}`,
+          reason: `POS sale ${transaction.id}`,
+          reasonCode: 'pos_sale',
+          referenceType: 'so',
+          referenceId: salesOrderId,
+          performedBy: transaction.operatorUserId,
+          metadata: {
+            source: POS_SALES_SOURCE,
+            sourceTransactionId: transaction.id,
+            posLineIds: deduction.lineIds,
+            correlationId: transaction.correlationId,
+          },
         },
-      },
-      ctx: dispatchContext(ctx),
-    })
-    const movement = result as { movementId?: string } | undefined
-    if (movement?.movementId) movementIds.push(movement.movementId)
+        ctx: dispatchContext(ctx),
+      })
+      const movement = result as { movementId?: string } | undefined
+      if (movement?.movementId) movementIds.push(movement.movementId)
+    }
   }
   return movementIds
 }
@@ -462,7 +522,14 @@ export async function completePosSale(
     }
 
     if (plan.steps.includes('wms')) {
-      wmsMovementIds = await runWmsStep({ ctx, em, transaction, terminal, lines })
+      wmsMovementIds = await runWmsStep({
+        ctx,
+        em,
+        transaction,
+        terminal,
+        lines,
+        salesOrderId: transaction.salesOrderId ?? recovery.salesOrderId ?? null,
+      })
       await checkpoint(em, recovery, { lastStep: 'wms', wmsMovementId: wmsMovementIds[0] ?? null })
     }
 
@@ -543,6 +610,7 @@ export async function completePosSale(
   }
 
   const receipt = buildReceipt({ transaction, terminal, lines, tenders })
+  const receiptPrinter = resolveReceiptPrinter(ctx)
   await receiptPrinter.print(receipt)
 
   await emitSoanasPosEvent('soanas.pos.transaction.completed', {
@@ -582,8 +650,6 @@ const recoverCommand: CommandHandler<PosCompleteInput, CompletePosSaleResult> = 
     return completePosSale(input as PosCompleteInput, ctx)
   },
 }
-
-export const posReceiptPrinter = receiptPrinter
 
 registerCommand(completeCommand)
 registerCommand(recoverCommand)

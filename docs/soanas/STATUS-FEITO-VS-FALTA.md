@@ -1,9 +1,9 @@
 # Soanas — Tudo que foi feito × O que falta × O que precisa
 
-**Data:** 2026-09-15  
+**Data:** 2026-09-16  
 **Base Open Mercato:** `0.7.0` @ `30d509eeb`  
 **Fork / repo:** `JhonyGalerani/open-mercato`  
-**Branch:** `cursor/soanas-blueprint-foundation-5019`  
+**Branch:** `cursor/soanas-retail-gate-validation-4347`  
 **PR (draft):** https://github.com/JhonyGalerani/open-mercato/pull/1  
 **SSOT funcional:** Blueprint Funcional Completo do Soanas  
 **Matriz rastreável:** [`BLUEPRINT-COVERAGE.md`](./BLUEPRINT-COVERAGE.md) · [`blueprint-coverage.json`](./blueprint-coverage.json)
@@ -21,37 +21,64 @@
 | Retail Vertical Slice v1 | **~94%** checklist (falta E2E verde com migrations) |
 | Pronto para SEFAZ / Pix / TEF / hardware real? | **Não** |
 | Métrica principal | Checklist em `IMPLEMENTATION-STATUS.md` → Vertical Slices (não só % da matriz) |
-| `%` IDs com algum código (`IMPLEMENTED`+`TESTED`) | **~23%** (70/303) — secundário |
+| `%` IDs com algum código (`IMPLEMENTED`+`TESTED`+`VALIDATED`) | **~23%** (70/303) — secundário |
 | `%` `VALIDATED` (Definition of Done) | **0%** |
 
 ---
 
 ## 1. Números da matriz (303 IDs)
 
+<!-- soanas:derived-counts:start -->
 | Status | Qtd | Significado |
-|------------:|-------------|
-| `ANALYZED` | **251** | Mapeado; sem código Soanas suficiente |
-| `IMPLEMENTED` | **43** | Código/scaffold existe (muitos ainda parciais) |
-| `TESTED` | **9** | Há teste unitário relevante |
+|----------|----:|-------------|
+| `ANALYZED` | **233** | Mapeado; sem código Soanas suficiente |
+| `IMPLEMENTED` | **52** | Código/scaffold existe (muitos ainda parciais) |
+| `TESTED` | **18** | Há teste unitário relevante |
 | `VALIDATED` | **0** | DoD completa do prompt mestre |
 | `NOT_STARTED` / `IN_PROGRESS` / `BLOCKED_EXTERNAL` | **0** | Ainda não usados nesta fase |
 
+**% IDs com algum código (`IMPLEMENTED`+`TESTED`+`VALIDATED`):** ~23% (70/303)
+
 ### Por módulo-alvo (resumo)
 
-| Módulo | Total | ANALYZED | IMPLEMENTED | TESTED |
-|--------|------:|---------:|------------:|-------:|
-| `soanas_core` | 44 | 19 | 23 | 2 |
-| `soanas_establishments` | 23 | 8 | 14 | 1 |
-| `soanas_cash` | 21 | 9 | 6 | 6 |
-| `soanas_pos` | 17 | 17 | 0 | 0 |
-| `soanas_fiscal_br` | 13 | 13 | 0 | 0 |
-| `soanas_hardware` | 12 | 12 | 0 | 0 |
-| `soanas_core/wms-ux` | 12 | 12 | 0 | 0 |
-| `soanas_saas` | 11 | 11 | 0 | 0 |
-| `soanas_procurement` | 11 | 11 | 0 | 0 |
-| `soanas_payments_br` | 11 | 11 | 0 | 0 |
-| `qa` (E2E Blueprint) | 11 | 11 | 0 | 0 |
-| Demais (directory, restaurant, finance, offline, reporting, …) | 128 | 128 | 0 | 0 |
+| Módulo | Total | ANALYZED | IMPLEMENTED | TESTED | VALIDATED |
+|--------|------:|---------:|------------:|-------:|----------:|
+| `soanas_core` | 44 | 19 | 22 | 3 | 0 |
+| `soanas_establishments` | 23 | 8 | 14 | 1 | 0 |
+| `soanas_cash` | 21 | 3 | 10 | 8 | 0 |
+| `soanas_pos` | 17 | 8 | 5 | 4 | 0 |
+| `soanas_fiscal_br` | 13 | 13 | 0 | 0 | 0 |
+| `soanas_core/wms-ux` | 12 | 12 | 0 | 0 | 0 |
+| `soanas_hardware` | 12 | 12 | 0 | 0 | 0 |
+| `soanas_saas` | 11 | 11 | 0 | 0 | 0 |
+| `soanas_procurement` | 11 | 11 | 0 | 0 | 0 |
+| `soanas_payments_br` | 11 | 9 | 0 | 2 | 0 |
+| `qa` | 11 | 11 | 0 | 0 | 0 |
+| `directory` | 10 | 10 | 0 | 0 | 0 |
+| `soanas_restaurant` | 10 | 10 | 0 | 0 | 0 |
+| `soanas_finance` | 9 | 9 | 0 | 0 | 0 |
+| `soanas_core/catalog-extension` | 8 | 8 | 0 | 0 | 0 |
+| `soanas_reporting` | 7 | 7 | 0 | 0 | 0 |
+| `catalog` | 6 | 6 | 0 | 0 | 0 |
+| `wms` | 6 | 6 | 0 | 0 | 0 |
+| `soanas_offline` | 6 | 6 | 0 | 0 | 0 |
+| `telemetry/soanas_core` | 6 | 6 | 0 | 0 | 0 |
+| `soanas_pos/soanas_core` | 5 | 5 | 0 | 0 | 0 |
+| `auth/soanas_core` | 5 | 5 | 0 | 0 | 0 |
+| `soanas_integrations` | 5 | 5 | 0 | 0 | 0 |
+| `auth/staff` | 4 | 4 | 0 | 0 | 0 |
+| `soanas_kds` | 4 | 4 | 0 | 0 | 0 |
+| `data_sync/soanas_integrations` | 4 | 4 | 0 | 0 | 0 |
+| `sales` | 3 | 3 | 0 | 0 | 0 |
+| `soanas_pos/business_rules` | 3 | 2 | 1 | 0 | 0 |
+| `soanas_core/customers-extension` | 3 | 3 | 0 | 0 | 0 |
+| `soanas_loyalty` | 3 | 3 | 0 | 0 | 0 |
+| `soanas_delivery` | 3 | 3 | 0 | 0 | 0 |
+| `payment_gateways` | 2 | 2 | 0 | 0 | 0 |
+| `customers` | 2 | 2 | 0 | 0 | 0 |
+| `workflows/business_rules/notifications` | 2 | 2 | 0 | 0 | 0 |
+| `audit_logs` | 1 | 1 | 0 | 0 | 0 |
+<!-- soanas:derived-counts:end -->
 
 ---
 
@@ -106,7 +133,7 @@ Arquivos: `docs/soanas/adr/ADR-001-…` … `ADR-006-…`
 |------|--------|
 | `.ai/specs/2026-09-15-soanas-foundation.md` | Fundação / core / establishments |
 | `.ai/specs/2026-09-15-soanas-cash.md` | Caixa / ledger / sangria |
-| `.ai/specs/2026-09-15-soanas-pos.md` | POS (ainda não implementado) |
+| `.ai/specs/2026-09-15-soanas-pos.md` | POS (Retail Sale v1 em código) |
 | `.ai/specs/2026-09-15-soanas-fiscal-br.md` | Fiscal BR (ainda não implementado) |
 
 ### 2.5 Runbooks (stubs)
