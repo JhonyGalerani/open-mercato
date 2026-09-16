@@ -92,11 +92,12 @@ export function createCliBundlePlugins(appRoot: string): import('esbuild').Plugi
           ? [path.join(appRoot, rest)]
           : [path.join(appRoot, 'src', rest), path.join(appRoot, rest)]
         for (const base of bases) {
-          if (fs.existsSync(base) && fs.statSync(base).isFile()) {
+          // turbopackIgnore: dynamic CLI path probes must not expand the Next tracing root.
+          if (fs.existsSync(/*turbopackIgnore: true*/ base) && fs.statSync(/*turbopackIgnore: true*/ base).isFile()) {
             return { path: base }
           }
           for (const suffix of ['.ts', '.tsx', '/index.ts', '/index.tsx']) {
-            if (fs.existsSync(base + suffix)) {
+            if (fs.existsSync(/*turbopackIgnore: true*/ base + suffix)) {
               return { path: base + suffix }
             }
           }
@@ -205,7 +206,13 @@ function parseJsonConfig(content: string): unknown {
 
 function resolveExistingConfigPath(candidate: string): string | null {
   for (const configPath of [candidate, `${candidate}.json`, path.join(candidate, 'tsconfig.json')]) {
-    if (fs.existsSync(configPath) && fs.statSync(configPath).isFile()) return configPath
+    // turbopackIgnore: config discovery is CLI/bootstrap-only; do not trace the monorepo root.
+    if (
+      fs.existsSync(/*turbopackIgnore: true*/ configPath) &&
+      fs.statSync(/*turbopackIgnore: true*/ configPath).isFile()
+    ) {
+      return configPath
+    }
   }
   return null
 }
@@ -277,8 +284,8 @@ function cacheInputHash(tsPath: string, appRoot: string, tsconfigPaths: string[]
 function dependenciesAreValid(appRoot: string, dependencies: Record<string, string>): boolean {
   return Object.entries(dependencies).every(([relativePath, expectedHash]) => {
     const dependencyPath = path.resolve(appRoot, relativePath)
-    return fs.existsSync(dependencyPath)
-      && contentHash(fs.readFileSync(dependencyPath)) === expectedHash
+    return fs.existsSync(/*turbopackIgnore: true*/ dependencyPath)
+      && contentHash(fs.readFileSync(/*turbopackIgnore: true*/ dependencyPath)) === expectedHash
   })
 }
 
@@ -336,10 +343,10 @@ function cacheIsValid(
   metadataPath: string,
   expectedInputHash: string,
 ): boolean {
-  if (!fs.existsSync(jsPath)) return false
+  if (!fs.existsSync(/*turbopackIgnore: true*/ jsPath)) return false
   const metadata = readCacheMetadata(metadataPath)
   if (!metadata || metadata.inputHash !== expectedInputHash) return false
-  return contentHash(fs.readFileSync(jsPath)) === metadata.outputHash
+  return contentHash(fs.readFileSync(/*turbopackIgnore: true*/ jsPath)) === metadata.outputHash
     && dependenciesAreValid(appRoot, metadata.dependencies)
 }
 
@@ -407,8 +414,8 @@ async function compileAppSourceFileWithActiveEsbuild(
   const appTsconfig = path.join(appRoot, 'tsconfig.json')
   const metadataPath = cacheMetadataPath(outFile)
 
-  const tsExists = fs.existsSync(tsPath)
-  const tsconfigExists = fs.existsSync(appTsconfig)
+  const tsExists = fs.existsSync(/*turbopackIgnore: true*/ tsPath)
+  const tsconfigExists = fs.existsSync(/*turbopackIgnore: true*/ appTsconfig)
 
   if (!tsExists) {
     throw new GeneratedFileNotFoundError(tsPath)
@@ -562,7 +569,7 @@ function resolveAppRootOrThrow(appRoot?: string): AppRoot {
  */
 async function loadAppDiRegistrar(appDir: string): Promise<AppDiRegistrar | null> {
   const tsPath = path.join(appDir, 'src', 'di.ts')
-  if (!fs.existsSync(tsPath)) {
+  if (!fs.existsSync(/*turbopackIgnore: true*/ tsPath)) {
     logger.debug('App-level DI module not present, skipping its registrations', { filePath: tsPath })
     return null
   }
