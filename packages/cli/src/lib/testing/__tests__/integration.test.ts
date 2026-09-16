@@ -16,6 +16,7 @@ import {
   resolveBuildCacheTtlSeconds,
   resolveAppReadyTimeoutMs,
   resolveEphemeralPostgresImage,
+  resolveEphemeralJwtSecret,
   ephemeralPostgresInitSql,
   shouldReuseBuildArtifacts,
   acquireEphemeralRuntimeLock,
@@ -473,6 +474,17 @@ describe('integration cache and options', () => {
     expect(
       resolveEphemeralPostgresImage({ OM_INTEGRATION_POSTGRES_IMAGE: 'pgvector/pgvector:pg17' }),
     ).toBe('pgvector/pgvector:pg17')
+  })
+
+  it('rejects placeholder JWT secrets from local .env for ephemeral production boots', () => {
+    expect(resolveEphemeralJwtSecret({})).toBe('om-ephemeral-integration-jwt-secret')
+    expect(resolveEphemeralJwtSecret({ JWT_SECRET: 'change-me-dev-secret' })).toBe(
+      'om-ephemeral-integration-jwt-secret',
+    )
+    expect(resolveEphemeralJwtSecret({ JWT_SECRET: 'short' })).toBe('om-ephemeral-integration-jwt-secret')
+    expect(
+      resolveEphemeralJwtSecret({ JWT_SECRET: 'a-real-enough-ephemeral-jwt-secret-value' }),
+    ).toBe('a-real-enough-ephemeral-jwt-secret-value')
   })
 
   it('creates the vector and pgcrypto extensions in the ephemeral init SQL', () => {

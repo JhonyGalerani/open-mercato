@@ -182,6 +182,39 @@ export function resolveEphemeralPostgresImage(env: NodeJS.ProcessEnv = process.e
 export function ephemeralPostgresInitSql(): string {
   return EPHEMERAL_POSTGRES_INIT_SQL
 }
+
+/**
+ * Production JWT policy rejects placeholders published in repo examples
+ * (`change-me-dev-secret`, …). Local `.env` usually has one of those, and the
+ * ephemeral harness runs with NODE_ENV=production — so inheriting process.env
+ * blindly makes every integration boot refuse to start. Prefer a real override
+ * when present; otherwise use a fixed non-placeholder ephemeral secret.
+ */
+const EPHEMERAL_JWT_SECRET = 'om-ephemeral-integration-jwt-secret'
+const EPHEMERAL_JWT_PLACEHOLDERS = new Set([
+  'jwt',
+  'jwt-secret',
+  'jwtsecret',
+  'secret',
+  'password',
+  'changeme',
+  'change-me',
+  'change-me-dev-secret',
+  'change-me-dev-auth-secret',
+  'your-strong-jwt-secret',
+  'your-secure-jwt-secret-change-me',
+  'dev',
+  'development',
+  'test',
+])
+
+export function resolveEphemeralJwtSecret(env: NodeJS.ProcessEnv = process.env): string {
+  const candidate = typeof env.JWT_SECRET === 'string' ? env.JWT_SECRET.trim() : ''
+  if (candidate.length >= 32 && !EPHEMERAL_JWT_PLACEHOLDERS.has(candidate.toLowerCase())) {
+    return candidate
+  }
+  return EPHEMERAL_JWT_SECRET
+}
 const PLAYWRIGHT_ENV_UNAVAILABLE_PATTERNS: RegExp[] = [
   /net::ERR_CONNECTION_REFUSED/i,
   /Failed to connect to .* (localhost|127\.0\.0\.1)/i,
@@ -1954,7 +1987,7 @@ function buildReusableEnvironment(
     // stale CRUD response until the TTL (TC-CRM-028/079, TC-SX-001).
     CACHE_STRATEGY: 'sqlite',
     CACHE_SQLITE_PATH: EPHEMERAL_CACHE_DB_PATH,
-    JWT_SECRET: process.env.JWT_SECRET ?? 'om-ephemeral-integration-jwt-secret',
+    JWT_SECRET: resolveEphemeralJwtSecret(),
     OM_SECURITY_MFA_SETUP_SECRET: process.env.OM_SECURITY_MFA_SETUP_SECRET ?? 'om-ephemeral-integration-mfa-setup-secret',
     // Integration probe + tests expect `admin@acme.com / secret` and
     // `employee@acme.com / secret`. NODE_ENV=production routes derived-user
@@ -3314,7 +3347,7 @@ export async function startEphemeralEnvironment(options: EphemeralRuntimeOptions
       APP_URL: applicationBaseUrl,
       NEXT_PUBLIC_APP_URL: applicationBaseUrl,
       PLATFORM_PORTAL_BASE_URL: applicationBaseUrl,
-      JWT_SECRET: process.env.JWT_SECRET ?? 'om-ephemeral-integration-jwt-secret',
+      JWT_SECRET: resolveEphemeralJwtSecret(),
       OM_SECURITY_MFA_SETUP_SECRET: process.env.OM_SECURITY_MFA_SETUP_SECRET ?? 'om-ephemeral-integration-mfa-setup-secret',
       NODE_ENV: 'production',
       // See the auth-probe block above: pin derived-user passwords to the
