@@ -30,22 +30,22 @@
 <!-- soanas:derived-counts:start -->
 | Status | Qtd | Significado |
 |----------|----:|-------------|
-| `ANALYZED` | **232** | Mapeado; sem código Soanas suficiente |
-| `IMPLEMENTED` | **41** | Código/scaffold existe (muitos ainda parciais) |
-| `TESTED` | **10** | Há teste unitário relevante |
+| `ANALYZED` | **229** | Mapeado; sem código Soanas suficiente |
+| `IMPLEMENTED` | **37** | Código/scaffold existe (muitos ainda parciais) |
+| `TESTED` | **17** | Há teste unitário relevante |
 | `VALIDATED` | **20** | DoD completa do prompt mestre |
 | `NOT_STARTED` / `IN_PROGRESS` / `BLOCKED_EXTERNAL` | **0** | Ainda não usados nesta fase |
 
-**% IDs com algum código (`IMPLEMENTED`+`TESTED`+`VALIDATED`):** ~23% (71/303)
+**% IDs com algum código (`IMPLEMENTED`+`TESTED`+`VALIDATED`):** ~24% (74/303)
 
 ### Por módulo-alvo (resumo)
 
 | Módulo | Total | ANALYZED | IMPLEMENTED | TESTED | VALIDATED |
 |--------|------:|---------:|------------:|-------:|----------:|
-| `soanas_core` | 44 | 19 | 22 | 3 | 0 |
+| `soanas_core` | 38 | 16 | 19 | 3 | 0 |
+| `soanas_pos` | 24 | 7 | 0 | 8 | 9 |
 | `soanas_establishments` | 23 | 8 | 14 | 1 | 0 |
 | `soanas_cash` | 21 | 3 | 4 | 4 | 10 |
-| `soanas_pos` | 17 | 7 | 0 | 1 | 9 |
 | `soanas_fiscal_br` | 13 | 13 | 0 | 0 | 0 |
 | `soanas_core/wms-ux` | 12 | 12 | 0 | 0 | 0 |
 | `soanas_hardware` | 12 | 12 | 0 | 0 | 0 |
@@ -69,11 +69,11 @@
 | `soanas_kds` | 4 | 4 | 0 | 0 | 0 |
 | `data_sync/soanas_integrations` | 4 | 4 | 0 | 0 | 0 |
 | `sales` | 3 | 3 | 0 | 0 | 0 |
-| `soanas_pos/business_rules` | 3 | 2 | 1 | 0 | 0 |
 | `soanas_core/customers-extension` | 3 | 3 | 0 | 0 | 0 |
 | `soanas_loyalty` | 3 | 3 | 0 | 0 | 0 |
 | `soanas_delivery` | 3 | 3 | 0 | 0 | 0 |
 | `payment_gateways` | 2 | 2 | 0 | 0 | 0 |
+| `soanas_pos/business_rules` | 2 | 2 | 0 | 0 | 0 |
 | `customers` | 2 | 2 | 0 | 0 | 0 |
 | `workflows/business_rules/notifications` | 2 | 2 | 0 | 0 | 0 |
 | `audit_logs` | 1 | 1 | 0 | 0 | 0 |

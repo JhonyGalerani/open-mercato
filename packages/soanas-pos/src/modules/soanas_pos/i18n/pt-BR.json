@@ -42,6 +42,18 @@
       "hold_not_draft": "Somente uma venda PDV em rascunho pode ser suspensa",
       "resume_not_held": "Somente uma venda PDV suspensa pode ser retomada",
       "hold_expired": "Esta venda suspensa expirou e não pode ser retomada",
+      "approval_not_found": "Solicitação de aprovação PDV não encontrada",
+      "approval_kind_mismatch": "O tipo de aprovação não corresponde",
+      "approval_transaction_mismatch": "A aprovação não pertence a esta venda",
+      "approval_already_consumed": "Aprovação já consumida",
+      "approval_not_approved": "A aprovação não está aprovada",
+      "approval_expired": "A aprovação expirou",
+      "approval_payload_mismatch": "O payload da aprovação não corresponde à operação",
+      "approval_not_pending": "A aprovação não está pendente",
+      "approval_self_forbidden": "O solicitante não pode aprovar o próprio pedido",
+      "approval_forbidden": "Você não tem permissão para decidir esta aprovação PDV",
+      "approval_request_failed": "Falha ao solicitar aprovação PDV",
+      "approval_decide_failed": "Falha ao decidir a aprovação PDV",
       "catalog_search_failed": "Falha ao pesquisar o catálogo"
     },
     "audit": {

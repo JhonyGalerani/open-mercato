@@ -389,3 +389,79 @@ export class PosRecoveryState {
   @Property({ name: 'updated_at', type: Date, onCreate: () => new Date(), onUpdate: () => new Date() })
   updatedAt: Date = new Date()
 }
+
+export type PosApprovalKind = 'discount' | 'cancel' | 'stock_override' | 'price_override' | 'withdrawal'
+
+export type PosApprovalStatus = 'pending' | 'approved' | 'rejected' | 'consumed' | 'expired'
+
+/**
+ * Explicit approval request/decision record (AUTH-APR-*). Approver identity is always
+ * taken from the authenticated decide caller — never from a client-supplied UUID.
+ */
+@Entity({ tableName: 'soanas_pos_approval_requests' })
+@Index({ name: 'soanas_pos_approvals_scope_idx', properties: ['organizationId', 'tenantId'] })
+@Index({ name: 'soanas_pos_approvals_tx_status_idx', properties: ['transactionId', 'status'] })
+export class PosApprovalRequest {
+  @PrimaryKey({ type: 'uuid', defaultRaw: 'gen_random_uuid()' })
+  id!: string
+
+  @Property({ name: 'tenant_id', type: 'uuid' })
+  tenantId!: string
+
+  @Property({ name: 'organization_id', type: 'uuid' })
+  organizationId!: string
+
+  @Property({ name: 'terminal_id', type: 'uuid', nullable: true })
+  terminalId?: string | null
+
+  @Property({ name: 'transaction_id', type: 'uuid', nullable: true })
+  transactionId?: string | null
+
+  @Property({ name: 'line_id', type: 'uuid', nullable: true })
+  lineId?: string | null
+
+  @Property({ type: 'text' })
+  kind!: PosApprovalKind
+
+  @Property({ type: 'text', default: 'pending' })
+  status: PosApprovalStatus = 'pending'
+
+  @Property({ name: 'requester_user_id', type: 'uuid' })
+  requesterUserId!: string
+
+  @Property({ name: 'approver_user_id', type: 'uuid', nullable: true })
+  approverUserId?: string | null
+
+  @Property({ type: 'text', nullable: true })
+  reason?: string | null
+
+  @Property({ name: 'decision_reason', type: 'text', nullable: true })
+  decisionReason?: string | null
+
+  @Property({ name: 'payload_json', type: 'json', nullable: true })
+  payloadJson?: Record<string, unknown> | null
+
+  @Property({ name: 'before_json', type: 'json', nullable: true })
+  beforeJson?: Record<string, unknown> | null
+
+  @Property({ name: 'after_json', type: 'json', nullable: true })
+  afterJson?: Record<string, unknown> | null
+
+  @Property({ name: 'idempotency_key', type: 'text', nullable: true })
+  idempotencyKey?: string | null
+
+  @Property({ name: 'decided_at', type: Date, nullable: true })
+  decidedAt?: Date | null
+
+  @Property({ name: 'consumed_at', type: Date, nullable: true })
+  consumedAt?: Date | null
+
+  @Property({ name: 'expires_at', type: Date, nullable: true })
+  expiresAt?: Date | null
+
+  @Property({ name: 'created_at', type: Date, onCreate: () => new Date() })
+  createdAt: Date = new Date()
+
+  @Property({ name: 'updated_at', type: Date, onCreate: () => new Date(), onUpdate: () => new Date() })
+  updatedAt: Date = new Date()
+}

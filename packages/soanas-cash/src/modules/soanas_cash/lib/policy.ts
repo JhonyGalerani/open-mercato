@@ -49,5 +49,6 @@ export function resolveDiscrepancyToleranceCents(register: ApprovalPolicyRegiste
 /** Features that let a caller authorize a movement above the register limit. */
 export const APPROVAL_FEATURES = [
   'soanas_cash.approvals.manage',
-  'soanas.pos.approval.manager',
+  'soanas_pos.approval.manager',
+  'soanas.pos.approval.manager', // legacy alias
 ] as const

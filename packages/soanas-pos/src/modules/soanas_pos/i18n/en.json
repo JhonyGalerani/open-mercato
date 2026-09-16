@@ -42,6 +42,18 @@
       "hold_not_draft": "Only a DRAFT POS sale can be suspended",
       "resume_not_held": "Only a HELD POS sale can be resumed",
       "hold_expired": "This suspended sale has expired and cannot be resumed",
+      "approval_not_found": "POS approval request not found",
+      "approval_kind_mismatch": "Approval kind does not match",
+      "approval_transaction_mismatch": "Approval does not belong to this sale",
+      "approval_already_consumed": "Approval already consumed",
+      "approval_not_approved": "Approval is not approved",
+      "approval_expired": "Approval has expired",
+      "approval_payload_mismatch": "Approval payload does not match the operation",
+      "approval_not_pending": "Approval is not pending",
+      "approval_self_forbidden": "The requester cannot approve their own request",
+      "approval_forbidden": "You are not allowed to decide this POS approval",
+      "approval_request_failed": "Failed to request POS approval",
+      "approval_decide_failed": "Failed to decide POS approval",
       "catalog_search_failed": "Failed to search the catalog"
     },
     "audit": {

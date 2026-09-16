@@ -7,7 +7,7 @@
 
 <!-- soanas:derived-counts:start -->
 ```
-Blueprint coverage (IDs): ANALYZED 232 | IMPLEMENTED 41 | TESTED 10 | VALIDATED 20 / 303
+Blueprint coverage (IDs): ANALYZED 229 | IMPLEMENTED 37 | TESTED 17 | VALIDATED 20 / 303
 Validated (DoD completa): 6.6%
 ```
 <!-- soanas:derived-counts:end -->

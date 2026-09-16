@@ -2,8 +2,8 @@ import type { ModuleSetupConfig } from '@open-mercato/shared/modules/setup'
 
 export const setup: ModuleSetupConfig = {
   defaultRoleFeatures: {
-    superadmin: ['soanas_pos.*', 'soanas.pos.*'],
-    admin: ['soanas_pos.*', 'soanas.pos.*'],
+    superadmin: ['soanas_pos.*'],
+    admin: ['soanas_pos.*'],
     manager: [
       'soanas_pos.terminals.view',
       'soanas_pos.terminals.manage',
@@ -12,9 +12,9 @@ export const setup: ModuleSetupConfig = {
       'soanas_pos.transactions.complete',
       'soanas_pos.transactions.cancel',
       'soanas_pos.catalog.search',
-      'soanas.pos.discount.grant',
-      'soanas.pos.discount.approve',
-      'soanas.pos.approval.manager',
+      'soanas_pos.discount.grant',
+      'soanas_pos.discount.approve',
+      'soanas_pos.approval.manager',
     ],
     employee: [
       'soanas_pos.terminals.view',
@@ -22,7 +22,7 @@ export const setup: ModuleSetupConfig = {
       'soanas_pos.transactions.sell',
       'soanas_pos.transactions.complete',
       'soanas_pos.catalog.search',
-      'soanas.pos.discount.grant',
+      'soanas_pos.discount.grant',
     ],
   },
 }

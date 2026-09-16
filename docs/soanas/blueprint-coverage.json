@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-09-16T03:16:57.347Z",
-  "commit": "d75af4e63",
+  "commit": "c1e746b30",
   "version": "0.7.0",
   "rows": [
     {
@@ -464,24 +464,58 @@
       "module": "soanas_core"
     },
     {
-      "status": "IMPLEMENTED",
-      "notes": "ACL catalog",
+      "status": "TESTED",
+      "notes": "discount.grant + 20% cart threshold; over-limit blocked without approval (TC-SOANAS-POS-APPROVAL-001)",
       "id": "AUTH-POS-005",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
       "sub": "desconto + limite percentual",
       "origin": "SOANAS",
-      "module": "soanas_core"
+      "module": "soanas_pos",
+      "evidence": {
+        "code": [
+          "packages/soanas-pos/src/modules/soanas_pos/commands/approvals.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/commands/helpers.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/approvals/request/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/approvals/decide/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/migrations/Migration20260916050000_soanas_pos_approvals.ts"
+        ],
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-POS-APPROVAL-001.spec.ts"
+        ],
+        "api": [
+          "POST /api/soanas_pos/approvals/request",
+          "POST /api/soanas_pos/approvals/decide",
+          "POST /api/soanas_pos/transactions/[id]/discount"
+        ]
+      }
     },
     {
-      "status": "IMPLEMENTED",
-      "notes": "ACL catalog",
+      "status": "TESTED",
+      "notes": "over-limit discount consumes PosApprovalRequest (dual custody)",
       "id": "AUTH-POS-006",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
       "sub": "desconto acima limite com aprovação",
       "origin": "SOANAS",
-      "module": "soanas_core"
+      "module": "soanas_pos",
+      "evidence": {
+        "code": [
+          "packages/soanas-pos/src/modules/soanas_pos/commands/approvals.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/commands/helpers.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/approvals/request/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/approvals/decide/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/migrations/Migration20260916050000_soanas_pos_approvals.ts"
+        ],
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-POS-APPROVAL-001.spec.ts"
+        ],
+        "api": [
+          "POST /api/soanas_pos/approvals/request",
+          "POST /api/soanas_pos/approvals/decide",
+          "POST /api/soanas_pos/transactions/[id]/discount"
+        ]
+      }
     },
     {
       "status": "IMPLEMENTED",
@@ -584,14 +618,31 @@
       "module": "soanas_core"
     },
     {
-      "status": "IMPLEMENTED",
-      "notes": "ACL feature; PIN UI pending",
+      "status": "TESTED",
+      "notes": "supervisor session login path; PIN pad UI deferred",
       "id": "AUTH-APR-001",
       "domain": "Auth/RBAC",
       "feature": "Aprovação",
       "sub": "PIN gerente / senha / supervisor",
       "origin": "SOANAS",
-      "module": "soanas_core"
+      "module": "soanas_pos",
+      "evidence": {
+        "code": [
+          "packages/soanas-pos/src/modules/soanas_pos/commands/approvals.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/commands/helpers.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/approvals/request/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/approvals/decide/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/migrations/Migration20260916050000_soanas_pos_approvals.ts"
+        ],
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-POS-APPROVAL-001.spec.ts"
+        ],
+        "api": [
+          "POST /api/soanas_pos/approvals/request",
+          "POST /api/soanas_pos/approvals/decide",
+          "POST /api/soanas_pos/transactions/[id]/discount"
+        ]
+      }
     },
     {
       "status": "ANALYZED",
@@ -604,34 +655,85 @@
       "module": "soanas_core"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": "PosApprovalRequest stores reason, requester/approver user ids, terminal, timestamps",
       "id": "AUTH-APR-003",
       "domain": "Auth/RBAC",
       "feature": "Aprovação",
       "sub": "Motivo + quem solicitou/aprovou + terminal + hora",
       "origin": "SOANAS",
-      "module": "soanas_core"
+      "module": "soanas_pos",
+      "evidence": {
+        "code": [
+          "packages/soanas-pos/src/modules/soanas_pos/commands/approvals.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/commands/helpers.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/approvals/request/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/approvals/decide/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/migrations/Migration20260916050000_soanas_pos_approvals.ts"
+        ],
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-POS-APPROVAL-001.spec.ts"
+        ],
+        "api": [
+          "POST /api/soanas_pos/approvals/request",
+          "POST /api/soanas_pos/approvals/decide",
+          "POST /api/soanas_pos/transactions/[id]/discount"
+        ]
+      }
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": "beforeJson/afterJson on approval + payload match on consume",
       "id": "AUTH-APR-004",
       "domain": "Auth/RBAC",
       "feature": "Aprovação",
       "sub": "Valor antes/depois",
       "origin": "SOANAS",
-      "module": "soanas_core"
+      "module": "soanas_pos",
+      "evidence": {
+        "code": [
+          "packages/soanas-pos/src/modules/soanas_pos/commands/approvals.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/commands/helpers.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/approvals/request/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/approvals/decide/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/migrations/Migration20260916050000_soanas_pos_approvals.ts"
+        ],
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-POS-APPROVAL-001.spec.ts"
+        ],
+        "api": [
+          "POST /api/soanas_pos/approvals/request",
+          "POST /api/soanas_pos/approvals/decide",
+          "POST /api/soanas_pos/transactions/[id]/discount"
+        ]
+      }
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": "self-approve forbidden; approver identity from auth.sub never client UUID",
       "id": "AUTH-APR-005",
       "domain": "Auth/RBAC",
       "feature": "Aprovação",
       "sub": "Dupla custódia (impedir self-approve)",
       "origin": "SOANAS",
-      "module": "soanas_core"
+      "module": "soanas_pos",
+      "evidence": {
+        "code": [
+          "packages/soanas-pos/src/modules/soanas_pos/commands/approvals.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/commands/helpers.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/approvals/request/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/approvals/decide/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/migrations/Migration20260916050000_soanas_pos_approvals.ts"
+        ],
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-POS-APPROVAL-001.spec.ts"
+        ],
+        "api": [
+          "POST /api/soanas_pos/approvals/request",
+          "POST /api/soanas_pos/approvals/decide",
+          "POST /api/soanas_pos/transactions/[id]/discount"
+        ]
+      }
     },
     {
       "status": "ANALYZED",
@@ -1910,14 +2012,32 @@
       "module": "sales"
     },
     {
-      "status": "IMPLEMENTED",
-      "notes": "discounts",
+      "status": "TESTED",
+      "notes": "cart/item amount discounts with approval gate; percent UI deferred",
       "id": "DISC-002",
       "domain": "Discounts",
       "feature": "Manual",
       "sub": "Percentual/valor/item/venda + limites/aprovação",
       "origin": "SOANAS",
-      "module": "soanas_pos/business_rules"
+      "module": "soanas_pos",
+      "evidence": {
+        "code": [
+          "packages/soanas-pos/src/modules/soanas_pos/commands/approvals.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/commands/helpers.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/approvals/request/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/approvals/decide/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/migrations/Migration20260916050000_soanas_pos_approvals.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/commands/transactions.ts"
+        ],
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-POS-APPROVAL-001.spec.ts"
+        ],
+        "api": [
+          "POST /api/soanas_pos/approvals/request",
+          "POST /api/soanas_pos/approvals/decide",
+          "POST /api/soanas_pos/transactions/[id]/discount"
+        ]
+      }
     },
     {
       "status": "ANALYZED",
@@ -3369,5 +3489,6 @@
       "origin": "SOANAS",
       "module": "soanas_core"
     }
-  ]
+  ],
+  "updatedAt": "2026-09-16"
 }

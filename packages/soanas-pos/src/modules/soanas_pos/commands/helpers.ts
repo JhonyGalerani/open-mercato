@@ -17,9 +17,9 @@ import { fromScaledQuantity, toScaledQuantity } from '../lib/quantity'
 import { assertTransition, PosTransitionError } from '../lib/stateMachine'
 import { evaluateStock, type StockEvaluation } from '../lib/stockPolicy'
 
-export const POS_STOCK_APPROVAL_FEATURE = 'soanas.pos.approval.manager'
-export const POS_DISCOUNT_FEATURE = 'soanas.pos.discount.grant'
-export const POS_DISCOUNT_APPROVAL_FEATURE = 'soanas.pos.discount.approve'
+export const POS_STOCK_APPROVAL_FEATURE = 'soanas_pos.approval.manager'
+export const POS_DISCOUNT_FEATURE = 'soanas_pos.discount.grant'
+export const POS_DISCOUNT_APPROVAL_FEATURE = 'soanas_pos.discount.approve'
 
 /** Cart-level discounts above this share of the cart need an approver feature. */
 export const POS_DISCOUNT_APPROVAL_THRESHOLD_PERCENT = 20n
@@ -28,15 +28,59 @@ export function forkEm(ctx: CommandRuntimeContext): EntityManager {
   return (ctx.container.resolve('em') as EntityManager).fork()
 }
 
-export function authFeatures(ctx: CommandRuntimeContext): string[] {
+type RbacLike = {
+  userHasAllFeatures?: (
+    userId: string,
+    required: string[],
+    scope: { tenantId: string | null; organizationId: string | null },
+  ) => Promise<boolean>
+  getGrantedFeatures?: (
+    userId: string,
+    scope: { tenantId: string | null; organizationId: string | null },
+  ) => Promise<string[]>
+}
+
+/**
+ * JWT sessions do not embed ACL features. Resolve grants live via rbacService
+ * (same source as route-level requireFeatures). Falls back to auth.features only
+ * when RBAC is unavailable (CLI/bootstrap fixtures).
+ */
+export async function resolveGrantedFeatures(ctx: CommandRuntimeContext): Promise<string[]> {
+  if (ctx.systemActor) return ['*']
+  if (!ctx.auth?.sub) return []
+  const scope = {
+    tenantId: ctx.auth.tenantId ?? null,
+    organizationId: ctx.selectedOrganizationId ?? ctx.auth.orgId ?? null,
+  }
+  try {
+    const rbac = ctx.container.resolve('rbacService') as RbacLike | undefined
+    if (rbac?.getGrantedFeatures) {
+      return await rbac.getGrantedFeatures(ctx.auth.sub, scope)
+    }
+  } catch {
+    // rbacService may be absent in CLI / unit fixtures
+  }
   const raw = ctx.auth?.features
   if (!Array.isArray(raw)) return []
   return raw.filter((value): value is string => typeof value === 'string')
 }
 
-export function callerHasFeature(ctx: CommandRuntimeContext, feature: string): boolean {
+export async function callerHasFeature(ctx: CommandRuntimeContext, feature: string): Promise<boolean> {
   if (ctx.systemActor) return true
-  return hasFeature(authFeatures(ctx), feature)
+  if (!ctx.auth?.sub) return false
+  const scope = {
+    tenantId: ctx.auth.tenantId ?? null,
+    organizationId: ctx.selectedOrganizationId ?? ctx.auth.orgId ?? null,
+  }
+  try {
+    const rbac = ctx.container.resolve('rbacService') as RbacLike | undefined
+    if (rbac?.userHasAllFeatures) {
+      return await rbac.userHasAllFeatures(ctx.auth.sub, [feature], scope)
+    }
+  } catch {
+    // fall through
+  }
+  return hasFeature(await resolveGrantedFeatures(ctx), feature)
 }
 
 export async function loadTerminalOrThrow(
@@ -234,7 +278,7 @@ export async function enforceStockPolicy(args: StockGuardArgs): Promise<StockEva
 
   const { translate } = await resolveTranslations()
   if (evaluation.decision === 'warn') {
-    if (callerHasFeature(ctx, POS_STOCK_APPROVAL_FEATURE)) return evaluation
+    if (await callerHasFeature(ctx, POS_STOCK_APPROVAL_FEATURE)) return evaluation
     throw forbidden(
       translate(
         'soanas_pos.errors.stock_warn_approval_required',

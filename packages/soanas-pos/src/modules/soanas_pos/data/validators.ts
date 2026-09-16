@@ -140,12 +140,34 @@ export const posApplyDiscountSchema = z
     lineId: z.string().uuid().nullish(),
     amountCents: centsSchema,
     reason: z.string().trim().max(255).nullish(),
+    approvalRequestId: z.string().uuid().nullish(),
   })
   .superRefine((value, ctx) => {
     if (value.scope === 'line' && !value.lineId) {
       ctx.addIssue({ code: 'custom', path: ['lineId'], message: 'lineId is required for a line discount' })
     }
   })
+
+export const posApprovalRequestSchema = z.object({
+  ...scopeShape,
+  kind: z.enum(['discount', 'cancel', 'stock_override', 'price_override', 'withdrawal']),
+  transactionId: z.string().uuid().nullish(),
+  terminalId: z.string().uuid().nullish(),
+  lineId: z.string().uuid().nullish(),
+  reason: z.string().trim().min(1).max(255),
+  payload: z.record(z.string(), z.unknown()).optional(),
+  before: z.record(z.string(), z.unknown()).optional(),
+  after: z.record(z.string(), z.unknown()).optional(),
+  expiresAt: z.coerce.date().nullish(),
+  idempotencyKey: idempotencyKeySchema,
+})
+
+export const posApprovalDecideSchema = z.object({
+  ...scopeShape,
+  approvalRequestId: z.string().uuid(),
+  decision: z.enum(['approved', 'rejected']),
+  decisionReason: z.string().trim().max(255).nullish(),
+})
 
 export const posCheckoutSchema = z.object({
   ...scopeShape,
@@ -215,6 +237,8 @@ export type PosLineUpdateInput = z.infer<typeof posLineUpdateSchema>
 export type PosLineRemoveInput = z.infer<typeof posLineRemoveSchema>
 export type PosSetCustomerInput = z.infer<typeof posSetCustomerSchema>
 export type PosApplyDiscountInput = z.infer<typeof posApplyDiscountSchema>
+export type PosApprovalRequestInput = z.infer<typeof posApprovalRequestSchema>
+export type PosApprovalDecideInput = z.infer<typeof posApprovalDecideSchema>
 export type PosCheckoutInput = z.infer<typeof posCheckoutSchema>
 export type PosCashTenderInput = z.infer<typeof posCashTenderSchema>
 export type PosCompleteInput = z.infer<typeof posCompleteSchema>

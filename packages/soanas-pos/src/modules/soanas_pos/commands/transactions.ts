@@ -354,7 +354,7 @@ const applyDiscountCommand: CommandHandler<
   async execute(input, ctx) {
     const parsed = posApplyDiscountSchema.parse(input)
     const { translate } = await resolveTranslations()
-    if (!callerHasFeature(ctx, POS_DISCOUNT_FEATURE)) {
+    if (!(await callerHasFeature(ctx, POS_DISCOUNT_FEATURE))) {
       throw forbidden(translate('soanas_pos.errors.discount_forbidden', 'You are not allowed to grant POS discounts'))
     }
     const em = forkEm(ctx)
@@ -376,15 +376,32 @@ const applyDiscountCommand: CommandHandler<
             0n,
           )
           const amount = BigInt(parsed.amountCents)
-          // Above the self-service share the discount needs a second pair of eyes.
+          // Above the self-service share the discount needs a consumed manager approval
+          // (or the caller already holds the approve feature).
           const threshold = (grossCents * POS_DISCOUNT_APPROVAL_THRESHOLD_PERCENT) / 100n
-          if (amount > threshold && !callerHasFeature(ctx, POS_DISCOUNT_APPROVAL_FEATURE)) {
-            throw forbidden(
-              translate(
-                'soanas_pos.errors.discount_approval_required',
-                'This discount exceeds your limit and needs a manager approval',
-              ),
-            )
+          const needsApproval = amount > threshold
+          if (needsApproval && !(await callerHasFeature(ctx, POS_DISCOUNT_APPROVAL_FEATURE))) {
+            if (!parsed.approvalRequestId) {
+              throw forbidden(
+                translate(
+                  'soanas_pos.errors.discount_approval_required',
+                  'This discount exceeds your limit and needs a manager approval',
+                ),
+              )
+            }
+            const { consumeApprovedApproval } = await import('./approvals')
+            await consumeApprovedApproval(em, {
+              approvalRequestId: parsed.approvalRequestId,
+              tenantId: parsed.tenantId,
+              organizationId: parsed.organizationId,
+              kind: 'discount',
+              transactionId: parsed.transactionId,
+              expectedPayload: {
+                scope: parsed.scope,
+                amountCents: parsed.amountCents,
+                ...(parsed.lineId ? { lineId: parsed.lineId } : {}),
+              },
+            })
           }
 
           if (parsed.scope === 'line') {

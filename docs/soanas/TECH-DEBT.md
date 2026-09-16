@@ -9,5 +9,7 @@
 | TD-005 | No real SEFAZ/Pix credentials | External | Production fiscal/pay blocked | Adapters+mocks; BLOCKED_EXTERNAL only for cert | Phase 2+ |
 | TD-006 | POS reads WMS `InventoryBalance` ORM to plan multi-location adjust | WMS has no public consume-split command yet | Cross-module ORM coupling | Replace with WMS consume/pick API when available (ADR-008) | Phase 1→3 |
 | TD-007 | Receipt print is in-process Mock via DI, not durable PrintJob | Hardware Agent not built | No paper-confirm / spooler | soanas-hardware PrintJob + ESC/POS (ADR-009) | Phase 3 |
+| TD-008 | Legacy ACL ids `soanas.pos.*` filtered by module registry wildcards | Off-convention prefix vs module `soanas_pos` | Manager wildcards silently ineffective | Prefer `soanas_pos.*` features; keep legacy aliases concrete | Phase 1 |
+| TD-009 | Approval PIN pad UI not built | Supervisor re-login sufficient for dual custody v1 | Weaker floor UX for managers | Soft PIN / badge on terminal | Phase 1→2 |
 
 Regra: toda solução temporária nova ganha linha aqui no mesmo PR.

@@ -12,7 +12,7 @@ Para “o que falta”, ver [`IMPLEMENTATION-STATUS.md`](./IMPLEMENTATION-STATUS
 
 ## 1. Resumo em uma frase
 
-Foi entregue a **fundação Soanas** (auditoria + matriz + ADRs) e o **Retail Vertical Slice v1 em código** (Cash completo + POS com venda em dinheiro orquestrando Sales + WMS + Cash), ainda **sem** `VALIDATED` nem E2E verde em ambiente com migrations aplicadas.
+Foi entregue a **fundação Soanas**, o **Retail Vertical Slice v1 VALIDATED** (Cash + POS + Sales + WMS em Postgres efêmero com API, concorrência, recovery e E2E browser), e a continuidade do **POS avançado** (hold/resume + aprovação gerencial com dupla custódia).
 
 ---
 
@@ -22,9 +22,9 @@ Foi entregue a **fundação Soanas** (auditoria + matriz + ADRs) e o **Retail Ve
 | Métrica | Valor |
 |---------|------:|
 | IDs do Blueprint | 303 |
-| ANALYZED | 232 |
-| IMPLEMENTED | 41 |
-| TESTED | 10 |
+| ANALYZED | 229 |
+| IMPLEMENTED | 37 |
+| TESTED | 17 |
 | VALIDATED | **20** |
 <!-- soanas:derived-counts:end -->
 

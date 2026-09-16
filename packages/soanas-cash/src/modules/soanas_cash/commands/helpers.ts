@@ -12,15 +12,58 @@ export function forkEm(ctx: CommandRuntimeContext): EntityManager {
   return (ctx.container.resolve('em') as EntityManager).fork()
 }
 
-export function authFeatures(ctx: CommandRuntimeContext): string[] {
+type RbacLike = {
+  userHasAllFeatures?: (
+    userId: string,
+    required: string[],
+    scope: { tenantId: string | null; organizationId: string | null },
+  ) => Promise<boolean>
+  getGrantedFeatures?: (
+    userId: string,
+    scope: { tenantId: string | null; organizationId: string | null },
+  ) => Promise<string[]>
+}
+
+/** JWT does not embed ACL features — resolve live via rbacService. */
+export async function resolveGrantedFeatures(ctx: CommandRuntimeContext): Promise<string[]> {
+  if (ctx.systemActor) return ['*']
+  if (!ctx.auth?.sub) return []
+  const scope = {
+    tenantId: ctx.auth.tenantId ?? null,
+    organizationId: ctx.selectedOrganizationId ?? ctx.auth.orgId ?? null,
+  }
+  try {
+    const rbac = ctx.container.resolve('rbacService') as RbacLike | undefined
+    if (rbac?.getGrantedFeatures) {
+      return await rbac.getGrantedFeatures(ctx.auth.sub, scope)
+    }
+  } catch {
+    // rbacService may be absent in CLI / unit fixtures
+  }
   const raw = ctx.auth?.features
   if (!Array.isArray(raw)) return []
   return raw.filter((value): value is string => typeof value === 'string')
 }
 
-export function callerCanApprove(ctx: CommandRuntimeContext): boolean {
+export async function callerCanApprove(ctx: CommandRuntimeContext): Promise<boolean> {
   if (ctx.systemActor) return true
-  const granted = authFeatures(ctx)
+  if (!ctx.auth?.sub) return false
+  const scope = {
+    tenantId: ctx.auth.tenantId ?? null,
+    organizationId: ctx.selectedOrganizationId ?? ctx.auth.orgId ?? null,
+  }
+  try {
+    const rbac = ctx.container.resolve('rbacService') as RbacLike | undefined
+    if (rbac?.userHasAllFeatures) {
+      for (const feature of APPROVAL_FEATURES) {
+        if (await rbac.userHasAllFeatures(ctx.auth.sub, [feature], scope)) return true
+      }
+      return false
+    }
+  } catch {
+    // fall through
+  }
+  const granted = await resolveGrantedFeatures(ctx)
   return APPROVAL_FEATURES.some((feature) => hasFeature(granted, feature))
 }
 
@@ -56,7 +99,7 @@ export async function enforceDualCustody(args: {
     )
   }
   const callerIsApprover = ctx.auth?.sub === approverUserId
-  if (!callerIsApprover && !callerCanApprove(ctx)) {
+  if (!callerIsApprover && !(await callerCanApprove(ctx))) {
     throw forbidden(
       translate(
         'soanas_cash.errors.approval_feature_required',

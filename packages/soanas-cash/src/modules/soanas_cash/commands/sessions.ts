@@ -285,7 +285,7 @@ const closeSessionCommand: CommandHandler<CashSessionCloseInput, CashSessionClos
           const approverIsValid =
             !!parsed.approverUserId &&
             parsed.approverUserId !== parsed.operatorUserId &&
-            (ctx.auth?.sub === parsed.approverUserId || callerCanApprove(ctx))
+            (ctx.auth?.sub === parsed.approverUserId || (await callerCanApprove(ctx)))
 
           if (needsApproval) {
             approval = em.create(CashApproval, {
@@ -376,7 +376,7 @@ const closeSessionCommand: CommandHandler<CashSessionCloseInput, CashSessionClos
 
     // Blind closing: the operator never sees the system expectation, even after counting.
     // A caller holding an approval feature (supervisor path) always gets the full figures.
-    const revealExpected = !blind || callerCanApprove(ctx)
+    const revealExpected = !blind || (await callerCanApprove(ctx))
     return {
       sessionId: closedSession.id,
       countId: closedCount.id,

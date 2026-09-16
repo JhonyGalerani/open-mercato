@@ -103,7 +103,7 @@ const createCountCommand: CommandHandler<CashCountCreateInput, CashCountCreateRe
       totalCountedCents: parsed.totalCountedCents,
     })
 
-    const revealExpected = !blind || callerCanApprove(ctx)
+    const revealExpected = !blind || (await callerCanApprove(ctx))
     return {
       countId,
       sessionId: parsed.sessionId,
