@@ -476,6 +476,7 @@ export async function completePosSale(
   let tenders!: PaymentTender[]
   let cashTenders!: PaymentTender[]
   let recovery!: PosRecoveryState
+  let lockedReplay: CompletePosSaleResult | null = null
 
   await withAtomicFlush(
     em,
@@ -486,6 +487,32 @@ export async function completePosSale(
           tenantId: parsed.tenantId,
           organizationId: parsed.organizationId,
         })
+
+        // Concurrent double-complete: the loser acquires the row lock after the winner
+        // already flipped to COMPLETED. Treat as an idempotent replay.
+        if (transaction.status === 'COMPLETED') {
+          const replayLines = await loadLines(em, transaction)
+          const replayTenders = await em.find(PaymentTender, {
+            posTransactionId: transaction.id,
+            tenantId: transaction.tenantId,
+          })
+          const replayTerminal = await em.findOneOrFail(PosTerminal, { id: transaction.terminalId })
+          lockedReplay = {
+            transactionId: transaction.id,
+            status: transaction.status,
+            salesOrderId: transaction.salesOrderId ?? null,
+            cashMovementId: null,
+            wmsMovementIds: [],
+            receipt: buildReceipt({
+              transaction,
+              terminal: replayTerminal,
+              lines: replayLines,
+              tenders: replayTenders,
+            }),
+            replayed: true,
+          }
+          return
+        }
 
         if (!['PAID', 'COMPLETING', 'FAILED_RECOVERABLE'].includes(transaction.status)) {
           throw badRequest(
@@ -521,6 +548,8 @@ export async function completePosSale(
     ],
     { transaction: true, label: 'soanas_pos.transactions.complete.begin' },
   )
+
+  if (lockedReplay) return lockedReplay
 
   const plan = planCompleteSale({
     recovery: {

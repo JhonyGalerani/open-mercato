@@ -212,7 +212,7 @@ test.describe('TC-SOANAS-RETAIL-CONCURRENCY: real stock race', () => {
           terminalId,
           cashSessionId: sessionId,
           currencyCode: 'BRL',
-          idempotencyKey: `race-tx-${key}`,
+          idempotencyKey: `race-tx-${key}-${suffix}`,
         })
         const transactionId = expectId(tx.body.id as string | undefined, 'tx')
         await postJson(request, adminToken, `/api/soanas_pos/transactions/${transactionId}/lines`, {
@@ -226,7 +226,7 @@ test.describe('TC-SOANAS-RETAIL-CONCURRENCY: real stock race', () => {
         await postJson(request, adminToken, `/api/soanas_pos/transactions/${transactionId}/checkout`, {})
         await postJson(request, adminToken, `/api/soanas_pos/transactions/${transactionId}/tenders/cash`, {
           amountReceivedCents: '1000',
-          idempotencyKey: `race-tender-${key}`,
+          idempotencyKey: `race-tender-${key}-${suffix}`,
         })
         return transactionId
       }
@@ -239,24 +239,40 @@ test.describe('TC-SOANAS-RETAIL-CONCURRENCY: real stock race', () => {
         postJson(request, adminToken, `/api/soanas_pos/transactions/${txB}/complete`, {}),
       ])
 
-      const completed = [resultA, resultB].filter((result) => String(result.body.status) === 'COMPLETED')
+      const completed = [resultA, resultB].filter(
+        (result) => String(result.body.status) === 'COMPLETED' && result.body.replayed !== true,
+      )
       const failed = [resultA, resultB].filter((result) => String(result.body.status) !== 'COMPLETED')
-      expect(completed.length).toBe(1)
+      expect(
+        completed.length,
+        `expected exactly one fresh COMPLETED; A=${JSON.stringify(resultA)} B=${JSON.stringify(resultB)}`,
+      ).toBe(1)
       expect(failed.length).toBe(1)
+      expect(
+        Array.isArray(completed[0]?.body.wmsMovementIds) &&
+          (completed[0]?.body.wmsMovementIds as unknown[]).length >= 1,
+        `winner must deduct WMS stock; body=${JSON.stringify(completed[0]?.body)}`,
+      ).toBeTruthy()
 
       const balancesResponse = await apiRequest(
         request,
         'GET',
-        `/api/wms/inventory/balances?warehouseId=${encodeURIComponent(warehouseId)}&catalogVariantId=${encodeURIComponent(variantId)}&locationId=${encodeURIComponent(locationId)}&page=1&pageSize=20`,
+        `/api/wms/inventory/balances?warehouseId=${encodeURIComponent(warehouseId)}&catalogVariantId=${encodeURIComponent(variantId)}&page=1&pageSize=50`,
         { token: adminToken },
       )
       const balancesBody = await readJsonSafe<{
-        items?: Array<{ quantityOnHand?: string | number; quantity_on_hand?: string | number }>
+        items?: Array<{
+          quantityOnHand?: string | number
+          quantity_on_hand?: string | number
+          locationId?: string
+          location_id?: string
+        }>
       }>(balancesResponse)
-      const onHand = Number(
-        balancesBody?.items?.[0]?.quantityOnHand ?? balancesBody?.items?.[0]?.quantity_on_hand ?? -1,
-      )
-      expect(onHand).toBe(0)
+      const totalOnHand = (balancesBody?.items ?? []).reduce((sum, item) => {
+        const raw = item.quantityOnHand ?? item.quantity_on_hand ?? 0
+        return sum + Number(raw)
+      }, 0)
+      expect(totalOnHand, `balances=${JSON.stringify(balancesBody?.items)}`).toBe(0)
     } finally {
       await deleteCatalogProductIfExists(request, adminToken, productId)
       await restoreAcl()
