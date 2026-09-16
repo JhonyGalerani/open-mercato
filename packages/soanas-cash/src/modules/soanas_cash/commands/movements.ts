@@ -16,6 +16,7 @@ import {
   type CashSaleRecordInput,
 } from '../data/validators'
 import { validateDenominationsMatchAmount } from '../lib/denominations'
+import { centsToWire } from '../lib/cents'
 import { resolveSupplyRequiresApproval, resolveWithdrawalRequiresApproval } from '../lib/policy'
 import { buildCashMovementReceipt } from '../lib/receipt'
 import { emitSoanasCashEvent } from '../events'
@@ -45,7 +46,7 @@ function movementSnapshot(movement: CashMovement) {
     sessionId: movement.sessionId,
     registerId: movement.registerId,
     type: movement.type,
-    amountCents: movement.amountCents,
+    amountCents: centsToWire(movement.amountCents),
     status: movement.status,
     operatorUserId: movement.operatorUserId,
     approverUserId: movement.approverUserId ?? null,
@@ -633,7 +634,7 @@ const recordSaleCommand: CommandHandler<CashSaleRecordInput, { movementId: strin
       organizationId: parsed.organizationId,
       sessionId: parsed.sessionId,
       registerId,
-      amountCents: parsed.amountCents,
+      amountCents: centsToWire(parsed.amountCents),
       posTransactionId: parsed.posTransactionId ?? null,
       salesOrderId: parsed.salesOrderId ?? null,
     })

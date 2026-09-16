@@ -114,6 +114,8 @@ export async function handlePosCommandRoute<TSchema extends z.ZodTypeAny, TResul
     if (isCrudHttpError(err)) {
       return NextResponse.json(err.body, { status: err.status })
     }
+    const debugMessage = err instanceof Error ? err.message : String(err)
+    console.error('[soanas_pos] command route failure', options.commandId, debugMessage)
     return NextResponse.json({ error: translate(options.failure.key, options.failure.fallback) }, { status: 500 })
   }
 }

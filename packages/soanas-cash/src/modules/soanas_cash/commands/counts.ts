@@ -10,6 +10,7 @@ import { computeDiscrepancy } from '../lib/ledger'
 import { resolveDiscrepancyToleranceCents } from '../lib/policy'
 import { emitSoanasCashEvent } from '../events'
 import { callerCanApprove, forkEm, loadRegisterOrThrow, loadSessionForUpdate, loadSessionTotals } from './helpers'
+import { centsToWire } from '../lib/cents'
 
 export type CashCountCreateResult = {
   countId: string
@@ -127,7 +128,7 @@ const createCountCommand: CommandHandler<CashCountCreateInput, CashCountCreateRe
       sessionId: record.sessionId,
       registerId: record.registerId,
       kind: record.kind,
-      totalCountedCents: record.totalCountedCents,
+      totalCountedCents: centsToWire(record.totalCountedCents),
       blindMode: record.blindMode,
     }
   },

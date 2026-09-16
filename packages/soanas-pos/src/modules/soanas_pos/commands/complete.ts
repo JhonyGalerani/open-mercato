@@ -2,7 +2,7 @@ import { registerCommand } from '@open-mercato/shared/lib/commands'
 import type { CommandBus, CommandHandler, CommandRuntimeContext } from '@open-mercato/shared/lib/commands'
 import { withAtomicFlush } from '@open-mercato/shared/lib/commands/flush'
 import type { EntityManager } from '@mikro-orm/postgresql'
-import { badRequest, CrudHttpError } from '@open-mercato/shared/lib/crud/errors'
+import { badRequest, CrudHttpError, notFound } from '@open-mercato/shared/lib/crud/errors'
 import { resolveTranslations } from '@open-mercato/shared/lib/i18n/server'
 import { SalesOrder, SalesPayment } from '@open-mercato/core/modules/sales/data/entities'
 import { InventoryBalance, WarehouseLocation } from '@open-mercato/core/modules/wms/data/entities'
@@ -16,7 +16,7 @@ import {
   type PosRecoveryStep,
 } from '../data/entities'
 import { posCompleteSchema, type PosCompleteInput } from '../data/validators'
-import { centsToDecimalString } from '../lib/money'
+import { centsToDecimalString, centsToString } from '../lib/money'
 import { planCompleteSale } from '../lib/completeSale'
 import { planStockDeductions } from '../lib/quantity'
 import { planLocationDeductions } from '../lib/stockAllocation'
@@ -393,23 +393,25 @@ function buildReceipt(args: {
       sku: line.sku,
       name: line.nameSnapshot,
       quantity: line.quantity,
-      unitPriceCents: line.unitPriceCents,
-      discountAmountCents: line.discountAmountCents,
-      lineTotalCents: line.lineTotalCents,
+      unitPriceCents: centsToString(line.unitPriceCents),
+      discountAmountCents: centsToString(line.discountAmountCents),
+      lineTotalCents: centsToString(line.lineTotalCents),
     })),
     tenders: tenders.map((tender) => ({
       type: tender.type,
-      amountAppliedCents: tender.amountAppliedCents,
-      amountReceivedCents: tender.amountReceivedCents ?? null,
-      changeAmountCents: tender.changeAmountCents ?? null,
+      amountAppliedCents: centsToString(tender.amountAppliedCents),
+      amountReceivedCents:
+        tender.amountReceivedCents == null ? null : centsToString(tender.amountReceivedCents),
+      changeAmountCents:
+        tender.changeAmountCents == null ? null : centsToString(tender.changeAmountCents),
     })),
-    subtotalCents: transaction.subtotalCents,
-    discountTotalCents: transaction.discountTotalCents,
-    surchargeTotalCents: transaction.surchargeTotalCents,
-    taxTotalCents: transaction.taxTotalCents,
-    grandTotalCents: transaction.grandTotalCents,
-    amountPaidCents: transaction.amountPaidCents,
-    changeAmountCents: transaction.changeAmountCents,
+    subtotalCents: centsToString(transaction.subtotalCents),
+    discountTotalCents: centsToString(transaction.discountTotalCents),
+    surchargeTotalCents: centsToString(transaction.surchargeTotalCents),
+    taxTotalCents: centsToString(transaction.taxTotalCents),
+    grandTotalCents: centsToString(transaction.grandTotalCents),
+    amountPaidCents: centsToString(transaction.amountPaidCents),
+    changeAmountCents: centsToString(transaction.changeAmountCents),
   })
 }
 
@@ -437,58 +439,88 @@ export async function completePosSale(
   const em = forkEm(ctx)
   const { translate } = await resolveTranslations()
 
-  const transaction = await loadTransactionForUpdate(em, {
-    transactionId: parsed.transactionId,
+  // Replay path: COMPLETED is terminal — no row lock needed.
+  const alreadyDone = await em.findOne(PosTransaction, {
+    id: parsed.transactionId,
     tenantId: parsed.tenantId,
     organizationId: parsed.organizationId,
+    deletedAt: null,
   })
-
-  if (transaction.status === 'COMPLETED') {
-    const lines = await loadLines(em, transaction)
+  if (!alreadyDone) {
+    throw notFound(translate('soanas_pos.errors.transaction_not_found', 'POS transaction not found'))
+  }
+  if (alreadyDone.status === 'COMPLETED') {
+    const lines = await loadLines(em, alreadyDone)
     const tenders = await em.find(PaymentTender, {
-      posTransactionId: transaction.id,
-      tenantId: transaction.tenantId,
+      posTransactionId: alreadyDone.id,
+      tenantId: alreadyDone.tenantId,
     })
-    const terminal = await em.findOneOrFail(PosTerminal, { id: transaction.terminalId })
+    const terminal = await em.findOneOrFail(PosTerminal, { id: alreadyDone.terminalId })
     return {
-      transactionId: transaction.id,
-      status: transaction.status,
-      salesOrderId: transaction.salesOrderId ?? null,
+      transactionId: alreadyDone.id,
+      status: alreadyDone.status,
+      salesOrderId: alreadyDone.salesOrderId ?? null,
       cashMovementId: null,
       wmsMovementIds: [],
-      receipt: buildReceipt({ transaction, terminal, lines, tenders }),
+      receipt: buildReceipt({ transaction: alreadyDone, terminal, lines, tenders }),
       replayed: true,
     }
   }
 
-  if (!['PAID', 'COMPLETING', 'FAILED_RECOVERABLE'].includes(transaction.status)) {
-    throw badRequest(
-      translate('soanas_pos.errors.not_fully_paid', 'The POS transaction must be fully paid before completion'),
-    )
-  }
+  // PESSIMISTIC_WRITE requires an open DB transaction (MikroORM ValidationError otherwise).
+  // Keep this critical section short: claim COMPLETING + recovery row, then release before
+  // nested Sales/WMS/Cash commands (they fork their own EMs / transactions).
+  let transaction!: PosTransaction
+  let terminal!: PosTerminal
+  let lines!: PosTransactionLine[]
+  let tenders!: PaymentTender[]
+  let cashTenders!: PaymentTender[]
+  let recovery!: PosRecoveryState
 
-  const terminal = await em.findOneOrFail(PosTerminal, {
-    id: transaction.terminalId,
-    tenantId: transaction.tenantId,
-  })
-  const lines = await loadLines(em, transaction)
-  if (!lines.length) {
-    throw badRequest(translate('soanas_pos.errors.empty_cart', 'Cannot check out an empty cart'))
-  }
-  const tenders = await em.find(PaymentTender, {
-    posTransactionId: transaction.id,
-    tenantId: transaction.tenantId,
-  })
-  const cashTenders = tenders.filter((tender) => tender.type === 'CASH' && tender.status === 'captured')
+  await withAtomicFlush(
+    em,
+    [
+      async () => {
+        transaction = await loadTransactionForUpdate(em, {
+          transactionId: parsed.transactionId,
+          tenantId: parsed.tenantId,
+          organizationId: parsed.organizationId,
+        })
 
-  if (transaction.status !== 'COMPLETING') {
-    await transitionTo(em, transaction, 'COMPLETING', {
-      trigger: 'soanas_pos.transactions.complete',
-      actorId: parsed.operatorUserId,
-    })
-  }
-  const recovery = await ensureRecoveryState(em, transaction)
-  await em.flush()
+        if (!['PAID', 'COMPLETING', 'FAILED_RECOVERABLE'].includes(transaction.status)) {
+          throw badRequest(
+            translate(
+              'soanas_pos.errors.not_fully_paid',
+              'The POS transaction must be fully paid before completion',
+            ),
+          )
+        }
+
+        terminal = await em.findOneOrFail(PosTerminal, {
+          id: transaction.terminalId,
+          tenantId: transaction.tenantId,
+        })
+        lines = await loadLines(em, transaction)
+        if (!lines.length) {
+          throw badRequest(translate('soanas_pos.errors.empty_cart', 'Cannot check out an empty cart'))
+        }
+        tenders = await em.find(PaymentTender, {
+          posTransactionId: transaction.id,
+          tenantId: transaction.tenantId,
+        })
+        cashTenders = tenders.filter((tender) => tender.type === 'CASH' && tender.status === 'captured')
+
+        if (transaction.status !== 'COMPLETING') {
+          await transitionTo(em, transaction, 'COMPLETING', {
+            trigger: 'soanas_pos.transactions.complete',
+            actorId: parsed.operatorUserId,
+          })
+        }
+        recovery = await ensureRecoveryState(em, transaction)
+      },
+    ],
+    { transaction: true, label: 'soanas_pos.transactions.complete.begin' },
+  )
 
   const plan = planCompleteSale({
     recovery: {
@@ -618,7 +650,7 @@ export async function completePosSale(
     tenantId: transaction.tenantId,
     organizationId: transaction.organizationId,
     salesOrderId: transaction.salesOrderId ?? null,
-    grandTotalCents: transaction.grandTotalCents,
+    grandTotalCents: centsToString(transaction.grandTotalCents),
     correlationId: transaction.correlationId,
   })
 
