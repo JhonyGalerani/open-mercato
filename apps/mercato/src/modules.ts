@@ -93,6 +93,7 @@ export const enabledModules: ModuleEntry[] = [
   { id: 'soanas_establishments', from: '@open-mercato/soanas-establishments' },
   { id: 'soanas_cash', from: '@open-mercato/soanas-cash' },
   { id: 'soanas_pos', from: '@open-mercato/soanas-pos' },
+  { id: 'soanas_payments_br', from: '@open-mercato/soanas-payments-br' },
   { id: 'api_docs', from: '@open-mercato/core' },
   // Live DS component gallery at /backend/design-system (feature-gated by
   // design_system.view). Disable by removing this line.

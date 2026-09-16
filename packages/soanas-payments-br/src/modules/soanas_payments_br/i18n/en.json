@@ -1,0 +1,24 @@
+{
+  "soanas_payments_br": {
+    "nav": {
+      "group": "Payments"
+    },
+    "errors": {
+      "unauthorized": "Unauthorized",
+      "org_required": "Organization required",
+      "invalid_payload": "Invalid payload",
+      "charge_not_found": "Pix charge not found",
+      "txid_taken": "A Pix charge with this txid already exists",
+      "cancel_not_payable": "Only a Pix charge waiting for payment can be cancelled",
+      "refund_not_paid": "Only a paid Pix charge can be refunded",
+      "create_failed": "Failed to create the Pix charge",
+      "detail_failed": "Failed to load the Pix charge",
+      "cancel_failed": "Failed to cancel the Pix charge",
+      "refund_failed": "Failed to refund the Pix charge",
+      "webhook_failed": "Failed to apply the Pix webhook"
+    },
+    "audit": {
+      "pix_create": "Create Pix charge"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "soanas_payments_br": {
+    "nav": {
+      "group": "Pagamentos"
+    },
+    "errors": {
+      "unauthorized": "Não autorizado",
+      "org_required": "Organização obrigatória",
+      "invalid_payload": "Dados inválidos",
+      "charge_not_found": "Cobrança Pix não encontrada",
+      "txid_taken": "Já existe uma cobrança Pix com este txid",
+      "cancel_not_payable": "Somente uma cobrança Pix aguardando pagamento pode ser cancelada",
+      "refund_not_paid": "Somente uma cobrança Pix paga pode ser reembolsada",
+      "create_failed": "Falha ao criar a cobrança Pix",
+      "detail_failed": "Falha ao carregar a cobrança Pix",
+      "cancel_failed": "Falha ao cancelar a cobrança Pix",
+      "refund_failed": "Falha ao reembolsar a cobrança Pix",
+      "webhook_failed": "Falha ao aplicar o webhook Pix"
+    },
+    "audit": {
+      "pix_create": "Criar cobrança Pix"
+    }
+  }
+}

@@ -53,6 +53,7 @@
     "@open-mercato/soanas-cash": "workspace:*",
     "@open-mercato/soanas-core": "workspace:*",
     "@open-mercato/soanas-establishments": "workspace:*",
+    "@open-mercato/soanas-payments-br": "workspace:*",
     "@open-mercato/soanas-pos": "workspace:*",
     "@open-mercato/sync-akeneo": "workspace:*",
     "@open-mercato/telemetry": "workspace:*",
