@@ -121,6 +121,7 @@ export async function GET(req: Request) {
       status: movement.status,
       amountCents: centsToWire(movement.amountCents),
       reasonCode: movement.reasonCode ?? null,
+      approverUserId: movement.approverUserId ?? null,
       createdAt: movement.createdAt.toISOString(),
     })),
   })

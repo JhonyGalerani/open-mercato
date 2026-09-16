@@ -1,6 +1,6 @@
 import { asValue } from 'awilix'
 import type { AppContainer } from '@open-mercato/shared/lib/di/container'
-import { MockReceiptPrinter, type ReceiptPrinter } from './lib/receipt'
+import { FailOnceReceiptPrinter, MockReceiptPrinter, type ReceiptPrinter } from './lib/receipt'
 
 /**
  * DI key: `receiptPrinter` (ADR-009).
@@ -10,6 +10,9 @@ import { MockReceiptPrinter, type ReceiptPrinter } from './lib/receipt'
 export const RECEIPT_PRINTER_DI_KEY = 'receiptPrinter' as const
 
 export function createDefaultReceiptPrinter(): ReceiptPrinter {
+  if (process.env.OM_SOANAS_RECEIPT_PRINT_FAIL_ONCE === '1') {
+    return new FailOnceReceiptPrinter()
+  }
   return new MockReceiptPrinter()
 }
 

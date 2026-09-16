@@ -142,3 +142,16 @@ export class MockReceiptPrinter implements ReceiptPrinter {
     this.documents.length = 0
   }
 }
+
+/** Fails once per transaction id, then succeeds — used when `OM_SOANAS_RECEIPT_PRINT_FAIL_ONCE=1`. */
+export class FailOnceReceiptPrinter implements ReceiptPrinter {
+  private readonly failedTransactionIds = new Set<string>()
+
+  async print(document: SaleReceiptDocument): Promise<{ printed: boolean; jobId: string }> {
+    if (!this.failedTransactionIds.has(document.transactionId)) {
+      this.failedTransactionIds.add(document.transactionId)
+      throw new Error('[internal] simulated receipt printer failure')
+    }
+    return { printed: true, jobId: `mock-retry:${document.transactionId}` }
+  }
+}

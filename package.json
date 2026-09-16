@@ -120,6 +120,7 @@
     "agents:check-budget": "node scripts/check-agents-md-budget.mjs",
     "soanas:sync-status": "node scripts/soanas-sync-status-docs.mjs",
     "soanas:check-coverage": "node scripts/soanas-check-coverage.mjs",
+    "soanas:validate-migrations": "node scripts/soanas-validate-migrations.mjs",
     "lessons:check": "node packages/create-app/agentic/shared/scripts/check-lessons.mjs --root .",
     "mutation:changed": "node scripts/stryker/mutation-changed.mjs"
   },

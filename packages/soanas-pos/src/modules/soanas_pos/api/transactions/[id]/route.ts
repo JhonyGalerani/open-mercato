@@ -4,6 +4,7 @@ import type { EntityManager } from '@mikro-orm/postgresql'
 import { resolveTranslations } from '@open-mercato/shared/lib/i18n/server'
 import {
   PaymentTender,
+  PosPrintJob,
   PosRecoveryState,
   PosTransaction,
   PosTransactionLine,
@@ -48,6 +49,11 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       transactionId: transaction.id,
       tenantId: transaction.tenantId,
     })
+    const printJobs = await em.find(
+      PosPrintJob,
+      { transactionId: transaction.id, tenantId: transaction.tenantId, deletedAt: null },
+      { orderBy: { createdAt: 'asc' } },
+    )
 
     return NextResponse.json({
       id: transaction.id,
@@ -119,6 +125,17 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
             errorMessage: recovery.errorMessage ?? null,
           }
         : null,
+      printJobs: printJobs.map((job) => ({
+        id: job.id,
+        kind: job.kind,
+        status: job.status,
+        attempts: job.attempts ?? 0,
+        printerJobId: job.printerJobId ?? null,
+        lastError: job.lastError ?? null,
+        printedAt: job.printedAt ? job.printedAt.toISOString() : null,
+        createdAt: job.createdAt.toISOString(),
+        updatedAt: job.updatedAt.toISOString(),
+      })),
     })
   } catch (err) {
     const scopeResponse = posScopeErrorResponse(err)

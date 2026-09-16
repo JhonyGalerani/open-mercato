@@ -1,9 +1,9 @@
 # Soanas — Implementation Status
 
 **Updated:** 2026-09-16  
-**Base:** Open Mercato 0.7.0 @ `9903c82f8`  
-**Branch:** `cursor/soanas-retail-gate-validation-4347`  
-**Strategy:** Retail Vertical Slice first — do **not** open empty packages. Gate 0 critical fixes in progress.
+**Base:** Open Mercato 0.7.0 @ `8d38af7ca` (main pós PR #3)  
+**Branch:** `cursor/soanas-gates01-validation-desktop-foundation-9e05`  
+**Strategy:** Validar Gates 0 e 1 (migrations + E2E) antes do Gate 2 (caixa completo) e fundação desktop.
 
 <!-- soanas:derived-counts:start -->
 ```
