@@ -79,6 +79,9 @@ type TransactionDetail = {
     amountAppliedCents: string
     amountReceivedCents: string | null
     changeAmountCents: string | null
+    status?: string
+    brand?: string | null
+    nsu?: string | null
   }>
   recovery: {
     lastStep: string
@@ -128,6 +131,10 @@ export default function PosSellPage() {
 
   const [paymentOpen, setPaymentOpen] = React.useState(false)
   const [amountReceived, setAmountReceived] = React.useState('')
+  const [tenderMethod, setTenderMethod] = React.useState('CASH')
+  const [manualBrand, setManualBrand] = React.useState('')
+  const [manualNsu, setManualNsu] = React.useState('')
+  const [manualInstallments, setManualInstallments] = React.useState('1')
   const [receipt, setReceipt] = React.useState<SaleReceiptDocument | null>(null)
 
   const { runMutation, retryLastMutation } = useGuardedMutation<{
@@ -362,17 +369,65 @@ export default function PosSellPage() {
       flash(t('soanas_pos.errors.invalid_payload', 'Invalid payload'), 'error')
       return
     }
-    const done = await runPosMutation({
-      url: `/api/soanas_pos/transactions/${transactionId}/tenders/cash`,
-      body: { amountReceivedCents: cents, idempotencyKey: newIdempotencyKey('pos-cash') },
-      resourceId: transactionId,
-      successMessage: t('soanas_pos.sell.flash.paid', 'Payment registered'),
-    })
-    if (!done) return
+
+    if (tenderMethod === 'CASH') {
+      const done = await runPosMutation({
+        url: `/api/soanas_pos/transactions/${transactionId}/tenders/cash`,
+        body: { amountReceivedCents: cents, idempotencyKey: newIdempotencyKey('pos-cash') },
+        resourceId: transactionId,
+        successMessage: t('soanas_pos.sell.flash.paid', 'Payment registered'),
+      })
+      if (!done) return
+    } else {
+      const installments = Number.parseInt(manualInstallments || '1', 10)
+      const done = await runPosMutation({
+        url: `/api/soanas_pos/transactions/${transactionId}/tenders/manual`,
+        body: {
+          type: tenderMethod,
+          amountAppliedCents: cents,
+          brand: manualBrand.trim() || null,
+          nsu: manualNsu.trim() || null,
+          installments: Number.isFinite(installments) && installments > 0 ? installments : 1,
+          idempotencyKey: newIdempotencyKey('pos-manual'),
+        },
+        resourceId: transactionId,
+        successMessage: t('soanas_pos.sell.flash.paid', 'Payment registered'),
+      })
+      if (!done) return
+    }
+
     setAmountReceived('')
+    setManualBrand('')
+    setManualNsu('')
+    setManualInstallments('1')
     setPaymentOpen(false)
     await reloadTransaction(transactionId)
-  }, [amountReceived, reloadTransaction, runPosMutation, t, transactionId])
+  }, [
+    amountReceived,
+    manualBrand,
+    manualInstallments,
+    manualNsu,
+    reloadTransaction,
+    runPosMutation,
+    t,
+    tenderMethod,
+    transactionId,
+  ])
+
+  const handleRemoveTender = React.useCallback(
+    async (tenderId: string) => {
+      if (!transactionId) return
+      const done = await runPosMutation({
+        url: `/api/soanas_pos/transactions/${transactionId}/tenders/${tenderId}`,
+        method: 'DELETE',
+        body: {},
+        resourceId: transactionId,
+        successMessage: t('soanas_pos.sell.flash.tenderRemoved', 'Tender removed'),
+      })
+      if (done) await reloadTransaction(transactionId)
+    },
+    [reloadTransaction, runPosMutation, t, transactionId],
+  )
 
   const handleComplete = React.useCallback(
     async (mode: 'complete' | 'recover') => {
@@ -599,6 +654,36 @@ export default function PosSellPage() {
                   />
                 </dl>
 
+                {transaction.tenders.length ? (
+                  <div className="mt-4">
+                    <h3 className="text-sm font-medium">
+                      {t('soanas_pos.sell.payment.tenders', 'Registered tenders')}
+                    </h3>
+                    <ul className="mt-2 flex flex-col gap-2">
+                      {transaction.tenders.map((tender) => (
+                        <li
+                          key={tender.id}
+                          className="flex items-center justify-between gap-2 rounded-md border border-border px-3 py-2 text-sm"
+                        >
+                          <span>
+                            {tender.type} · {formatCentsAsBrl(tender.amountAppliedCents)}
+                            {tender.brand ? ` · ${tender.brand}` : ''}
+                            {tender.nsu ? ` · NSU ${tender.nsu}` : ''}
+                          </span>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            disabled={status === 'COMPLETED' || status === 'COMPLETING'}
+                            onClick={() => handleRemoveTender(tender.id)}
+                          >
+                            {t('soanas_pos.sell.payment.removeTender', 'Remove')}
+                          </Button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+
                 <div className="mt-4 grid gap-2 sm:grid-cols-2">
                   <div>
                     <Label htmlFor="soanas-pos-customer">
@@ -640,7 +725,7 @@ export default function PosSellPage() {
                     {t('soanas_pos.sell.actions.checkout', 'Checkout')}
                   </Button>
                   <Button variant="secondary" onClick={() => setPaymentOpen(true)} disabled={!canPay}>
-                    {t('soanas_pos.sell.payment.title', 'Cash payment')}
+                    {t('soanas_pos.sell.payment.title', 'Register payment')}
                   </Button>
                   <Button onClick={() => handleComplete('complete')} disabled={!canComplete}>
                     {t('soanas_pos.sell.actions.complete', 'Complete sale')}
@@ -681,14 +766,43 @@ export default function PosSellPage() {
           }}
         >
           <DialogHeader>
-            <DialogTitle>{t('soanas_pos.sell.payment.title', 'Cash payment')}</DialogTitle>
+            <DialogTitle>{t('soanas_pos.sell.payment.title', 'Register payment')}</DialogTitle>
             <DialogDescription>
               {t('soanas_pos.sell.payment.due', 'Amount due')}: {formatCentsAsBrl(remainingDueCents)}
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-2">
+            <Label htmlFor="soanas-pos-tender-method">
+              {t('soanas_pos.sell.payment.method', 'Payment method')}
+            </Label>
+            <Select value={tenderMethod} onValueChange={setTenderMethod}>
+              <SelectTrigger id="soanas-pos-tender-method">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="CASH">{t('soanas_pos.sell.payment.methods.cash', 'Cash')}</SelectItem>
+                <SelectItem value="PIX_MANUAL">
+                  {t('soanas_pos.sell.payment.methods.pixManual', 'Pix (manual / maquininha)')}
+                </SelectItem>
+                <SelectItem value="DEBIT_MANUAL">
+                  {t('soanas_pos.sell.payment.methods.debitManual', 'Debit (manual)')}
+                </SelectItem>
+                <SelectItem value="CREDIT_MANUAL">
+                  {t('soanas_pos.sell.payment.methods.creditManual', 'Credit (manual)')}
+                </SelectItem>
+                <SelectItem value="VOUCHER_MANUAL">
+                  {t('soanas_pos.sell.payment.methods.voucherManual', 'Voucher (manual)')}
+                </SelectItem>
+                <SelectItem value="STORE_CREDIT">
+                  {t('soanas_pos.sell.payment.methods.storeCredit', 'Store credit')}
+                </SelectItem>
+                <SelectItem value="OTHER">{t('soanas_pos.sell.payment.methods.other', 'Other')}</SelectItem>
+              </SelectContent>
+            </Select>
             <Label htmlFor="soanas-pos-received">
-              {t('soanas_pos.sell.payment.received', 'Amount received (BRL)')}
+              {tenderMethod === 'CASH'
+                ? t('soanas_pos.sell.payment.received', 'Amount received (BRL)')
+                : t('soanas_pos.sell.payment.applied', 'Amount applied (BRL)')}
             </Label>
             <Input
               id="soanas-pos-received"
@@ -696,9 +810,49 @@ export default function PosSellPage() {
               value={amountReceived}
               onChange={(event) => setAmountReceived(event.target.value)}
             />
-            <p className="text-sm text-muted-foreground">
-              {t('soanas_pos.sell.payment.change', 'Change')}: {formatCentsAsBrl(previewChangeCents)}
-            </p>
+            {tenderMethod === 'CASH' ? (
+              <p className="text-sm text-muted-foreground">
+                {t('soanas_pos.sell.payment.change', 'Change')}: {formatCentsAsBrl(previewChangeCents)}
+              </p>
+            ) : (
+              <>
+                <p className="text-sm text-muted-foreground">
+                  {t(
+                    'soanas_pos.sell.payment.manualHelp',
+                    'Confirm the payment on the external terminal first, then register it here. Non-cash methods never generate change.',
+                  )}
+                </p>
+                <Label htmlFor="soanas-pos-brand">
+                  {t('soanas_pos.sell.payment.brand', 'Brand (optional)')}
+                </Label>
+                <Input
+                  id="soanas-pos-brand"
+                  value={manualBrand}
+                  onChange={(event) => setManualBrand(event.target.value)}
+                />
+                <Label htmlFor="soanas-pos-nsu">
+                  {t('soanas_pos.sell.payment.nsu', 'NSU / auth (optional)')}
+                </Label>
+                <Input
+                  id="soanas-pos-nsu"
+                  value={manualNsu}
+                  onChange={(event) => setManualNsu(event.target.value)}
+                />
+                {tenderMethod === 'CREDIT_MANUAL' ? (
+                  <>
+                    <Label htmlFor="soanas-pos-installments">
+                      {t('soanas_pos.sell.payment.installments', 'Installments')}
+                    </Label>
+                    <Input
+                      id="soanas-pos-installments"
+                      inputMode="numeric"
+                      value={manualInstallments}
+                      onChange={(event) => setManualInstallments(event.target.value)}
+                    />
+                  </>
+                ) : null}
+              </>
+            )}
           </div>
           <DialogFooter>
             <Button variant="secondary" onClick={() => setPaymentOpen(false)}>

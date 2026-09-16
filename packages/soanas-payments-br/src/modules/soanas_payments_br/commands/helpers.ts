@@ -16,10 +16,11 @@ export function resolvePixProvider(ctx: CommandRuntimeContext): PixProvider {
 
 export async function loadPixChargeOrThrow(
   em: EntityManager,
-  scope: { tenantId: string; txid: string },
+  scope: { tenantId: string; organizationId: string; txid: string },
 ): Promise<PixCharge> {
   const charge = await em.findOne(PixCharge, {
     tenantId: scope.tenantId,
+    organizationId: scope.organizationId,
     txid: scope.txid,
     deletedAt: null,
   })

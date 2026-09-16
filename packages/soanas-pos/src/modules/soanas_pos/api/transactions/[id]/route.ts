@@ -92,12 +92,22 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       tenders: tenders.map((tender) => ({
         id: tender.id,
         type: tender.type,
+        status: tender.status,
         amountAppliedCents: centsToString(tender.amountAppliedCents),
         amountReceivedCents:
           tender.amountReceivedCents == null ? null : centsToString(tender.amountReceivedCents),
         changeAmountCents:
           tender.changeAmountCents == null ? null : centsToString(tender.changeAmountCents),
-        status: tender.status,
+        brand: tender.brand ?? null,
+        installments: tender.installments ?? null,
+        nsu: tender.nsu ?? null,
+        authorizationCode: tender.authorizationCode ?? null,
+        acquirer: tender.acquirer ?? null,
+        externalTerminal: tender.externalTerminal ?? null,
+        externalReference: tender.externalReference ?? null,
+        notes: tender.notes ?? null,
+        confirmedByUserId: tender.confirmedByUserId ?? null,
+        confirmedAt: tender.confirmedAt ? tender.confirmedAt.toISOString() : null,
       })),
       recovery: recovery
         ? {

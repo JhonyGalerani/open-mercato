@@ -65,7 +65,9 @@ export function planCompleteSale(input: CompleteSalePlanInput): CompleteSalePlan
     skipped.push({ step: 'wms', reason: 'no_warehouse' })
   } else if (input.lineCount <= 0) {
     skipped.push({ step: 'wms', reason: 'no_lines' })
-  } else if (recovery?.wmsMovementId || checkpoint >= stepIndex('wms')) {
+  } else if (checkpoint >= stepIndex('wms')) {
+    // Only lastStep=wms means every allocation checkpoint finished. A partial
+    // wmsMovementId alone must NOT skip remaining location deductions.
     skipped.push({ step: 'wms', reason: 'already_done' })
   } else {
     steps.push('wms')

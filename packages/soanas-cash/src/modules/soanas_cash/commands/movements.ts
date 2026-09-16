@@ -116,11 +116,10 @@ const createWithdrawalCommand: CommandHandler<CashWithdrawalCreateInput, Movemen
             registerRecord = register
 
             const requirement = resolveWithdrawalRequiresApproval(register, amount)
-            await enforceDualCustody({
+            const sessionApproverId = await enforceDualCustody({
               ctx,
               requirement,
               operatorUserId: parsed.operatorUserId,
-              approverUserId: parsed.approverUserId ?? null,
             })
 
             const { totals } = await loadSessionTotals(em, session)
@@ -144,7 +143,7 @@ const createWithdrawalCommand: CommandHandler<CashWithdrawalCreateInput, Movemen
                   movementId,
                   kind: 'withdrawal',
                   requesterUserId: parsed.operatorUserId,
-                  approverUserId: parsed.approverUserId ?? null,
+                  approverUserId: sessionApproverId,
                   status: 'approved',
                   reason: parsed.reasonDetail ?? parsed.reasonCode,
                   createdAt: now,
@@ -169,7 +168,7 @@ const createWithdrawalCommand: CommandHandler<CashWithdrawalCreateInput, Movemen
                 destination: parsed.destination,
                 receiverName: parsed.receiverName ?? null,
                 operatorUserId: parsed.operatorUserId,
-                approverUserId: parsed.approverUserId ?? null,
+                approverUserId: sessionApproverId,
                 terminalId: parsed.terminalId ?? session.terminalId ?? null,
                 denominations: parsed.denominations ?? null,
                 receiptPayload: buildCashMovementReceipt({
@@ -181,7 +180,7 @@ const createWithdrawalCommand: CommandHandler<CashWithdrawalCreateInput, Movemen
                   amountCents: amount,
                   issuedAt: now,
                   operatorUserId: parsed.operatorUserId,
-                  approverUserId: parsed.approverUserId ?? null,
+                  approverUserId: sessionApproverId,
                   denominations: parsed.denominations ?? null,
                   extraLines: [{ label: 'destination', value: parsed.destination }],
                 }) as unknown as Record<string, unknown>,
@@ -291,11 +290,10 @@ const createSupplyCommand: CommandHandler<CashSupplyCreateInput, MovementResult>
             )
 
             const requirement = resolveSupplyRequiresApproval(register, amount)
-            await enforceDualCustody({
+            const sessionApproverId = await enforceDualCustody({
               ctx,
               requirement,
               operatorUserId: parsed.operatorUserId,
-              approverUserId: parsed.approverUserId ?? null,
             })
 
             const now = new Date()
@@ -309,7 +307,7 @@ const createSupplyCommand: CommandHandler<CashSupplyCreateInput, MovementResult>
                   movementId,
                   kind: 'supply',
                   requesterUserId: parsed.operatorUserId,
-                  approverUserId: parsed.approverUserId ?? null,
+                  approverUserId: sessionApproverId,
                   status: 'approved',
                   reason: parsed.reasonDetail ?? parsed.reasonCode,
                   createdAt: now,
@@ -333,7 +331,7 @@ const createSupplyCommand: CommandHandler<CashSupplyCreateInput, MovementResult>
                 reasonDetail: parsed.reasonDetail ?? null,
                 origin: parsed.origin,
                 operatorUserId: parsed.operatorUserId,
-                approverUserId: parsed.approverUserId ?? null,
+                approverUserId: sessionApproverId,
                 terminalId: parsed.terminalId ?? session.terminalId ?? null,
                 denominations: parsed.denominations ?? null,
                 receiptPayload: buildCashMovementReceipt({
@@ -345,7 +343,7 @@ const createSupplyCommand: CommandHandler<CashSupplyCreateInput, MovementResult>
                   amountCents: amount,
                   issuedAt: now,
                   operatorUserId: parsed.operatorUserId,
-                  approverUserId: parsed.approverUserId ?? null,
+                  approverUserId: sessionApproverId,
                   denominations: parsed.denominations ?? null,
                   extraLines: [{ label: 'origin', value: parsed.origin }],
                 }) as unknown as Record<string, unknown>,
@@ -500,7 +498,7 @@ const reverseMovementCommand: CommandHandler<
                 origin: original.origin ?? null,
                 destination: original.destination ?? null,
                 operatorUserId: parsed.operatorUserId,
-                approverUserId: parsed.approverUserId ?? null,
+                approverUserId: ctx.auth?.sub ?? null,
                 terminalId: original.terminalId ?? null,
                 reversesMovementId: original.id,
                 posTransactionId: original.posTransactionId ?? null,

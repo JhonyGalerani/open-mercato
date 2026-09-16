@@ -26,6 +26,14 @@ describe('soanas_pos completeSale planner', () => {
     ])
   })
 
+  it('does not skip WMS when only a partial location movement was checkpointed', () => {
+    const plan = planCompleteSale({
+      ...BASE,
+      recovery: { lastStep: 'sales', salesOrderId: 'order-1', wmsMovementId: 'mv-partial' },
+    })
+    expect(plan.steps).toContain('wms')
+  })
+
   it('is idempotent: replaying a finished saga leaves nothing but the final mark', () => {
     const plan = planCompleteSale({
       ...BASE,

@@ -121,6 +121,9 @@
         "supply": "Suprimento (BRL)",
         "counted": "Valor conferido (BRL)"
       },
+      "help": {
+        "approverSession": "Quando a aprovação for exigida, a sessão autenticada do supervisor é o aprovador — nunca um UUID enviado pelo cliente."
+      },
       "open": {
         "title": "Abrir sessão de caixa"
       },

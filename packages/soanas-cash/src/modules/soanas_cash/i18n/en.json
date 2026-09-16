@@ -121,6 +121,9 @@
         "supply": "Supply — suprimento (BRL)",
         "counted": "Counted cash (BRL)"
       },
+      "help": {
+        "approverSession": "When approval is required, the authenticated supervisor session is the approver — never a client-supplied user id."
+      },
       "open": {
         "title": "Open cash session"
       },

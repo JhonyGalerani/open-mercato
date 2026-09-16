@@ -282,10 +282,11 @@ const closeSessionCommand: CommandHandler<CashSessionCloseInput, CashSessionClos
           }
           const now = new Date()
           const needsApproval = discrepancy.outcome === 'discrepancy'
+          const sessionApproverId = ctx.auth?.sub ?? null
           const approverIsValid =
-            !!parsed.approverUserId &&
-            parsed.approverUserId !== parsed.operatorUserId &&
-            (ctx.auth?.sub === parsed.approverUserId || (await callerCanApprove(ctx)))
+            !!sessionApproverId &&
+            sessionApproverId !== parsed.operatorUserId &&
+            (await callerCanApprove(ctx))
 
           if (needsApproval) {
             approval = em.create(CashApproval, {
@@ -295,7 +296,7 @@ const closeSessionCommand: CommandHandler<CashSessionCloseInput, CashSessionClos
               sessionId: currentSession.id,
               kind: 'discrepancy',
               requesterUserId: parsed.operatorUserId,
-              approverUserId: approverIsValid ? parsed.approverUserId ?? null : null,
+              approverUserId: approverIsValid ? sessionApproverId : null,
               status: approverIsValid ? 'approved' : 'pending',
               reason: parsed.reason ?? null,
               createdAt: now,

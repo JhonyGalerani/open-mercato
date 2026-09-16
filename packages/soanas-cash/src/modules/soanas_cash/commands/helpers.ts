@@ -68,22 +68,29 @@ export async function callerCanApprove(ctx: CommandRuntimeContext): Promise<bool
 }
 
 /**
- * Dual custody (REV-002). When the register policy says the amount exceeds the
- * self-service limit the request must name an approver who is not the operator, and the
- * caller must either be that approver in person or hold an approval-manager feature.
- * Feature grants of a third-party approver cannot be verified inside a single request,
- * so v1 anchors the check on the authenticated caller.
+ * Dual custody (REV-002). Approver identity is ALWAYS derived from the authenticated
+ * session (`ctx.auth.sub`). Client-supplied `approverUserId` is ignored for authorization
+ * (Gate 0) so a manager cannot attribute approval to another UUID without that user's session.
  */
 export async function enforceDualCustody(args: {
   ctx: CommandRuntimeContext
   requirement: ApprovalRequirement
   operatorUserId: string
-  approverUserId: string | null | undefined
-}): Promise<void> {
-  const { ctx, requirement, operatorUserId, approverUserId } = args
+  /** @deprecated Ignored for identity — kept for call-site compatibility during migration. */
+  approverUserId?: string | null | undefined
+}): Promise<string | null> {
+  const { ctx, requirement, operatorUserId } = args
   const { translate } = await resolveTranslations()
 
-  if (approverUserId && approverUserId === operatorUserId) {
+  if (!requirement.requiresApproval) return null
+
+  const sessionApproverId = ctx.auth?.sub ?? null
+  if (!sessionApproverId) {
+    throw forbidden(
+      translate('soanas_cash.errors.approval_required', 'Managerial approval required for this amount'),
+    )
+  }
+  if (sessionApproverId === operatorUserId) {
     throw forbidden(
       translate(
         'soanas_cash.errors.self_approval',
@@ -91,15 +98,7 @@ export async function enforceDualCustody(args: {
       ),
     )
   }
-  if (!requirement.requiresApproval) return
-
-  if (!approverUserId) {
-    throw forbidden(
-      translate('soanas_cash.errors.approval_required', 'Managerial approval required for this amount'),
-    )
-  }
-  const callerIsApprover = ctx.auth?.sub === approverUserId
-  if (!callerIsApprover && !(await callerCanApprove(ctx))) {
+  if (!(await callerCanApprove(ctx))) {
     throw forbidden(
       translate(
         'soanas_cash.errors.approval_feature_required',
@@ -107,6 +106,7 @@ export async function enforceDualCustody(args: {
       ),
     )
   }
+  return sessionApproverId
 }
 
 export async function loadRegisterOrThrow(

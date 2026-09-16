@@ -104,7 +104,7 @@
           "priceKindId": "Id da tabela de preço",
           "cashRegisterId": "Id do caixa",
           "stockPolicy": "Política de estoque",
-          "stockPolicyHelp": "BLOCK recusa a venda sem estoque, WARN exige aprovação, ALLOW sempre vende.",
+          "stockPolicyHelp": "BLOCK recusa a venda sem estoque. WARN exige aprovação. ALLOW está desabilitado até o WMS aceitar estoque negativo.",
           "status": "Situação"
         },
         "action": {
@@ -171,11 +171,28 @@
         "cancel": "Cancelar venda"
       },
       "payment": {
-        "title": "Pagamento em dinheiro",
+        "title": "Registrar pagamento",
+        "method": "Meio de pagamento",
         "received": "Valor recebido (BRL)",
+        "applied": "Valor aplicado (BRL)",
         "change": "Troco",
         "due": "Valor devido",
-        "confirm": "Registrar pagamento"
+        "confirm": "Registrar pagamento",
+        "tenders": "Pagamentos registrados",
+        "removeTender": "Remover",
+        "manualHelp": "Confirme o pagamento na maquininha e depois registre aqui. Meios não monetários não geram troco.",
+        "brand": "Bandeira (opcional)",
+        "nsu": "NSU / autorização (opcional)",
+        "installments": "Parcelas",
+        "methods": {
+          "cash": "Dinheiro",
+          "pixManual": "Pix (manual / maquininha)",
+          "debitManual": "Débito (manual)",
+          "creditManual": "Crédito (manual)",
+          "voucherManual": "Voucher (manual)",
+          "storeCredit": "Crédito da loja",
+          "other": "Outro"
+        }
       },
       "receipt": {
         "title": "Comprovante",
@@ -190,6 +207,7 @@
         "lineRemoved": "Item removido",
         "checkedOut": "Pronto para pagamento",
         "paid": "Pagamento registrado",
+        "tenderRemoved": "Pagamento removido",
         "completed": "Venda concluída",
         "cancelled": "Venda cancelada",
         "error": "A operação do PDV falhou"

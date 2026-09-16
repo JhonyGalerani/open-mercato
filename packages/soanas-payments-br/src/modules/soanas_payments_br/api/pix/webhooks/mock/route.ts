@@ -6,14 +6,13 @@ import { resolveTranslations } from '@open-mercato/shared/lib/i18n/server'
 import { isCrudHttpError } from '@open-mercato/shared/lib/crud/errors'
 import type { CommandBus } from '@open-mercato/shared/lib/commands'
 import { pixApplyWebhookSchema } from '../../../../data/validators'
+import { isMockPixWebhookAllowed } from '../../../../lib/mockWebhookGuard'
 import { buildPixCommandOpenApi } from '../../../openapi'
 
 /**
- * Dev/test-only endpoint that simulates the mock PSP calling back into the
- * platform. Real Bacen/PSP webhooks arrive unauthenticated too (they carry their
- * own signature scheme instead of a session), so this route mirrors that shape:
- * no `requireAuth`, tenant/txid identify the charge, and applying the same
- * payload twice is a no-op (see `pixStateMachine`/`MockPixProvider`).
+ * Dev/test mock PSP callback. Disabled outside development/test unless an explicit
+ * shared secret is configured (SOANAS_PIX_MOCK_WEBHOOK_ENABLED + SECRET).
+ * Never accepts arbitrary charge status changes in production without that secret.
  */
 export const metadata = {
   path: '/soanas_payments_br/pix/webhooks/mock',
@@ -25,9 +24,26 @@ type ApplyWebhookResult = { chargeId: string; status: string; applied: boolean }
 export async function POST(req: Request) {
   const { translate } = await resolveTranslations()
   try {
+    const providedSecret =
+      req.headers.get('x-soanas-pix-mock-secret') ?? req.headers.get('x-webhook-secret') ?? null
+    const gate = isMockPixWebhookAllowed({ providedSecret })
+    if (!gate.allowed) {
+      return NextResponse.json(
+        {
+          error: translate(
+            'soanas_payments_br.errors.mock_webhook_disabled',
+            'Mock Pix webhook is disabled outside development/test',
+          ),
+          reason: gate.reason,
+        },
+        { status: 403 },
+      )
+    }
+
     const body = (await readJsonSafe(req, {})) as Record<string, unknown>
     const input = pixApplyWebhookSchema.parse({
       tenantId: body.tenantId,
+      organizationId: body.organizationId,
       payload: { txid: body.txid, status: body.status, e2eId: body.e2eId ?? null },
     })
 
@@ -39,8 +55,8 @@ export async function POST(req: Request) {
         container,
         auth: null,
         organizationScope: null,
-        selectedOrganizationId: null,
-        organizationIds: null,
+        selectedOrganizationId: input.organizationId,
+        organizationIds: [input.organizationId],
         systemActor: true,
       },
     })
@@ -71,9 +87,11 @@ export async function POST(req: Request) {
 
 export const openApi = buildPixCommandOpenApi({
   summary: 'Apply a mock Pix webhook',
-  description: 'Simulates the mock PSP notifying a charge status change. Idempotent for repeated deliveries.',
+  description:
+    'Simulates the mock PSP notifying a charge status change. Disabled outside development/test unless SOANAS_PIX_MOCK_WEBHOOK_SECRET is presented. Idempotent for repeated deliveries.',
   requestSchema: z.object({
     tenantId: z.string().uuid(),
+    organizationId: z.string().uuid(),
     txid: z.string(),
     status: z.string(),
     e2eId: z.string().nullish(),

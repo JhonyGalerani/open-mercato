@@ -1,10 +1,9 @@
 # Soanas — Tudo que foi feito × O que falta × O que precisa
 
 **Data:** 2026-09-16  
-**Base Open Mercato:** `0.7.0` @ `30d509eeb`  
+**Base Open Mercato:** `0.7.0` @ `9903c82f8`  
 **Fork / repo:** `JhonyGalerani/open-mercato`  
 **Branch:** `cursor/soanas-retail-gate-validation-4347`  
-**PR (draft):** https://github.com/JhonyGalerani/open-mercato/pull/1  
 **SSOT funcional:** Blueprint Funcional Completo do Soanas  
 **Matriz rastreável:** [`BLUEPRINT-COVERAGE.md`](./BLUEPRINT-COVERAGE.md) · [`blueprint-coverage.json`](./blueprint-coverage.json)
 
@@ -15,13 +14,13 @@
 | Pergunta | Resposta |
 |----------|----------|
 | Terminou o Blueprint? | **Não** |
-| Estratégia atual | **Retail Vertical Slice v1** (Cash → POS → Sale E2E) — não abrir pacotes vazios |
+| Estratégia atual | **Gate 0** (segurança/recovery) → pagamentos manuais → caixa/POS → NFC-e |
 | Tem fundação documental? | **Sim** |
-| Tem código Soanas? | **Sim** — 4 pacotes (`core`, `establishments`, `cash`, `pos`) |
-| Retail Vertical Slice v1 | **~94%** checklist (falta E2E verde com migrations) |
-| Pronto para SEFAZ / Pix / TEF / hardware real? | **Não** |
+| Tem código Soanas? | **Sim** — 5 pacotes (`core`, `establishments`, `cash`, `pos`, `payments-br`) |
+| Retail Vertical Slice v1 (cash-only) | Checklist E2E verde; DoD de IDs adjacentes rebaixada na rebaseline |
+| Pronto para SEFAZ / Pix integrado / TEF / hardware real? | **Não** (Pix inicial = manual na maquininha) |
 | Métrica principal | Checklist em `IMPLEMENTATION-STATUS.md` → Vertical Slices (não só % da matriz) |
-| `%` `VALIDATED` (Definition of Done) | **0%** |
+| `%` `VALIDATED` (Definition of Done) | **2.3%** (7/303) após rebaseline honesta |
 
 ---
 
@@ -30,28 +29,28 @@
 <!-- soanas:derived-counts:start -->
 | Status | Qtd | Significado |
 |----------|----:|-------------|
-| `ANALYZED` | **227** | Mapeado; sem código Soanas suficiente |
-| `IMPLEMENTED` | **36** | Código/scaffold existe (muitos ainda parciais) |
-| `TESTED` | **20** | Há teste unitário relevante |
-| `VALIDATED` | **20** | DoD completa do prompt mestre |
+| `ANALYZED` | **229** | Mapeado; sem código Soanas suficiente |
+| `IMPLEMENTED` | **40** | Código/scaffold existe (muitos ainda parciais) |
+| `TESTED` | **27** | Há teste unitário relevante |
+| `VALIDATED` | **7** | DoD completa do prompt mestre |
 | `NOT_STARTED` / `IN_PROGRESS` / `BLOCKED_EXTERNAL` | **0** | Ainda não usados nesta fase |
 
-**% IDs com algum código (`IMPLEMENTED`+`TESTED`+`VALIDATED`):** ~25% (76/303)
+**% IDs com algum código (`IMPLEMENTED`+`TESTED`+`VALIDATED`):** ~24% (74/303)
 
 ### Por módulo-alvo (resumo)
 
 | Módulo | Total | ANALYZED | IMPLEMENTED | TESTED | VALIDATED |
 |--------|------:|---------:|------------:|-------:|----------:|
-| `soanas_core` | 37 | 16 | 18 | 3 | 0 |
-| `soanas_pos` | 25 | 7 | 0 | 9 | 9 |
+| `soanas_core` | 37 | 16 | 19 | 2 | 0 |
+| `soanas_pos` | 25 | 7 | 2 | 14 | 2 |
 | `soanas_establishments` | 23 | 8 | 14 | 1 | 0 |
-| `soanas_cash` | 21 | 3 | 4 | 4 | 10 |
+| `soanas_cash` | 21 | 5 | 5 | 6 | 5 |
 | `soanas_fiscal_br` | 13 | 13 | 0 | 0 | 0 |
 | `soanas_core/wms-ux` | 12 | 12 | 0 | 0 | 0 |
 | `soanas_hardware` | 12 | 12 | 0 | 0 | 0 |
 | `soanas_saas` | 11 | 11 | 0 | 0 | 0 |
 | `soanas_procurement` | 11 | 11 | 0 | 0 | 0 |
-| `soanas_payments_br` | 11 | 7 | 0 | 3 | 1 |
+| `soanas_payments_br` | 11 | 7 | 0 | 4 | 0 |
 | `qa` | 11 | 11 | 0 | 0 | 0 |
 | `directory` | 10 | 10 | 0 | 0 | 0 |
 | `soanas_restaurant` | 10 | 10 | 0 | 0 | 0 |

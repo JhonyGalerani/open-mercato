@@ -118,6 +118,8 @@
     "check:time-bombs": "node scripts/time-bomb-scanner.mjs",
     "check:time-bombs:fail": "node scripts/time-bomb-scanner.mjs --fail",
     "agents:check-budget": "node scripts/check-agents-md-budget.mjs",
+    "soanas:sync-status": "node scripts/soanas-sync-status-docs.mjs",
+    "soanas:check-coverage": "node scripts/soanas-check-coverage.mjs",
     "lessons:check": "node packages/create-app/agentic/shared/scripts/check-lessons.mjs --root .",
     "mutation:changed": "node scripts/stryker/mutation-changed.mjs"
   },
