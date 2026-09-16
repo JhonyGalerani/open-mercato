@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-09-16T03:16:57.347Z",
-  "commit": "ba415eafd",
+  "commit": "01e1ca952",
   "version": "0.7.0",
   "rows": [
     {
@@ -1898,7 +1898,7 @@
     },
     {
       "status": "TESTED",
-      "notes": "PaymentTender CASH + change tests",
+      "notes": "PaymentTender CASH in soanas-pos + PixCharge domain in soanas_payments_br",
       "id": "PAY-001",
       "domain": "Payments",
       "feature": "PaymentTender",
@@ -1943,24 +1943,60 @@
       "module": "soanas_payments_br"
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": "PixProvider + MockPixProvider + PixCharge + create/get/cancel/refund/webhook",
       "id": "PAY-PIX-001",
       "domain": "Payments",
       "feature": "Pix",
       "sub": "QR dinâmico / copia-cola / txid / expiração / webhook / polling",
       "origin": "SOANAS",
-      "module": "soanas_payments_br"
+      "module": "soanas_payments_br",
+      "evidence": {
+        "code": [
+          "packages/soanas-payments-br/src/modules/soanas_payments_br/lib/pixProvider.ts",
+          "packages/soanas-payments-br/src/modules/soanas_payments_br/lib/mockPixProvider.ts",
+          "packages/soanas-payments-br/src/modules/soanas_payments_br/lib/pixStateMachine.ts",
+          "packages/soanas-payments-br/src/modules/soanas_payments_br/commands/pix.ts",
+          "packages/soanas-payments-br/src/modules/soanas_payments_br/migrations/Migration20260916070000_soanas_payments_pix.ts"
+        ],
+        "tests": [
+          "packages/soanas-payments-br/src/modules/soanas_payments_br/__tests__/pixStateMachine.test.ts",
+          "packages/soanas-payments-br/src/modules/soanas_payments_br/__tests__/mockPixProvider.test.ts"
+        ],
+        "api": [
+          "POST /api/soanas_payments_br/pix/charges",
+          "GET /api/soanas_payments_br/pix/charges/[txid]",
+          "POST /api/soanas_payments_br/pix/webhooks/mock"
+        ]
+      }
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": "Pix state machine CREATED→WAITING→PAID/EXPIRED/CANCELLED/REFUNDED; unit tested",
       "id": "PAY-PIX-002",
       "domain": "Payments",
       "feature": "Pix",
       "sub": "Conciliação / duplicidade / devolução parcial / recibo",
       "origin": "SOANAS",
-      "module": "soanas_payments_br"
+      "module": "soanas_payments_br",
+      "evidence": {
+        "code": [
+          "packages/soanas-payments-br/src/modules/soanas_payments_br/lib/pixProvider.ts",
+          "packages/soanas-payments-br/src/modules/soanas_payments_br/lib/mockPixProvider.ts",
+          "packages/soanas-payments-br/src/modules/soanas_payments_br/lib/pixStateMachine.ts",
+          "packages/soanas-payments-br/src/modules/soanas_payments_br/commands/pix.ts",
+          "packages/soanas-payments-br/src/modules/soanas_payments_br/migrations/Migration20260916070000_soanas_payments_pix.ts"
+        ],
+        "tests": [
+          "packages/soanas-payments-br/src/modules/soanas_payments_br/__tests__/pixStateMachine.test.ts",
+          "packages/soanas-payments-br/src/modules/soanas_payments_br/__tests__/mockPixProvider.test.ts"
+        ],
+        "api": [
+          "POST /api/soanas_payments_br/pix/charges",
+          "GET /api/soanas_payments_br/pix/charges/[txid]",
+          "POST /api/soanas_payments_br/pix/webhooks/mock"
+        ]
+      }
     },
     {
       "status": "ANALYZED",

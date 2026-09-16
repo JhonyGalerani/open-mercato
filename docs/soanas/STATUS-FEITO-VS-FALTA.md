@@ -30,13 +30,13 @@
 <!-- soanas:derived-counts:start -->
 | Status | Qtd | Significado |
 |----------|----:|-------------|
-| `ANALYZED` | **229** | Mapeado; sem código Soanas suficiente |
+| `ANALYZED` | **227** | Mapeado; sem código Soanas suficiente |
 | `IMPLEMENTED` | **36** | Código/scaffold existe (muitos ainda parciais) |
-| `TESTED` | **18** | Há teste unitário relevante |
+| `TESTED` | **20** | Há teste unitário relevante |
 | `VALIDATED` | **20** | DoD completa do prompt mestre |
 | `NOT_STARTED` / `IN_PROGRESS` / `BLOCKED_EXTERNAL` | **0** | Ainda não usados nesta fase |
 
-**% IDs com algum código (`IMPLEMENTED`+`TESTED`+`VALIDATED`):** ~24% (74/303)
+**% IDs com algum código (`IMPLEMENTED`+`TESTED`+`VALIDATED`):** ~25% (76/303)
 
 ### Por módulo-alvo (resumo)
 
@@ -51,7 +51,7 @@
 | `soanas_hardware` | 12 | 12 | 0 | 0 | 0 |
 | `soanas_saas` | 11 | 11 | 0 | 0 | 0 |
 | `soanas_procurement` | 11 | 11 | 0 | 0 | 0 |
-| `soanas_payments_br` | 11 | 9 | 0 | 1 | 1 |
+| `soanas_payments_br` | 11 | 7 | 0 | 3 | 1 |
 | `qa` | 11 | 11 | 0 | 0 | 0 |
 | `directory` | 10 | 10 | 0 | 0 | 0 |
 | `soanas_restaurant` | 10 | 10 | 0 | 0 | 0 |

@@ -12,5 +12,7 @@
 | TD-008 | Legacy ACL ids `soanas.pos.*` filtered by module registry wildcards | Off-convention prefix vs module `soanas_pos` | Manager wildcards silently ineffective | Prefer `soanas_pos.*` features; keep legacy aliases concrete | Phase 1 |
 | TD-009 | Approval PIN pad UI not built | Supervisor re-login sufficient for dual custody v1 | Weaker floor UX for managers | Soft PIN / badge on terminal | Phase 1→2 |
 | TD-010 | COMPLETED reverse restores WMS+cash but does not yet call `sales.returns.create` | POS orders have no shipment; returns guard blocks | Sales commercial credit deferred | Ship-on-POS-complete or POS-aware return eligibility | Phase 1→2 |
+| TD-011 | Pix charges not yet wired into POS complete saga | Payments package born as vertical slice first | Cash-only complete remains default | Wire Pix tender + wait-for-PAID before complete | Phase 2 |
 
 Regra: toda solução temporária nova ganha linha aqui no mesmo PR.
+

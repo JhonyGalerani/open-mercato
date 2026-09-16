@@ -22,9 +22,9 @@ Foi entregue a **fundação Soanas**, o **Retail Vertical Slice v1 VALIDATED** (
 | Métrica | Valor |
 |---------|------:|
 | IDs do Blueprint | 303 |
-| ANALYZED | 229 |
+| ANALYZED | 227 |
 | IMPLEMENTED | 36 |
-| TESTED | 18 |
+| TESTED | 20 |
 | VALIDATED | **20** |
 <!-- soanas:derived-counts:end -->
 
