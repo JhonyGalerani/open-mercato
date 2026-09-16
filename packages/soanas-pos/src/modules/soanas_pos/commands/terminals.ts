@@ -208,7 +208,7 @@ const deleteTerminalCommand: CommandHandler<PosTerminalDeleteInput, { terminalId
     const openTransaction = await em.findOne(PosTransaction, {
       terminalId: record.id,
       tenantId: record.tenantId,
-      status: { $in: ['DRAFT', 'CHECKOUT', 'PAYMENT_PENDING', 'PAID', 'COMPLETING', 'FAILED_RECOVERABLE'] },
+      status: { $in: ['DRAFT', 'HELD', 'CHECKOUT', 'PAYMENT_PENDING', 'PAID', 'COMPLETING', 'FAILED_RECOVERABLE'] },
       deletedAt: null,
     })
     if (openTransaction) {

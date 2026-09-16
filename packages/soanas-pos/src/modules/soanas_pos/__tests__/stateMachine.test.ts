@@ -16,6 +16,14 @@ describe('soanas_pos state machine', () => {
     expect(canTransition('COMPLETING', 'COMPLETED')).toBe(true)
   })
 
+  it('allows suspend and resume of a draft cart', () => {
+    expect(canTransition('DRAFT', 'HELD')).toBe(true)
+    expect(canTransition('HELD', 'DRAFT')).toBe(true)
+    expect(canTransition('HELD', 'CANCELLED')).toBe(true)
+    expect(canTransition('HELD', 'CHECKOUT')).toBe(false)
+    expect(canTransition('CHECKOUT', 'HELD')).toBe(false)
+  })
+
   it('allows the recovery path after a mid-saga failure', () => {
     expect(canTransition('COMPLETING', 'FAILED_RECOVERABLE')).toBe(true)
     expect(canTransition('FAILED_RECOVERABLE', 'COMPLETING')).toBe(true)
@@ -40,6 +48,7 @@ describe('soanas_pos state machine', () => {
     expect(isTerminalState('PAID')).toBe(false)
     expect(isEditableState('DRAFT')).toBe(true)
     expect(isEditableState('CHECKOUT')).toBe(true)
+    expect(isEditableState('HELD')).toBe(false)
     expect(isEditableState('PAID')).toBe(false)
   })
 

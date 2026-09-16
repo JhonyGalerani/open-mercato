@@ -8,17 +8,21 @@ import {
   posApplyDiscountSchema,
   posCancelSchema,
   posCheckoutSchema,
+  posHoldSchema,
   posLineAddSchema,
   posLineRemoveSchema,
   posLineUpdateSchema,
+  posResumeSchema,
   posSetCustomerSchema,
   posTransactionCreateSchema,
   type PosApplyDiscountInput,
   type PosCancelInput,
   type PosCheckoutInput,
+  type PosHoldInput,
   type PosLineAddInput,
   type PosLineRemoveInput,
   type PosLineUpdateInput,
+  type PosResumeInput,
   type PosSetCustomerInput,
   type PosTransactionCreateInput,
 } from '../data/validators'
@@ -486,17 +490,29 @@ const cancelCommand: CommandHandler<PosCancelInput, { transactionId: string; sta
             )
           }
           if (transaction.status === 'CANCELLED') return
+          // HELD carts never left draft commerce — cancel outright like DRAFT.
           // Anything past payment leaves a trail worth reviewing, so it parks in
           // CANCEL_PENDING for an operator/manager instead of vanishing.
-          const target = transaction.status === 'DRAFT' || transaction.status === 'CHECKOUT'
-            ? 'CANCELLED'
-            : 'CANCEL_PENDING'
+          const target =
+            transaction.status === 'DRAFT' ||
+            transaction.status === 'CHECKOUT' ||
+            transaction.status === 'HELD'
+              ? 'CANCELLED'
+              : 'CANCEL_PENDING'
           await transitionTo(em, transaction, target, {
             trigger: 'soanas_pos.transactions.cancel',
             actorId: parsed.operatorUserId,
             metadata: parsed.reason ? { reason: parsed.reason } : null,
           })
-          if (target === 'CANCELLED') transaction.cancelledAt = new Date()
+          if (target === 'CANCELLED') {
+            transaction.cancelledAt = new Date()
+            if (transaction.status === 'CANCELLED') {
+              transaction.holdName = null
+              transaction.heldAt = null
+              transaction.heldByUserId = null
+              transaction.expiresAt = null
+            }
+          }
           status = target
         },
       ],
@@ -504,6 +520,166 @@ const cancelCommand: CommandHandler<PosCancelInput, { transactionId: string; sta
     )
 
     await emitSoanasPosEvent('soanas.pos.transaction.cancelled', {
+      id: parsed.transactionId,
+      tenantId: parsed.tenantId,
+      organizationId: parsed.organizationId,
+      status,
+    })
+    return { transactionId: parsed.transactionId, status }
+  },
+}
+
+type HoldResult = {
+  transactionId: string
+  status: string
+  holdName: string | null
+  heldAt: string | null
+  expiresAt: string | null
+}
+
+const holdCommand: CommandHandler<PosHoldInput, HoldResult> = {
+  id: 'soanas_pos.transactions.hold',
+  async execute(input, ctx) {
+    const parsed = posHoldSchema.parse(input)
+    const em = forkEm(ctx)
+    let result: HoldResult = {
+      transactionId: parsed.transactionId,
+      status: 'HELD',
+      holdName: null,
+      heldAt: null,
+      expiresAt: null,
+    }
+
+    await withAtomicFlush(
+      em,
+      [
+        async () => {
+          const transaction = await loadTransactionForUpdate(em, {
+            transactionId: parsed.transactionId,
+            tenantId: parsed.tenantId,
+            organizationId: parsed.organizationId,
+          })
+          const { translate } = await resolveTranslations()
+          if (transaction.status === 'HELD') {
+            if (parsed.name !== undefined && parsed.name !== null) transaction.holdName = parsed.name
+            if (parsed.expiresAt !== undefined) transaction.expiresAt = parsed.expiresAt ?? null
+            result = {
+              transactionId: transaction.id,
+              status: transaction.status,
+              holdName: transaction.holdName ?? null,
+              heldAt: transaction.heldAt ? transaction.heldAt.toISOString() : null,
+              expiresAt: transaction.expiresAt ? transaction.expiresAt.toISOString() : null,
+            }
+            return
+          }
+          if (transaction.status !== 'DRAFT') {
+            throw badRequest(
+              translate(
+                'soanas_pos.errors.hold_not_draft',
+                'Only a DRAFT POS sale can be suspended',
+              ),
+            )
+          }
+          const lines = await loadLines(em, transaction)
+          if (!lines.length) {
+            throw badRequest(
+              translate('soanas_pos.errors.empty_cart', 'Cannot suspend an empty cart'),
+            )
+          }
+          await transitionTo(em, transaction, 'HELD', {
+            trigger: 'soanas_pos.transactions.hold',
+            actorId: parsed.operatorUserId,
+            metadata: {
+              holdName: parsed.name ?? null,
+              expiresAt: parsed.expiresAt ? parsed.expiresAt.toISOString() : null,
+            },
+          })
+          transaction.holdName = parsed.name ?? transaction.holdName ?? null
+          transaction.heldAt = new Date()
+          transaction.heldByUserId = parsed.operatorUserId
+          transaction.expiresAt = parsed.expiresAt ?? null
+          result = {
+            transactionId: transaction.id,
+            status: transaction.status,
+            holdName: transaction.holdName ?? null,
+            heldAt: transaction.heldAt.toISOString(),
+            expiresAt: transaction.expiresAt ? transaction.expiresAt.toISOString() : null,
+          }
+        },
+      ],
+      { transaction: true, label: 'soanas_pos.transactions.hold' },
+    )
+
+    await emitSoanasPosEvent('soanas.pos.transaction.held', {
+      id: parsed.transactionId,
+      tenantId: parsed.tenantId,
+      organizationId: parsed.organizationId,
+      holdName: result.holdName,
+      expiresAt: result.expiresAt,
+    })
+    return result
+  },
+}
+
+const resumeCommand: CommandHandler<
+  PosResumeInput,
+  { transactionId: string; status: string }
+> = {
+  id: 'soanas_pos.transactions.resume',
+  async execute(input, ctx) {
+    const parsed = posResumeSchema.parse(input)
+    const em = forkEm(ctx)
+    let status = 'DRAFT'
+
+    await withAtomicFlush(
+      em,
+      [
+        async () => {
+          const transaction = await loadTransactionForUpdate(em, {
+            transactionId: parsed.transactionId,
+            tenantId: parsed.tenantId,
+            organizationId: parsed.organizationId,
+          })
+          const { translate } = await resolveTranslations()
+          if (transaction.status === 'DRAFT') {
+            status = 'DRAFT'
+            return
+          }
+          if (transaction.status !== 'HELD') {
+            throw badRequest(
+              translate(
+                'soanas_pos.errors.resume_not_held',
+                'Only a HELD POS sale can be resumed',
+              ),
+            )
+          }
+          if (transaction.expiresAt && transaction.expiresAt.getTime() < Date.now()) {
+            throw badRequest(
+              translate(
+                'soanas_pos.errors.hold_expired',
+                'This suspended sale has expired and cannot be resumed',
+              ),
+            )
+          }
+          await transitionTo(em, transaction, 'DRAFT', {
+            trigger: 'soanas_pos.transactions.resume',
+            actorId: parsed.operatorUserId,
+            metadata: {
+              previousHoldName: transaction.holdName ?? null,
+              previousHeldAt: transaction.heldAt ? transaction.heldAt.toISOString() : null,
+            },
+          })
+          transaction.holdName = null
+          transaction.heldAt = null
+          transaction.heldByUserId = null
+          transaction.expiresAt = null
+          status = transaction.status
+        },
+      ],
+      { transaction: true, label: 'soanas_pos.transactions.resume' },
+    )
+
+    await emitSoanasPosEvent('soanas.pos.transaction.resumed', {
       id: parsed.transactionId,
       tenantId: parsed.tenantId,
       organizationId: parsed.organizationId,
@@ -521,3 +697,5 @@ registerCommand(setCustomerCommand)
 registerCommand(applyDiscountCommand)
 registerCommand(checkoutCommand)
 registerCommand(cancelCommand)
+registerCommand(holdCommand)
+registerCommand(resumeCommand)

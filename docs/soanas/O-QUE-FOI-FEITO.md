@@ -22,9 +22,9 @@ Foi entregue a **fundação Soanas** (auditoria + matriz + ADRs) e o **Retail Ve
 | Métrica | Valor |
 |---------|------:|
 | IDs do Blueprint | 303 |
-| ANALYZED | 233 |
+| ANALYZED | 232 |
 | IMPLEMENTED | 41 |
-| TESTED | 9 |
+| TESTED | 10 |
 | VALIDATED | **20** |
 <!-- soanas:derived-counts:end -->
 

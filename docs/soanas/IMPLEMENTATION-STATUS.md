@@ -7,7 +7,7 @@
 
 <!-- soanas:derived-counts:start -->
 ```
-Blueprint coverage (IDs): ANALYZED 233 | IMPLEMENTED 41 | TESTED 9 | VALIDATED 20 / 303
+Blueprint coverage (IDs): ANALYZED 232 | IMPLEMENTED 41 | TESTED 10 | VALIDATED 20 / 303
 Validated (DoD completa): 6.6%
 ```
 <!-- soanas:derived-counts:end -->
@@ -67,7 +67,7 @@ Progress = checklist items done / total. **Primary** product metric (not Bluepri
 | Sell + history UI | done |
 | Unit tests (51) | done |
 | Integration API `TC-SOANAS-RETAIL-001` + UI-001 | green on ephemeral Postgres |
-| Hold/resume | not done (not required for slice gate if draft cancel works) |
+| Hold/resume | done (`HELD` status + hold/resume API; `TC-SOANAS-POS-HOLD-001` green; transfer/stock reserve pending) |
 | Migration applied on DB | done (ephemeral `open-mercato-soanas-ephemeral`) |
 
 ## Priority order (locked)

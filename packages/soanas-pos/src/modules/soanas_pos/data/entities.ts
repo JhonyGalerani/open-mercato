@@ -15,6 +15,7 @@ export type PosTerminalStatus = 'active' | 'inactive'
  */
 export type PosTransactionStatus =
   | 'DRAFT'
+  | 'HELD'
   | 'CHECKOUT'
   | 'PAYMENT_PENDING'
   | 'PAID'
@@ -166,6 +167,19 @@ export class PosTransaction {
 
   @Property({ name: 'idempotency_key', type: 'text', nullable: true })
   idempotencyKey?: string | null
+
+  /** Operator-facing label when the cart is suspended (POS-HOLD-001). */
+  @Property({ name: 'hold_name', type: 'text', nullable: true })
+  holdName?: string | null
+
+  @Property({ name: 'held_at', type: Date, nullable: true })
+  heldAt?: Date | null
+
+  @Property({ name: 'held_by_user_id', type: 'uuid', nullable: true })
+  heldByUserId?: string | null
+
+  @Property({ name: 'expires_at', type: Date, nullable: true })
+  expiresAt?: Date | null
 
   @Property({ name: 'created_at', type: Date, onCreate: () => new Date() })
   createdAt: Date = new Date()

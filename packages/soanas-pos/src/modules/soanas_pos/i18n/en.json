@@ -37,6 +37,11 @@
       "complete_failed": "Failed to complete the POS sale",
       "recover_failed": "Failed to recover the POS sale",
       "cancel_failed": "Failed to cancel the POS transaction",
+      "hold_failed": "Failed to suspend the POS transaction",
+      "resume_failed": "Failed to resume the POS transaction",
+      "hold_not_draft": "Only a DRAFT POS sale can be suspended",
+      "resume_not_held": "Only a HELD POS sale can be resumed",
+      "hold_expired": "This suspended sale has expired and cannot be resumed",
       "catalog_search_failed": "Failed to search the catalog"
     },
     "audit": {

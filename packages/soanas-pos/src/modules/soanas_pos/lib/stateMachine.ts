@@ -5,7 +5,8 @@ import type { PosTransactionStatus } from '../data/entities'
  * rejected before it can reach the database.
  */
 export const POS_TRANSITIONS: Record<PosTransactionStatus, PosTransactionStatus[]> = {
-  DRAFT: ['DRAFT', 'CHECKOUT', 'CANCELLED', 'CANCEL_PENDING'],
+  DRAFT: ['DRAFT', 'HELD', 'CHECKOUT', 'CANCELLED', 'CANCEL_PENDING'],
+  HELD: ['DRAFT', 'CANCELLED'],
   CHECKOUT: ['DRAFT', 'PAYMENT_PENDING', 'CANCELLED', 'CANCEL_PENDING'],
   PAYMENT_PENDING: ['PAYMENT_PENDING', 'PAID', 'PAYMENT_UNKNOWN', 'CHECKOUT', 'CANCELLED', 'CANCEL_PENDING'],
   PAID: ['COMPLETING', 'CANCEL_PENDING'],

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-16T03:03:28.746Z",
-  "commit": "e35b8a220",
+  "generatedAt": "2026-09-16T03:16:57.347Z",
+  "commit": "d75af4e63",
   "version": "0.7.0",
   "rows": [
     {
@@ -1348,14 +1348,30 @@
       }
     },
     {
-      "status": "ANALYZED",
-      "notes": "",
+      "status": "TESTED",
+      "notes": "hold/resume DRAFT↔HELD with name+expiry; transfer/stock reserve deferred (POS-HOLD-002)",
       "id": "POS-HOLD-001",
       "domain": "POS",
       "feature": "Pré-venda",
       "sub": "Suspender/nomear/retomar/transferir/expirar",
       "origin": "SOANAS",
-      "module": "soanas_pos"
+      "module": "soanas_pos",
+      "evidence": {
+        "code": [
+          "packages/soanas-pos/src/modules/soanas_pos/commands/transactions.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/transactions/[id]/hold/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/transactions/[id]/resume/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/migrations/Migration20260916040000_soanas_pos_hold.ts"
+        ],
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__tests__/stateMachine.test.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-POS-HOLD-001.spec.ts"
+        ],
+        "api": [
+          "POST /api/soanas_pos/transactions/[id]/hold",
+          "POST /api/soanas_pos/transactions/[id]/resume"
+        ]
+      }
     },
     {
       "status": "ANALYZED",

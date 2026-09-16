@@ -37,6 +37,11 @@
       "complete_failed": "Falha ao concluir a venda PDV",
       "recover_failed": "Falha ao recuperar a venda PDV",
       "cancel_failed": "Falha ao cancelar a venda PDV",
+      "hold_failed": "Falha ao suspender a venda PDV",
+      "resume_failed": "Falha ao retomar a venda PDV",
+      "hold_not_draft": "Somente uma venda PDV em rascunho pode ser suspensa",
+      "resume_not_held": "Somente uma venda PDV suspensa pode ser retomada",
+      "hold_expired": "Esta venda suspensa expirou e não pode ser retomada",
       "catalog_search_failed": "Falha ao pesquisar o catálogo"
     },
     "audit": {

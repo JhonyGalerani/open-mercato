@@ -176,6 +176,20 @@ export const posCancelSchema = z.object({
   reason: z.string().trim().max(255).nullish(),
 })
 
+export const posHoldSchema = z.object({
+  ...scopeShape,
+  transactionId: z.string().uuid(),
+  operatorUserId: z.string().uuid(),
+  name: z.string().trim().min(1).max(120).nullish(),
+  expiresAt: z.coerce.date().nullish(),
+})
+
+export const posResumeSchema = z.object({
+  ...scopeShape,
+  transactionId: z.string().uuid(),
+  operatorUserId: z.string().uuid(),
+})
+
 export const posCatalogSearchSchema = z.object({
   search: z.string().trim().max(191).optional(),
   page: z.coerce.number().min(1).default(1),
@@ -205,3 +219,5 @@ export type PosCheckoutInput = z.infer<typeof posCheckoutSchema>
 export type PosCashTenderInput = z.infer<typeof posCashTenderSchema>
 export type PosCompleteInput = z.infer<typeof posCompleteSchema>
 export type PosCancelInput = z.infer<typeof posCancelSchema>
+export type PosHoldInput = z.infer<typeof posHoldSchema>
+export type PosResumeInput = z.infer<typeof posResumeSchema>
