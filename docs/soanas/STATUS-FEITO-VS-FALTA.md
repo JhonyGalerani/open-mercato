@@ -31,8 +31,8 @@
 | Status | Qtd | Significado |
 |----------|----:|-------------|
 | `ANALYZED` | **229** | Mapeado; sem código Soanas suficiente |
-| `IMPLEMENTED` | **37** | Código/scaffold existe (muitos ainda parciais) |
-| `TESTED` | **17** | Há teste unitário relevante |
+| `IMPLEMENTED` | **36** | Código/scaffold existe (muitos ainda parciais) |
+| `TESTED` | **18** | Há teste unitário relevante |
 | `VALIDATED` | **20** | DoD completa do prompt mestre |
 | `NOT_STARTED` / `IN_PROGRESS` / `BLOCKED_EXTERNAL` | **0** | Ainda não usados nesta fase |
 
@@ -42,8 +42,8 @@
 
 | Módulo | Total | ANALYZED | IMPLEMENTED | TESTED | VALIDATED |
 |--------|------:|---------:|------------:|-------:|----------:|
-| `soanas_core` | 38 | 16 | 19 | 3 | 0 |
-| `soanas_pos` | 24 | 7 | 0 | 8 | 9 |
+| `soanas_core` | 37 | 16 | 18 | 3 | 0 |
+| `soanas_pos` | 25 | 7 | 0 | 9 | 9 |
 | `soanas_establishments` | 23 | 8 | 14 | 1 | 0 |
 | `soanas_cash` | 21 | 3 | 4 | 4 | 10 |
 | `soanas_fiscal_br` | 13 | 13 | 0 | 0 | 0 |

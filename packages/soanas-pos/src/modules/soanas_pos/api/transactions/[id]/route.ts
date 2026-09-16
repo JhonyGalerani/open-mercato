@@ -73,6 +73,9 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       createdAt: transaction.createdAt.toISOString(),
       updatedAt: transaction.updatedAt.toISOString(),
       completedAt: transaction.completedAt ? transaction.completedAt.toISOString() : null,
+      cancelledAt: transaction.cancelledAt ? transaction.cancelledAt.toISOString() : null,
+      reversedAt: transaction.reversedAt ? transaction.reversedAt.toISOString() : null,
+      reversalReason: transaction.reversalReason ?? null,
       lines: lines.map((line) => ({
         id: line.id,
         catalogProductId: line.catalogProductId ?? null,

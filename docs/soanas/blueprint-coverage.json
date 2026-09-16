@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-09-16T03:16:57.347Z",
-  "commit": "c1e746b30",
+  "commit": "ba415eafd",
   "version": "0.7.0",
   "rows": [
     {
@@ -454,14 +454,31 @@
       "module": "soanas_core"
     },
     {
-      "status": "IMPLEMENTED",
-      "notes": "ACL catalog",
+      "status": "TESTED",
+      "notes": "DRAFT/HELD cancel + COMPLETED reverse with approval; never deletes history",
       "id": "AUTH-POS-004",
       "domain": "Auth/RBAC",
       "feature": "Permissão POS",
       "sub": "cancelar item / venda",
       "origin": "SOANAS",
-      "module": "soanas_core"
+      "module": "soanas_pos",
+      "evidence": {
+        "code": [
+          "packages/soanas-pos/src/modules/soanas_pos/commands/reverse.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/commands/transactions.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/transactions/[id]/reverse/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/transactions/[id]/cancel/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/migrations/Migration20260916060000_soanas_pos_reversal.ts"
+        ],
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__tests__/stateMachine.test.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-POS-CANCEL-001.spec.ts"
+        ],
+        "api": [
+          "POST /api/soanas_pos/transactions/[id]/cancel",
+          "POST /api/soanas_pos/transactions/[id]/reverse"
+        ]
+      }
     },
     {
       "status": "TESTED",
@@ -1269,7 +1286,7 @@
     },
     {
       "status": "VALIDATED",
-      "notes": "hold incomplete; draft cancel exists; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
+      "notes": "Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI); hold/cancel/reverse continue on same terminal surface",
       "id": "POS-003",
       "domain": "POS",
       "feature": "Terminal",
@@ -1277,19 +1294,23 @@
       "origin": "SOANAS",
       "module": "soanas_pos",
       "evidence": {
-        "tests": [
-          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
-          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
-          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
-          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        "code": [
+          "packages/soanas-pos/src/modules/soanas_pos/commands/reverse.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/commands/transactions.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/transactions/[id]/reverse/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/api/transactions/[id]/cancel/route.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/migrations/Migration20260916060000_soanas_pos_reversal.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/commands/complete.ts"
         ],
-        "validatedAt": "2026-09-16",
-        "gates": [
-          "migrations ephemeral DB",
-          "TC-SOANAS-RETAIL-001",
-          "TC-SOANAS-RETAIL-CONCURRENCY",
-          "TC-SOANAS-RETAIL-RECOVERY",
-          "TC-SOANAS-RETAIL-UI-001"
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__tests__/stateMachine.test.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-POS-CANCEL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts"
+        ],
+        "api": [
+          "POST /api/soanas_pos/transactions/[id]/cancel",
+          "POST /api/soanas_pos/transactions/[id]/reverse",
+          "POST /api/soanas_pos/transactions/[id]/complete"
         ]
       }
     },

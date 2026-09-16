@@ -11,7 +11,8 @@ export const POS_TRANSITIONS: Record<PosTransactionStatus, PosTransactionStatus[
   PAYMENT_PENDING: ['PAYMENT_PENDING', 'PAID', 'PAYMENT_UNKNOWN', 'CHECKOUT', 'CANCELLED', 'CANCEL_PENDING'],
   PAID: ['COMPLETING', 'CANCEL_PENDING'],
   COMPLETING: ['COMPLETED', 'FAILED_RECOVERABLE', 'SYNC_PENDING', 'PAYMENT_UNKNOWN'],
-  COMPLETED: [],
+  COMPLETED: ['REVERSED'],
+  REVERSED: [],
   PAYMENT_UNKNOWN: ['PAID', 'PAYMENT_PENDING', 'FAILED_RECOVERABLE', 'CANCEL_PENDING'],
   SYNC_PENDING: ['COMPLETING', 'COMPLETED', 'FAILED_RECOVERABLE'],
   CANCEL_PENDING: ['CANCELLED', 'FAILED_RECOVERABLE'],
@@ -20,7 +21,7 @@ export const POS_TRANSITIONS: Record<PosTransactionStatus, PosTransactionStatus[
 }
 
 /** Statuses from which no further transition is possible. */
-export const POS_TERMINAL_STATES: PosTransactionStatus[] = ['COMPLETED', 'CANCELLED']
+export const POS_TERMINAL_STATES: PosTransactionStatus[] = ['COMPLETED', 'CANCELLED', 'REVERSED']
 
 export function canTransition(from: PosTransactionStatus, to: PosTransactionStatus): boolean {
   return (POS_TRANSITIONS[from] ?? []).includes(to)

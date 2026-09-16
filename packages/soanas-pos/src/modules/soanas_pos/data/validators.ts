@@ -195,7 +195,16 @@ export const posCancelSchema = z.object({
   ...scopeShape,
   transactionId: z.string().uuid(),
   operatorUserId: z.string().uuid(),
-  reason: z.string().trim().max(255).nullish(),
+  reason: z.string().trim().min(3).max(255),
+})
+
+export const posReverseSchema = z.object({
+  ...scopeShape,
+  transactionId: z.string().uuid(),
+  operatorUserId: z.string().uuid(),
+  reason: z.string().trim().min(3).max(500),
+  approvalRequestId: z.string().uuid().optional(),
+  idempotencyKey: z.string().trim().min(8).max(128).optional(),
 })
 
 export const posHoldSchema = z.object({
@@ -243,5 +252,6 @@ export type PosCheckoutInput = z.infer<typeof posCheckoutSchema>
 export type PosCashTenderInput = z.infer<typeof posCashTenderSchema>
 export type PosCompleteInput = z.infer<typeof posCompleteSchema>
 export type PosCancelInput = z.infer<typeof posCancelSchema>
+export type PosReverseInput = z.infer<typeof posReverseSchema>
 export type PosHoldInput = z.infer<typeof posHoldSchema>
 export type PosResumeInput = z.infer<typeof posResumeSchema>

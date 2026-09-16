@@ -25,7 +25,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 export const openApi = buildPosCommandOpenApi({
   summary: 'Cancel a POS transaction',
   description:
-    'DRAFT/CHECKOUT sales are cancelled outright; paid sales park in CANCEL_PENDING. A COMPLETED sale must be reversed with a sales return instead.',
+    'DRAFT/HELD/CHECKOUT sales are cancelled outright (reason required). Paid sales park in CANCEL_PENDING. COMPLETED sales must use POST .../reverse (compensating saga).',
   requestSchema: posCancelSchema.omit({
     tenantId: true,
     organizationId: true,

@@ -21,6 +21,7 @@ export type PosTransactionStatus =
   | 'PAID'
   | 'COMPLETING'
   | 'COMPLETED'
+  | 'REVERSED'
   | 'PAYMENT_UNKNOWN'
   | 'SYNC_PENDING'
   | 'CANCEL_PENDING'
@@ -192,6 +193,16 @@ export class PosTransaction {
 
   @Property({ name: 'cancelled_at', type: Date, nullable: true })
   cancelledAt?: Date | null
+
+  /** When a COMPLETED sale was reversed (never deletes history). */
+  @Property({ name: 'reversed_at', type: Date, nullable: true })
+  reversedAt?: Date | null
+
+  @Property({ name: 'reversal_reason', type: 'text', nullable: true })
+  reversalReason?: string | null
+
+  @Property({ name: 'reversal_cash_movement_id', type: 'uuid', nullable: true })
+  reversalCashMovementId?: string | null
 
   @Property({ name: 'deleted_at', type: Date, nullable: true })
   deletedAt?: Date | null

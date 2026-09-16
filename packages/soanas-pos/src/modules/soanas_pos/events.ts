@@ -9,6 +9,7 @@ const events = [
   { id: 'soanas.pos.transaction.completed', label: 'POS transaction completed', entity: 'pos_transaction', category: 'custom' },
   { id: 'soanas.pos.transaction.failed', label: 'POS transaction failed mid-completion', entity: 'pos_transaction', category: 'custom' },
   { id: 'soanas.pos.transaction.cancelled', label: 'POS transaction cancelled', entity: 'pos_transaction', category: 'custom' },
+  { id: 'soanas.pos.transaction.reversed', label: 'POS completed sale reversed', entity: 'pos_transaction', category: 'custom' },
   { id: 'soanas.pos.approval.requested', label: 'POS approval requested', entity: 'pos_approval_request', category: 'custom' },
   { id: 'soanas.pos.approval.decided', label: 'POS approval decided', entity: 'pos_approval_request', category: 'custom' },
 ] as const

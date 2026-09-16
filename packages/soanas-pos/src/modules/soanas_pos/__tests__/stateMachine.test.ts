@@ -33,6 +33,8 @@ describe('soanas_pos state machine', () => {
     expect(canTransition('DRAFT', 'COMPLETED')).toBe(false)
     expect(canTransition('DRAFT', 'PAID')).toBe(false)
     expect(canTransition('COMPLETED', 'CANCELLED')).toBe(false)
+    expect(canTransition('COMPLETED', 'REVERSED')).toBe(true)
+    expect(canTransition('REVERSED', 'DRAFT')).toBe(false)
     expect(canTransition('CANCELLED', 'DRAFT')).toBe(false)
     expect(canTransition('PAYMENT_PENDING', 'COMPLETED')).toBe(false)
   })
@@ -45,6 +47,7 @@ describe('soanas_pos state machine', () => {
   it('knows terminal and editable states', () => {
     expect(isTerminalState('COMPLETED')).toBe(true)
     expect(isTerminalState('CANCELLED')).toBe(true)
+    expect(isTerminalState('REVERSED')).toBe(true)
     expect(isTerminalState('PAID')).toBe(false)
     expect(isEditableState('DRAFT')).toBe(true)
     expect(isEditableState('CHECKOUT')).toBe(true)

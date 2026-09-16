@@ -21,6 +21,7 @@ export const setup: ModuleSetupConfig = {
       'soanas_pos.transactions.view',
       'soanas_pos.transactions.sell',
       'soanas_pos.transactions.complete',
+      'soanas_pos.transactions.cancel',
       'soanas_pos.catalog.search',
       'soanas_pos.discount.grant',
     ],

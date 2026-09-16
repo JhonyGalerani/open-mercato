@@ -483,6 +483,12 @@ const cancelCommand: CommandHandler<PosCancelInput, { transactionId: string; sta
   id: 'soanas_pos.transactions.cancel',
   async execute(input, ctx) {
     const parsed = posCancelSchema.parse(input)
+    const { translate } = await resolveTranslations()
+    if (!(await callerHasFeature(ctx, 'soanas_pos.transactions.cancel'))) {
+      throw forbidden(
+        translate('soanas_pos.errors.cancel_forbidden', 'You are not allowed to cancel POS sales'),
+      )
+    }
     const em = forkEm(ctx)
     let status = 'CANCELLED'
 
@@ -495,14 +501,11 @@ const cancelCommand: CommandHandler<PosCancelInput, { transactionId: string; sta
             tenantId: parsed.tenantId,
             organizationId: parsed.organizationId,
           })
-          const { translate } = await resolveTranslations()
-          if (transaction.status === 'COMPLETED') {
-            // A completed sale already moved stock, cash and a SalesOrder. v1 has no refund
-            // saga, so the operator must issue a Sales return instead of cancelling here.
+          if (transaction.status === 'COMPLETED' || transaction.status === 'REVERSED') {
             throw badRequest(
               translate(
                 'soanas_pos.errors.completed_not_cancellable',
-                'A completed POS sale cannot be cancelled; register a sales return instead',
+                'A completed POS sale cannot be cancelled; use the reverse endpoint instead',
               ),
             )
           }
@@ -519,16 +522,14 @@ const cancelCommand: CommandHandler<PosCancelInput, { transactionId: string; sta
           await transitionTo(em, transaction, target, {
             trigger: 'soanas_pos.transactions.cancel',
             actorId: parsed.operatorUserId,
-            metadata: parsed.reason ? { reason: parsed.reason } : null,
+            metadata: { reason: parsed.reason },
           })
           if (target === 'CANCELLED') {
             transaction.cancelledAt = new Date()
-            if (transaction.status === 'CANCELLED') {
-              transaction.holdName = null
-              transaction.heldAt = null
-              transaction.heldByUserId = null
-              transaction.expiresAt = null
-            }
+            transaction.holdName = null
+            transaction.heldAt = null
+            transaction.heldByUserId = null
+            transaction.expiresAt = null
           }
           status = target
         },
