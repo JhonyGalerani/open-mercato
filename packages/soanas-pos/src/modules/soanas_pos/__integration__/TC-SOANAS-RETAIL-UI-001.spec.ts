@@ -293,7 +293,10 @@ test.describe('TC-SOANAS-RETAIL-UI-001: Retail operator browser path', () => {
 
       await page.getByRole('button', { name: 'Complete sale', exact: true }).click()
       await expect(page.getByText(/Status:\s*COMPLETED/)).toBeVisible({ timeout: 30000 })
-      await page.getByRole('button', { name: 'Close', exact: true }).click()
+      const receiptDialog = page.getByRole('dialog').filter({ hasText: /Receipt/i })
+      await expect(receiptDialog).toBeVisible({ timeout: 15000 })
+      await receiptDialog.locator('button').filter({ hasText: /^Close$/ }).click()
+      await expect(receiptDialog).toHaveCount(0)
 
       await page.goto('/backend/soanas/pos/sales')
       await expect(page.getByText('COMPLETED').first()).toBeVisible({ timeout: 20000 })

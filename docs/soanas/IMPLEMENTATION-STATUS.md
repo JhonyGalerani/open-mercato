@@ -7,8 +7,8 @@
 
 <!-- soanas:derived-counts:start -->
 ```
-Blueprint coverage (IDs): ANALYZED 233 | IMPLEMENTED 41 | TESTED 29 | VALIDATED 0 / 303
-Validated (DoD completa): 0.0%
+Blueprint coverage (IDs): ANALYZED 233 | IMPLEMENTED 41 | TESTED 9 | VALIDATED 20 / 303
+Validated (DoD completa): 6.6%
 ```
 <!-- soanas:derived-counts:end -->
 
@@ -36,9 +36,9 @@ Progress = checklist items done / total. **Primary** product metric (not Bluepri
 | 14 | Recovery after crash mid-complete | done (`/recover` + checkpoints) |
 | 15 | Concurrent stock contention deterministic | done (API race on ephemeral Postgres + `PESSIMISTIC_WRITE`) |
 | 16 | Sales history UI | done |
-| 17 | E2E Playwright retail path | in progress (`TC-SOANAS-RETAIL-001` API+concurrency+recovery green; browser UI E2E running) |
+| 17 | E2E Playwright retail path | done (`TC-SOANAS-RETAIL-001` + CONCURRENCY + RECOVERY + UI-001 green on ephemeral Postgres) |
 
-**Retail Sale v1:** ~94% (16/17; browser UI E2E is the remaining gate for VALIDATED)  
+**Retail Sale v1:** VALIDATED (17/17) — ephemeral migrate + API + concurrency + recovery + browser UI  
 **Retail Sale + Pix:** 0%  
 **Retail Fiscal NFC-e:** 0%  
 **Retail Offline:** 0%  
@@ -52,7 +52,7 @@ Progress = checklist items done / total. **Primary** product metric (not Bluepri
 | Count + blind close + reconciliation + approvals | done |
 | Basic UI | done |
 | Unit tests (36) | done |
-| Migration applied on DB | pending (Ask First) |
+| Migration applied on DB | done (ephemeral `open-mercato-soanas-ephemeral`) |
 
 ## POS DoD (domain)
 
@@ -66,9 +66,9 @@ Progress = checklist items done / total. **Primary** product metric (not Bluepri
 | Mock receipt | done |
 | Sell + history UI | done |
 | Unit tests (51) | done |
-| Integration API `TC-SOANAS-RETAIL-001` | written; run pending env |
+| Integration API `TC-SOANAS-RETAIL-001` + UI-001 | green on ephemeral Postgres |
 | Hold/resume | not done (not required for slice gate if draft cancel works) |
-| Migration applied on DB | pending (Ask First) |
+| Migration applied on DB | done (ephemeral `open-mercato-soanas-ephemeral`) |
 
 ## Priority order (locked)
 

@@ -32,8 +32,8 @@
 |----------|----:|-------------|
 | `ANALYZED` | **233** | Mapeado; sem código Soanas suficiente |
 | `IMPLEMENTED` | **41** | Código/scaffold existe (muitos ainda parciais) |
-| `TESTED` | **29** | Há teste unitário relevante |
-| `VALIDATED` | **0** | DoD completa do prompt mestre |
+| `TESTED` | **9** | Há teste unitário relevante |
+| `VALIDATED` | **20** | DoD completa do prompt mestre |
 | `NOT_STARTED` / `IN_PROGRESS` / `BLOCKED_EXTERNAL` | **0** | Ainda não usados nesta fase |
 
 **% IDs com algum código (`IMPLEMENTED`+`TESTED`+`VALIDATED`):** ~23% (70/303)
@@ -44,14 +44,14 @@
 |--------|------:|---------:|------------:|-------:|----------:|
 | `soanas_core` | 44 | 19 | 22 | 3 | 0 |
 | `soanas_establishments` | 23 | 8 | 14 | 1 | 0 |
-| `soanas_cash` | 21 | 3 | 4 | 14 | 0 |
-| `soanas_pos` | 17 | 8 | 0 | 9 | 0 |
+| `soanas_cash` | 21 | 3 | 4 | 4 | 10 |
+| `soanas_pos` | 17 | 8 | 0 | 0 | 9 |
 | `soanas_fiscal_br` | 13 | 13 | 0 | 0 | 0 |
 | `soanas_core/wms-ux` | 12 | 12 | 0 | 0 | 0 |
 | `soanas_hardware` | 12 | 12 | 0 | 0 | 0 |
 | `soanas_saas` | 11 | 11 | 0 | 0 | 0 |
 | `soanas_procurement` | 11 | 11 | 0 | 0 | 0 |
-| `soanas_payments_br` | 11 | 9 | 0 | 2 | 0 |
+| `soanas_payments_br` | 11 | 9 | 0 | 1 | 1 |
 | `qa` | 11 | 11 | 0 | 0 | 0 |
 | `directory` | 10 | 10 | 0 | 0 | 0 |
 | `soanas_restaurant` | 10 | 10 | 0 | 0 | 0 |

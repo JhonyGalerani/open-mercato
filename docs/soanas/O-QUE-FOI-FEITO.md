@@ -24,8 +24,8 @@ Foi entregue a **fundação Soanas** (auditoria + matriz + ADRs) e o **Retail Ve
 | IDs do Blueprint | 303 |
 | ANALYZED | 233 |
 | IMPLEMENTED | 41 |
-| TESTED | 29 |
-| VALIDATED | **0** |
+| TESTED | 9 |
+| VALIDATED | **20** |
 <!-- soanas:derived-counts:end -->
 
 **Métrica principal do produto:** checklist Vertical Slice em [`IMPLEMENTATION-STATUS.md`](./IMPLEMENTATION-STATUS.md) — não o percentual bruto da matriz.
