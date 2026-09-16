@@ -2,7 +2,7 @@
 
 **Updated:** 2026-09-16  
 **Base:** Open Mercato 0.7.0 @ `9903c82f8`  
-**Branch:** `cursor/soanas-rebaseline-gate0-9e05`  
+**Branch:** `cursor/soanas-retail-gate-validation-4347`  
 **Strategy:** Retail Vertical Slice first — do **not** open empty packages. Gate 0 critical fixes in progress.
 
 <!-- soanas:derived-counts:start -->

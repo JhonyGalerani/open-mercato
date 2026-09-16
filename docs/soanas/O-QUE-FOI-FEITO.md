@@ -2,7 +2,7 @@
 
 **Data:** 2026-09-16  
 **Base:** Open Mercato `0.7.0` @ `9903c82f8`  
-**Branch:** `cursor/soanas-rebaseline-gate0-9e05`  
+**Branch:** `cursor/soanas-retail-gate-validation-4347`  
 **PR:** https://github.com/JhonyGalerani/open-mercato/pull/1  
 
 Documento de entrega: o que já existe no repositório.  

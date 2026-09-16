@@ -26,12 +26,29 @@ export const stockPolicySchema = z.enum(['BLOCK', 'WARN', 'ALLOW'])
 export const terminalStatusSchema = z.enum(['active', 'inactive'])
 export const tenderTypeSchema = z.enum([
   'CASH',
+  'PIX_MANUAL',
+  'DEBIT_MANUAL',
+  'CREDIT_MANUAL',
+  'VOUCHER_MANUAL',
+  'STORE_CREDIT',
+  'OTHER',
   'PIX',
   'CARD_DEBIT',
   'CARD_CREDIT',
   'VOUCHER',
+])
+
+export const manualTenderTypeSchema = z.enum([
+  'PIX_MANUAL',
+  'DEBIT_MANUAL',
+  'CREDIT_MANUAL',
+  'VOUCHER_MANUAL',
   'STORE_CREDIT',
   'OTHER',
+  'PIX',
+  'CARD_DEBIT',
+  'CARD_CREDIT',
+  'VOUCHER',
 ])
 
 // ---------------------------------------------------------------------------
@@ -182,6 +199,33 @@ export const posCashTenderSchema = z.object({
   amountReceivedCents: centsSchema,
   idempotencyKey: idempotencyKeySchema,
 })
+export type PosCashTenderInput = z.infer<typeof posCashTenderSchema>
+
+export const posManualTenderSchema = z.object({
+  ...scopeShape,
+  transactionId: z.string().uuid(),
+  operatorUserId: z.string().uuid(),
+  type: manualTenderTypeSchema,
+  amountAppliedCents: centsSchema,
+  brand: z.string().trim().max(64).nullish(),
+  installments: z.number().int().min(1).max(48).nullish(),
+  nsu: z.string().trim().max(64).nullish(),
+  authorizationCode: z.string().trim().max(64).nullish(),
+  acquirer: z.string().trim().max(64).nullish(),
+  externalTerminal: z.string().trim().max(64).nullish(),
+  externalReference: z.string().trim().max(128).nullish(),
+  notes: z.string().trim().max(500).nullish(),
+  idempotencyKey: idempotencyKeySchema,
+})
+export type PosManualTenderInput = z.infer<typeof posManualTenderSchema>
+
+export const posTenderRemoveSchema = z.object({
+  ...scopeShape,
+  transactionId: z.string().uuid(),
+  tenderId: z.string().uuid(),
+  operatorUserId: z.string().uuid(),
+})
+export type PosTenderRemoveInput = z.infer<typeof posTenderRemoveSchema>
 
 export const posCompleteSchema = z.object({
   ...scopeShape,
@@ -249,7 +293,6 @@ export type PosApplyDiscountInput = z.infer<typeof posApplyDiscountSchema>
 export type PosApprovalRequestInput = z.infer<typeof posApprovalRequestSchema>
 export type PosApprovalDecideInput = z.infer<typeof posApprovalDecideSchema>
 export type PosCheckoutInput = z.infer<typeof posCheckoutSchema>
-export type PosCashTenderInput = z.infer<typeof posCashTenderSchema>
 export type PosCompleteInput = z.infer<typeof posCompleteSchema>
 export type PosCancelInput = z.infer<typeof posCancelSchema>
 export type PosReverseInput = z.infer<typeof posReverseSchema>

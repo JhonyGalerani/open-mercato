@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-16T04:47:22.273120Z",
+  "generatedAt": "2026-09-16T04:58:44.457844Z",
   "commit": "9903c82f8",
   "version": "0.7.0",
   "rows": [
@@ -1898,7 +1898,7 @@
     },
     {
       "status": "TESTED",
-      "notes": "PaymentTender CASH in soanas-pos + PixCharge domain in soanas_payments_br",
+      "notes": "Gate1 2026-09-16: PaymentTender entity + manual/cash commands; split planning unit-tested",
       "id": "PAY-001",
       "domain": "Payments",
       "feature": "PaymentTender",
@@ -1908,7 +1908,7 @@
     },
     {
       "status": "TESTED",
-      "notes": "Rebaseline Gate0 2026-09-16: CASH tender + change covered; limit/cédulas/arredondamento incomplete | PaymentTender CASH + change tests; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
+      "notes": "Gate1 2026-09-16: Cash tender + change; Gate1 coexists with manual split",
       "id": "PAY-CASH-001",
       "domain": "Payments",
       "feature": "Dinheiro",

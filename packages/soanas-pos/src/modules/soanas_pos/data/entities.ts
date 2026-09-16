@@ -52,14 +52,33 @@ export type PosTransactionStatus =
 
 export type PaymentTenderType =
   | 'CASH'
-  | 'PIX'
-  | 'CARD_DEBIT'
-  | 'CARD_CREDIT'
-  | 'VOUCHER'
+  | 'PIX_MANUAL'
+  | 'DEBIT_MANUAL'
+  | 'CREDIT_MANUAL'
+  | 'VOUCHER_MANUAL'
   | 'STORE_CREDIT'
   | 'OTHER'
+  /** @deprecated Prefer PIX_MANUAL */
+  | 'PIX'
+  /** @deprecated Prefer DEBIT_MANUAL */
+  | 'CARD_DEBIT'
+  /** @deprecated Prefer CREDIT_MANUAL */
+  | 'CARD_CREDIT'
+  /** @deprecated Prefer VOUCHER_MANUAL */
+  | 'VOUCHER'
 
-export type PaymentTenderStatus = 'pending' | 'captured' | 'failed' | 'unknown'
+/**
+ * Tender lifecycle. Cash remains `captured`. External-machine methods use
+ * `captured_manual` after the operator confirms the maquininha approval.
+ */
+export type PaymentTenderStatus =
+  | 'pending'
+  | 'captured'
+  | 'captured_manual'
+  | 'failed'
+  | 'reversed'
+  | 'cancelled'
+  | 'unknown'
 
 /** Saga checkpoint (ADR-007): the last step that finished successfully. */
 export type PosRecoveryStep = 'validate' | 'sales' | 'wms' | 'cash' | 'complete'
@@ -327,6 +346,42 @@ export class PaymentTender {
 
   @Property({ type: 'text', default: 'captured' })
   status: PaymentTenderStatus = 'captured'
+
+  @Property({ type: 'text', nullable: true })
+  brand?: string | null
+
+  @Property({ type: 'integer', nullable: true })
+  installments?: number | null
+
+  @Property({ type: 'text', nullable: true })
+  nsu?: string | null
+
+  @Property({ name: 'authorization_code', type: 'text', nullable: true })
+  authorizationCode?: string | null
+
+  @Property({ type: 'text', nullable: true })
+  acquirer?: string | null
+
+  @Property({ name: 'external_terminal', type: 'text', nullable: true })
+  externalTerminal?: string | null
+
+  @Property({ name: 'external_reference', type: 'text', nullable: true })
+  externalReference?: string | null
+
+  @Property({ type: 'text', nullable: true })
+  notes?: string | null
+
+  @Property({ name: 'confirmed_by_user_id', type: 'uuid', nullable: true })
+  confirmedByUserId?: string | null
+
+  @Property({ name: 'confirmed_at', type: Date, nullable: true })
+  confirmedAt?: Date | null
+
+  @Property({ name: 'reversed_at', type: Date, nullable: true })
+  reversedAt?: Date | null
+
+  @Property({ name: 'reversal_reason', type: 'text', nullable: true })
+  reversalReason?: string | null
 
   @Property({ type: 'text', nullable: true })
   provider?: string | null

@@ -3,7 +3,7 @@
 **Data:** 2026-09-16  
 **Base Open Mercato:** `0.7.0` @ `9903c82f8`  
 **Fork / repo:** `JhonyGalerani/open-mercato`  
-**Branch:** `cursor/soanas-rebaseline-gate0-9e05`  
+**Branch:** `cursor/soanas-retail-gate-validation-4347`  
 **SSOT funcional:** Blueprint Funcional Completo do Soanas  
 **Matriz rastreável:** [`BLUEPRINT-COVERAGE.md`](./BLUEPRINT-COVERAGE.md) · [`blueprint-coverage.json`](./blueprint-coverage.json)
 

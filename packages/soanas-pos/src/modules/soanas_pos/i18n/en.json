@@ -171,11 +171,28 @@
         "cancel": "Cancel sale"
       },
       "payment": {
-        "title": "Cash payment",
+        "title": "Register payment",
+        "method": "Payment method",
         "received": "Amount received (BRL)",
+        "applied": "Amount applied (BRL)",
         "change": "Change",
         "due": "Amount due",
-        "confirm": "Register payment"
+        "confirm": "Register payment",
+        "tenders": "Registered tenders",
+        "removeTender": "Remove",
+        "manualHelp": "Confirm the payment on the external terminal first, then register it here. Non-cash methods never generate change.",
+        "brand": "Brand (optional)",
+        "nsu": "NSU / auth (optional)",
+        "installments": "Installments",
+        "methods": {
+          "cash": "Cash",
+          "pixManual": "Pix (manual / maquininha)",
+          "debitManual": "Debit (manual)",
+          "creditManual": "Credit (manual)",
+          "voucherManual": "Voucher (manual)",
+          "storeCredit": "Store credit",
+          "other": "Other"
+        }
       },
       "receipt": {
         "title": "Receipt",
@@ -190,6 +207,7 @@
         "lineRemoved": "Item removed",
         "checkedOut": "Ready for payment",
         "paid": "Payment registered",
+        "tenderRemoved": "Tender removed",
         "completed": "Sale completed",
         "cancelled": "Sale cancelled",
         "error": "The POS operation failed"
