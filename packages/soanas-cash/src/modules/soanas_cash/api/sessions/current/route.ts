@@ -9,6 +9,7 @@ import { hasFeature } from '@open-mercato/shared/security/features'
 import { CashMovement, CashRegister, CashSession } from '../../../data/entities'
 import { buildReconciliationTotals } from '../../../lib/ledger'
 import { APPROVAL_FEATURES } from '../../../lib/policy'
+import { centsToWire, nullableCentsToWire } from '../../../lib/cents'
 import type { OpenApiRouteDoc } from '@open-mercato/shared/lib/openapi'
 
 export const metadata = {
@@ -101,7 +102,7 @@ export async function GET(req: Request) {
       status: session.status,
       registerId: session.registerId,
       operatorUserId: session.operatorUserId,
-      openingFloatCents: session.openingFloatCents,
+      openingFloatCents: centsToWire(session.openingFloatCents),
       openedAtServer: session.openedAtServer.toISOString(),
       notes: session.notes ?? null,
       blind,
@@ -118,7 +119,7 @@ export async function GET(req: Request) {
       id: movement.id,
       type: movement.type,
       status: movement.status,
-      amountCents: movement.amountCents,
+      amountCents: centsToWire(movement.amountCents),
       reasonCode: movement.reasonCode ?? null,
       createdAt: movement.createdAt.toISOString(),
     })),
@@ -131,8 +132,8 @@ function serializeRegister(register: CashRegister) {
     code: register.code,
     name: register.name,
     blindClosing: register.blindClosing,
-    discrepancyToleranceCents: register.discrepancyToleranceCents,
-    expectedOpeningFloatCents: register.expectedOpeningFloatCents ?? null,
+    discrepancyToleranceCents: centsToWire(register.discrepancyToleranceCents),
+    expectedOpeningFloatCents: nullableCentsToWire(register.expectedOpeningFloatCents),
     updatedAt: register.updatedAt.toISOString(),
   }
 }

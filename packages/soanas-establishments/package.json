@@ -17,6 +17,7 @@
       "types": "./src/index.ts",
       "default": "./dist/index.js"
     },
+    "./*.json": "./src/*.json",
     "./*": {
       "types": [
         "./src/*.ts",
@@ -24,6 +25,7 @@
       ],
       "default": "./dist/*.js"
     },
+    "./*/*.json": "./src/*/*.json",
     "./*/*": {
       "types": [
         "./src/*/*.ts",
@@ -31,6 +33,7 @@
       ],
       "default": "./dist/*/*.js"
     },
+    "./*/*/*.json": "./src/*/*/*.json",
     "./*/*/*": {
       "types": [
         "./src/*/*/*.ts",
@@ -38,6 +41,7 @@
       ],
       "default": "./dist/*/*/*.js"
     },
+    "./*/*/*/*.json": "./src/*/*/*/*.json",
     "./*/*/*/*": {
       "types": [
         "./src/*/*/*/*.ts",
@@ -45,6 +49,7 @@
       ],
       "default": "./dist/*/*/*/*.js"
     },
+    "./*/*/*/*/*.json": "./src/*/*/*/*/*.json",
     "./*/*/*/*/*": {
       "types": [
         "./src/*/*/*/*/*.ts",

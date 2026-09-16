@@ -23,6 +23,7 @@ import {
   type PosTransactionCreateInput,
 } from '../data/validators'
 import { isEditableState } from '../lib/stateMachine'
+import { centsToString } from '../lib/money'
 import { emitSoanasPosEvent } from '../events'
 import {
   POS_DISCOUNT_APPROVAL_FEATURE,
@@ -47,8 +48,8 @@ function transactionSnapshot(transaction: PosTransaction) {
     terminalId: transaction.terminalId,
     cashSessionId: transaction.cashSessionId ?? null,
     status: transaction.status,
-    grandTotalCents: transaction.grandTotalCents,
-    amountPaidCents: transaction.amountPaidCents,
+    grandTotalCents: centsToString(transaction.grandTotalCents),
+    amountPaidCents: centsToString(transaction.amountPaidCents),
     salesOrderId: transaction.salesOrderId ?? null,
     updatedAt: transaction.updatedAt.toISOString(),
   }

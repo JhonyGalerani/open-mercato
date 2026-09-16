@@ -4,6 +4,7 @@ import type { EntityManager } from '@mikro-orm/postgresql'
 import { escapeLikePattern } from '@open-mercato/shared/lib/db/escapeLikePattern'
 import { resolveTranslations } from '@open-mercato/shared/lib/i18n/server'
 import { PosTransaction } from '../../data/entities'
+import { centsToString } from '../../lib/money'
 import { posTransactionCreateSchema, posTransactionListSchema } from '../../data/validators'
 import { buildPosCommandOpenApi, createPagedListResponseSchema } from '../openapi'
 import { handlePosCommandRoute, posScopeErrorResponse, resolvePosRequestScope, withServerScope } from '../utils'
@@ -70,9 +71,9 @@ export async function GET(req: Request) {
         cashSessionId: transaction.cashSessionId ?? null,
         status: transaction.status,
         currencyCode: transaction.currencyCode,
-        grandTotalCents: transaction.grandTotalCents,
-        amountPaidCents: transaction.amountPaidCents,
-        changeAmountCents: transaction.changeAmountCents,
+        grandTotalCents: centsToString(transaction.grandTotalCents),
+        amountPaidCents: centsToString(transaction.amountPaidCents),
+        changeAmountCents: centsToString(transaction.changeAmountCents),
         salesOrderId: transaction.salesOrderId ?? null,
         customerId: transaction.customerId ?? null,
         operatorUserId: transaction.operatorUserId,

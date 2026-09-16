@@ -19,6 +19,7 @@ import {
 import { computeDiscrepancy } from '../lib/ledger'
 import { validateDenominationsMatchAmount } from '../lib/denominations'
 import { resolveDiscrepancyToleranceCents } from '../lib/policy'
+import { centsToWire } from '../lib/cents'
 import { emitSoanasCashEvent } from '../events'
 import { callerCanApprove, forkEm, loadRegisterOrThrow, loadSessionForUpdate, loadSessionTotals } from './helpers'
 
@@ -71,6 +72,21 @@ const openSessionCommand: CommandHandler<CashSessionOpenInput, OpenResult> = {
     })
     if (priorByKey) return { sessionId: priorByKey.id, alreadyOpen: true }
 
+    const existingOpen = await em.findOne(CashSession, {
+      registerId: parsed.registerId,
+      tenantId: parsed.tenantId,
+      status: { $in: [...ACTIVE_SESSION_STATUSES] },
+      deletedAt: null,
+    })
+    if (existingOpen) {
+      throw conflict(
+        translate(
+          'soanas_cash.errors.register_already_open',
+          'Register already has an active cash session',
+        ),
+      )
+    }
+
     const now = new Date()
     const sessionId = crypto.randomUUID()
     const session = em.create(CashSession, {
@@ -115,24 +131,8 @@ const openSessionCommand: CommandHandler<CashSessionOpenInput, OpenResult> = {
       await withAtomicFlush(
         em,
         [
-          async () => {
-            const existingOpen = await em.findOne(CashSession, {
-              registerId: parsed.registerId,
-              tenantId: parsed.tenantId,
-              status: { $in: [...ACTIVE_SESSION_STATUSES] },
-              deletedAt: null,
-            })
-            if (existingOpen) {
-              throw conflict(
-                translate(
-                  'soanas_cash.errors.register_already_open',
-                  'Register already has an active cash session',
-                ),
-              )
-            }
-            em.persist(session)
-          },
           () => {
+            em.persist(session)
             em.persist(openingMovement)
           },
         ],
@@ -180,7 +180,7 @@ const openSessionCommand: CommandHandler<CashSessionOpenInput, OpenResult> = {
       registerId: session.registerId,
       operatorUserId: session.operatorUserId,
       status: session.status,
-      openingFloatCents: session.openingFloatCents,
+      openingFloatCents: centsToWire(session.openingFloatCents),
       openedAtServer: session.openedAtServer.toISOString(),
     }
   },

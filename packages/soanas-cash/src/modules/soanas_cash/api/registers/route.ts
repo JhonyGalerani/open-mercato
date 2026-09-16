@@ -6,6 +6,7 @@ import { escapeLikePattern } from '@open-mercato/shared/lib/db/escapeLikePattern
 import { parseBooleanToken } from '@open-mercato/shared/lib/boolean'
 import { CashRegister } from '../../data/entities'
 import { cashRegisterCreateSchema, cashRegisterUpdateSchema } from '../../data/validators'
+import { centsToWire, nullableCentsToWire } from '../../lib/cents'
 import { buildCashCrudOpenApi, createPagedListResponseSchema, defaultOkResponseSchema } from '../openapi'
 
 const ENTITY_TYPE = 'soanas_cash:cash_register'
@@ -84,10 +85,10 @@ const crud = makeCrudRoute({
         drawerId: item.drawer_id,
         warehouseId: item.warehouse_id,
         blindClosing: item.blind_closing,
-        withdrawalLimitWithoutApprovalCents: item.withdrawal_limit_without_approval_cents,
-        supplyLimitWithoutApprovalCents: item.supply_limit_without_approval_cents,
-        discrepancyToleranceCents: item.discrepancy_tolerance_cents,
-        expectedOpeningFloatCents: item.expected_opening_float_cents,
+        withdrawalLimitWithoutApprovalCents: nullableCentsToWire(item.withdrawal_limit_without_approval_cents),
+        supplyLimitWithoutApprovalCents: nullableCentsToWire(item.supply_limit_without_approval_cents),
+        discrepancyToleranceCents: centsToWire(item.discrepancy_tolerance_cents),
+        expectedOpeningFloatCents: nullableCentsToWire(item.expected_opening_float_cents),
         isActive: item.is_active,
         createdAt: item.created_at,
         updatedAt: item.updated_at,

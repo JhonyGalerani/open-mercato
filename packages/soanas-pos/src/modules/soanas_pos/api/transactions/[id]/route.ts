@@ -8,6 +8,7 @@ import {
   PosTransaction,
   PosTransactionLine,
 } from '../../../data/entities'
+import { centsToString } from '../../../lib/money'
 import { posScopeErrorResponse, resolvePosRequestScope } from '../../utils'
 
 export const metadata = {
@@ -57,13 +58,13 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       salesOrderId: transaction.salesOrderId ?? null,
       status: transaction.status,
       currencyCode: transaction.currencyCode,
-      subtotalCents: transaction.subtotalCents,
-      discountTotalCents: transaction.discountTotalCents,
-      surchargeTotalCents: transaction.surchargeTotalCents,
-      taxTotalCents: transaction.taxTotalCents,
-      grandTotalCents: transaction.grandTotalCents,
-      amountPaidCents: transaction.amountPaidCents,
-      changeAmountCents: transaction.changeAmountCents,
+      subtotalCents: centsToString(transaction.subtotalCents),
+      discountTotalCents: centsToString(transaction.discountTotalCents),
+      surchargeTotalCents: centsToString(transaction.surchargeTotalCents),
+      taxTotalCents: centsToString(transaction.taxTotalCents),
+      grandTotalCents: centsToString(transaction.grandTotalCents),
+      amountPaidCents: centsToString(transaction.amountPaidCents),
+      changeAmountCents: centsToString(transaction.changeAmountCents),
       correlationId: transaction.correlationId,
       createdAt: transaction.createdAt.toISOString(),
       updatedAt: transaction.updatedAt.toISOString(),
@@ -75,18 +76,20 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         sku: line.sku,
         nameSnapshot: line.nameSnapshot,
         quantity: line.quantity,
-        unitPriceCents: line.unitPriceCents,
-        discountAmountCents: line.discountAmountCents,
-        lineTotalCents: line.lineTotalCents,
+        unitPriceCents: centsToString(line.unitPriceCents),
+        discountAmountCents: centsToString(line.discountAmountCents),
+        lineTotalCents: centsToString(line.lineTotalCents),
         unit: line.unit ?? null,
         sortOrder: line.sortOrder,
       })),
       tenders: tenders.map((tender) => ({
         id: tender.id,
         type: tender.type,
-        amountAppliedCents: tender.amountAppliedCents,
-        amountReceivedCents: tender.amountReceivedCents ?? null,
-        changeAmountCents: tender.changeAmountCents ?? null,
+        amountAppliedCents: centsToString(tender.amountAppliedCents),
+        amountReceivedCents:
+          tender.amountReceivedCents == null ? null : centsToString(tender.amountReceivedCents),
+        changeAmountCents:
+          tender.changeAmountCents == null ? null : centsToString(tender.changeAmountCents),
         status: tender.status,
       })),
       recovery: recovery

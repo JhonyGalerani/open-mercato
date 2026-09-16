@@ -15,6 +15,7 @@ import {
   type CashRegisterDeleteInput,
 } from '../data/validators'
 import { forkEm } from './helpers'
+import { centsToWire, nullableCentsToWire } from '../lib/cents'
 
 type RegisterSnapshot = {
   id: string
@@ -47,10 +48,10 @@ function toSnapshot(record: CashRegister): RegisterSnapshot {
     drawerId: record.drawerId ?? null,
     warehouseId: record.warehouseId ?? null,
     blindClosing: record.blindClosing,
-    withdrawalLimitWithoutApprovalCents: record.withdrawalLimitWithoutApprovalCents ?? null,
-    supplyLimitWithoutApprovalCents: record.supplyLimitWithoutApprovalCents ?? null,
-    discrepancyToleranceCents: record.discrepancyToleranceCents,
-    expectedOpeningFloatCents: record.expectedOpeningFloatCents ?? null,
+    withdrawalLimitWithoutApprovalCents: nullableCentsToWire(record.withdrawalLimitWithoutApprovalCents),
+    supplyLimitWithoutApprovalCents: nullableCentsToWire(record.supplyLimitWithoutApprovalCents),
+    discrepancyToleranceCents: centsToWire(record.discrepancyToleranceCents),
+    expectedOpeningFloatCents: nullableCentsToWire(record.expectedOpeningFloatCents),
     isActive: record.isActive,
     updatedAt: record.updatedAt.toISOString(),
   }

@@ -255,6 +255,80 @@ test.describe('TC-SOANAS-RETAIL-001: Retail cash+POS sale vertical slice', () =>
       expect(String(completeBody.status)).toBe('COMPLETED')
       const salesOrderId = expectId(completeBody.salesOrderId as string | undefined, 'salesOrderId')
 
+      // --- Sales: exactly one order + one payment, correct externalReference/metadata ---
+      const orderResponse = await apiRequest(
+        request,
+        'GET',
+        `/api/sales/orders?id=${encodeURIComponent(salesOrderId)}`,
+        { token: adminToken },
+      )
+      expect(orderResponse.ok()).toBeTruthy()
+      const orderBody = await readJsonSafe<{
+        items?: Array<{
+          id?: string
+          externalReference?: string
+          metadata?: Record<string, unknown>
+        }>
+      }>(orderResponse)
+      expect(orderBody?.items?.length).toBe(1)
+      expect(orderBody?.items?.[0]?.externalReference).toBe(`soanas_pos:${transactionId}`)
+      expect(orderBody?.items?.[0]?.metadata?.source).toBe('soanas_pos')
+      expect(orderBody?.items?.[0]?.metadata?.sourceTransactionId).toBe(transactionId)
+
+      const paymentsResponse = await apiRequest(
+        request,
+        'GET',
+        `/api/sales/payments?orderId=${encodeURIComponent(salesOrderId)}`,
+        { token: adminToken },
+      )
+      expect(paymentsResponse.ok()).toBeTruthy()
+      const paymentsBody = await readJsonSafe<{ items?: unknown[] }>(paymentsResponse)
+      expect(paymentsBody?.items?.length).toBe(1)
+
+      // --- WMS: 10 → sell 2 → 8; movement references sales order, not POS id ---
+      const balancesResponse = await apiRequest(
+        request,
+        'GET',
+        `/api/wms/inventory/balances?warehouseId=${encodeURIComponent(warehouseId)}&catalogVariantId=${encodeURIComponent(variantId)}&locationId=${encodeURIComponent(locationId)}&page=1&pageSize=20`,
+        { token: adminToken },
+      )
+      expect(balancesResponse.ok()).toBeTruthy()
+      const balancesBody = await readJsonSafe<{
+        items?: Array<{ quantityOnHand?: string | number; quantity_on_hand?: string | number }>
+      }>(balancesResponse)
+      const onHand = String(
+        balancesBody?.items?.[0]?.quantityOnHand ?? balancesBody?.items?.[0]?.quantity_on_hand ?? '',
+      )
+      expect(Number(onHand)).toBe(8)
+
+      const movementsResponse = await apiRequest(
+        request,
+        'GET',
+        `/api/wms/inventory/movements?warehouseId=${encodeURIComponent(warehouseId)}&catalogVariantId=${encodeURIComponent(variantId)}&referenceType=so&referenceId=${encodeURIComponent(salesOrderId)}&page=1&pageSize=50`,
+        { token: adminToken },
+      )
+      expect(movementsResponse.ok()).toBeTruthy()
+      const movementsBody = await readJsonSafe<{ items?: unknown[] }>(movementsResponse)
+      const movementCountAfterComplete = movementsBody?.items?.length ?? 0
+      expect(movementCountAfterComplete).toBeGreaterThanOrEqual(1)
+
+      // --- Cash: opening 20000 + cash_sale 8250 = 28250; single cash_sale ---
+      const currentResponse = await apiRequest(
+        request,
+        'GET',
+        `/api/soanas_cash/sessions/current?registerId=${encodeURIComponent(registerId)}`,
+        { token: adminToken },
+      )
+      expect(currentResponse.ok()).toBeTruthy()
+      const currentBody = await readJsonSafe<{
+        movements?: Array<{ type?: string; amountCents?: string }>
+        totals?: { expectedCashCents?: string }
+      }>(currentResponse)
+      const cashSales = (currentBody?.movements ?? []).filter((movement) => movement.type === 'cash_sale')
+      expect(cashSales.length).toBe(1)
+      expect(String(cashSales[0]?.amountCents)).toBe('8250')
+      expect(String(currentBody?.totals?.expectedCashCents)).toBe('28250')
+
       const replayBody = await postJson(
         request,
         adminToken,
@@ -264,6 +338,36 @@ test.describe('TC-SOANAS-RETAIL-001: Retail cash+POS sale vertical slice', () =>
       expect(String(replayBody.status)).toBe('COMPLETED')
       expect(String(replayBody.salesOrderId)).toBe(salesOrderId)
       expect(Boolean(replayBody.replayed)).toBe(true)
+
+      // Replay must not duplicate Sales / WMS / Cash side effects
+      const paymentsReplay = await apiRequest(
+        request,
+        'GET',
+        `/api/sales/payments?orderId=${encodeURIComponent(salesOrderId)}`,
+        { token: adminToken },
+      )
+      const paymentsReplayBody = await readJsonSafe<{ items?: unknown[] }>(paymentsReplay)
+      expect(paymentsReplayBody?.items?.length).toBe(1)
+
+      const movementsReplay = await apiRequest(
+        request,
+        'GET',
+        `/api/wms/inventory/movements?warehouseId=${encodeURIComponent(warehouseId)}&catalogVariantId=${encodeURIComponent(variantId)}&referenceType=so&referenceId=${encodeURIComponent(salesOrderId)}&page=1&pageSize=50`,
+        { token: adminToken },
+      )
+      const movementsReplayBody = await readJsonSafe<{ items?: unknown[] }>(movementsReplay)
+      expect(movementsReplayBody?.items?.length).toBe(movementCountAfterComplete)
+
+      const currentReplay = await apiRequest(
+        request,
+        'GET',
+        `/api/soanas_cash/sessions/current?registerId=${encodeURIComponent(registerId)}`,
+        { token: adminToken },
+      )
+      const currentReplayBody = await readJsonSafe<{
+        movements?: Array<{ type?: string }>
+      }>(currentReplay)
+      expect((currentReplayBody?.movements ?? []).filter((movement) => movement.type === 'cash_sale').length).toBe(1)
 
       const detailResponse = await apiRequest(
         request,
