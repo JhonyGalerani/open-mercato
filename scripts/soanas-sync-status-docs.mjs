@@ -163,20 +163,17 @@ const entregaBody = `
 {
   const startMarker = '<!-- soanas:derived-counts:start -->'
   const endMarker = '<!-- soanas:derived-counts:end -->'
-  let content = ensureMarkers(STATUS, startMarker, endMarker, statusSnippet)
-  // Prefer replacing the historical fenced block near the top if markers were appended.
-  if (content.includes('Blueprint coverage (IDs):') && content.indexOf(startMarker) > 200) {
+  let content = fs.readFileSync(STATUS, 'utf8')
+  if (content.includes(startMarker) && content.includes(endMarker)) {
+    content = replaceBlock(content, startMarker, endMarker, statusSnippet)
+  } else if (content.includes('Blueprint coverage (IDs):')) {
+    // Migrate legacy fenced counter block (no markers yet) without truncating the file.
     content = content.replace(
       /```\nBlueprint coverage \(IDs\):[\s\S]*?```/,
       `${startMarker}\n${statusSnippet}\n${endMarker}`,
     )
-    // Drop the appended duplicate markers at EOF if any.
-    const firstStart = content.indexOf(startMarker)
-    const secondStart = content.indexOf(startMarker, firstStart + 1)
-    if (secondStart !== -1) {
-      content = content.slice(0, secondStart).trimEnd() + '\n'
-    }
   } else {
+    content = ensureMarkers(STATUS, startMarker, endMarker, statusSnippet)
     content = replaceBlock(content, startMarker, endMarker, statusSnippet)
   }
   content = content.replace(

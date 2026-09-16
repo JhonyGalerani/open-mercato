@@ -1121,7 +1121,15 @@
       "feature": "Terminal",
       "sub": "Entidade PosTerminal",
       "origin": "SOANAS",
-      "module": "soanas_pos"
+      "module": "soanas_pos",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
       "status": "TESTED",
@@ -1131,57 +1139,105 @@
       "feature": "Terminal",
       "sub": "Cadastro (código, estabelecimento, hardware, versão…)",
       "origin": "SOANAS",
-      "module": "soanas_pos"
+      "module": "soanas_pos",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "notes": "hold incomplete; draft cancel exists",
       "id": "POS-003",
       "domain": "POS",
       "feature": "Terminal",
       "sub": "Online/offline / ativo/bloqueado / versão mínima",
       "origin": "SOANAS",
-      "module": "soanas_pos"
+      "module": "soanas_pos",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "notes": "sell UI",
       "id": "POS-UI-001",
       "domain": "POS",
       "feature": "Venda",
       "sub": "Busca barcode/SKU/PLU/nome/fuzzy/favoritos/teclas",
       "origin": "SOANAS",
-      "module": "soanas_pos"
+      "module": "soanas_pos",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "notes": "cart UI",
       "id": "POS-UI-002",
       "domain": "POS",
       "feature": "Venda",
       "sub": "Adicionar item (qty, peso, variante, lote, serial…)",
       "origin": "SOANAS",
-      "module": "soanas_pos"
+      "module": "soanas_pos",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "notes": "cash checkout",
       "id": "POS-UI-003",
       "domain": "POS",
       "feature": "Venda",
       "sub": "Alterar/remover/cancelar item com motivo",
       "origin": "SOANAS",
-      "module": "soanas_pos"
+      "module": "soanas_pos",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "notes": "sales history",
       "id": "POS-UI-004",
       "domain": "POS",
       "feature": "Venda",
       "sub": "Totais (subtotal, descontos, impostos, troco…)",
       "origin": "SOANAS",
-      "module": "soanas_pos"
+      "module": "soanas_pos",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
       "status": "TESTED",
@@ -1191,7 +1247,15 @@
       "feature": "PosTransaction",
       "sub": "Orquestrador (não duplicar SalesOrder)",
       "origin": "SOANAS",
-      "module": "soanas_pos"
+      "module": "soanas_pos",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
       "status": "TESTED",
@@ -1201,7 +1265,15 @@
       "feature": "State machine",
       "sub": "DRAFT→…→COMPLETED + failure states",
       "origin": "SOANAS",
-      "module": "soanas_pos"
+      "module": "soanas_pos",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
       "status": "ANALYZED",
@@ -1231,7 +1303,15 @@
       "feature": "Estrutura",
       "sub": "CashRegister / Drawer / Session / Movement / Count / Reconciliation / Approval",
       "origin": "SOANAS",
-      "module": "soanas_cash"
+      "module": "soanas_cash",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
       "status": "TESTED",
@@ -1241,7 +1321,15 @@
       "feature": "Caixa lógico",
       "sub": "Código / estabelecimento / terminal / gaveta / depósito",
       "origin": "SOANAS",
-      "module": "soanas_cash"
+      "module": "soanas_cash",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
       "status": "TESTED",
@@ -1251,7 +1339,15 @@
       "feature": "Abertura",
       "sub": "Selecionar caixa / operador / fundo inicial",
       "origin": "SOANAS",
-      "module": "soanas_cash"
+      "module": "soanas_cash",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
       "status": "TESTED",
@@ -1261,27 +1357,51 @@
       "feature": "Abertura",
       "sub": "Contagem por denominações BRL",
       "origin": "SOANAS",
-      "module": "soanas_cash"
+      "module": "soanas_cash",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "notes": "expected float on register; manager approval path partial",
       "id": "CASH-OPEN-003",
       "domain": "Cash",
       "feature": "Abertura",
       "sub": "Comparar fundo esperado / justificar / gerente",
       "origin": "SOANAS",
-      "module": "soanas_cash"
+      "module": "soanas_cash",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "notes": "one-open unique index + idempotency unique",
       "id": "CASH-OPEN-004",
       "domain": "Cash",
       "feature": "Abertura",
       "sub": "Sessão única / timestamps server+local / offline",
       "origin": "SOANAS",
-      "module": "soanas_cash"
+      "module": "soanas_cash",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
       "status": "TESTED",
@@ -1374,44 +1494,76 @@
       "module": "soanas_cash"
     },
     {
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "notes": " | sessions.close+count+reconciliation",
       "id": "CASH-CLOSE-001",
       "domain": "Cash",
       "feature": "Fechamento",
       "sub": "Bloquear vendas / pendências Pix/cartão/fiscal/offline",
       "origin": "SOANAS",
-      "module": "soanas_cash"
+      "module": "soanas_cash",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "notes": "Closing count with blind mode; multi-tender counting pending",
       "id": "CASH-CLOSE-002",
       "domain": "Cash",
       "feature": "Fechamento",
       "sub": "Contagem meios + fechamento cego",
       "origin": "SOANAS",
-      "module": "soanas_cash"
+      "module": "soanas_cash",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "notes": "CashReconciliation expected vs counted with register tolerance",
       "id": "CASH-CLOSE-003",
       "domain": "Cash",
       "feature": "Fechamento",
       "sub": "Conciliação matemática expected vs counted",
       "origin": "SOANAS",
-      "module": "soanas_cash"
+      "module": "soanas_cash",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "notes": " | sessions.close+count+reconciliation",
       "id": "CASH-CLOSE-004",
       "domain": "Cash",
       "feature": "Fechamento",
       "sub": "Resultado por pagamento / PDF / e-mail / financeiro",
       "origin": "SOANAS",
-      "module": "soanas_cash"
+      "module": "soanas_cash",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
       "status": "ANALYZED",
@@ -1471,7 +1623,15 @@
       "feature": "Dinheiro",
       "sub": "Recebido / troco / limite / arredondamento / cédulas",
       "origin": "SOANAS",
-      "module": "soanas_payments_br"
+      "module": "soanas_payments_br",
+      "evidence": {
+        "tests": [
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-001.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-CONCURRENCY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-RECOVERY.spec.ts",
+          "packages/soanas-pos/src/modules/soanas_pos/__integration__/TC-SOANAS-RETAIL-UI-001.spec.ts"
+        ]
+      }
     },
     {
       "status": "ANALYZED",

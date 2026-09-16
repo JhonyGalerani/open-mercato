@@ -14,15 +14,15 @@
 | ANALYZED | 233 |
 | NOT_STARTED | 0 |
 | IN_PROGRESS | 0 |
-| IMPLEMENTED | 52 |
-| TESTED | 18 |
+| IMPLEMENTED | 41 |
+| TESTED | 29 |
 | VALIDATED | 0 |
 | BLOCKED_EXTERNAL | 0 |
 
 ```
-Blueprint coverage (IDs): ANALYZED 233 | IMPLEMENTED 52 | TESTED 18 | VALIDATED 0 / 303
+Blueprint coverage (IDs): ANALYZED 233 | IMPLEMENTED 41 | TESTED 29 | VALIDATED 0 / 303
 Validated (DoD completa): 0.0%
-Derived at commit: 6ceabbfb9
+Derived at commit: e9fd3c72c
 ```
 <!-- soanas:coverage-summary:end -->
 
@@ -30,7 +30,7 @@ Derived at commit: 6ceabbfb9
 
 ```
 Overall progress: 0.0% VALIDATED (gate)
-Derived from blueprint-coverage.json @ 6ceabbfb9
+Derived from blueprint-coverage.json @ e9fd3c72c
 ```
 
 Percentuais de domínio em `IMPLEMENTATION-STATUS.md` são derivados desta matriz.

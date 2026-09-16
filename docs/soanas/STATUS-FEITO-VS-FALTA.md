@@ -21,7 +21,6 @@
 | Retail Vertical Slice v1 | **~94%** checklist (falta E2E verde com migrations) |
 | Pronto para SEFAZ / Pix / TEF / hardware real? | **Não** |
 | Métrica principal | Checklist em `IMPLEMENTATION-STATUS.md` → Vertical Slices (não só % da matriz) |
-| `%` IDs com algum código (`IMPLEMENTED`+`TESTED`+`VALIDATED`) | **~23%** (70/303) — secundário |
 | `%` `VALIDATED` (Definition of Done) | **0%** |
 
 ---
@@ -32,8 +31,8 @@
 | Status | Qtd | Significado |
 |----------|----:|-------------|
 | `ANALYZED` | **233** | Mapeado; sem código Soanas suficiente |
-| `IMPLEMENTED` | **52** | Código/scaffold existe (muitos ainda parciais) |
-| `TESTED` | **18** | Há teste unitário relevante |
+| `IMPLEMENTED` | **41** | Código/scaffold existe (muitos ainda parciais) |
+| `TESTED` | **29** | Há teste unitário relevante |
 | `VALIDATED` | **0** | DoD completa do prompt mestre |
 | `NOT_STARTED` / `IN_PROGRESS` / `BLOCKED_EXTERNAL` | **0** | Ainda não usados nesta fase |
 
@@ -45,8 +44,8 @@
 |--------|------:|---------:|------------:|-------:|----------:|
 | `soanas_core` | 44 | 19 | 22 | 3 | 0 |
 | `soanas_establishments` | 23 | 8 | 14 | 1 | 0 |
-| `soanas_cash` | 21 | 3 | 10 | 8 | 0 |
-| `soanas_pos` | 17 | 8 | 5 | 4 | 0 |
+| `soanas_cash` | 21 | 3 | 4 | 14 | 0 |
+| `soanas_pos` | 17 | 8 | 0 | 9 | 0 |
 | `soanas_fiscal_br` | 13 | 13 | 0 | 0 | 0 |
 | `soanas_core/wms-ux` | 12 | 12 | 0 | 0 | 0 |
 | `soanas_hardware` | 12 | 12 | 0 | 0 | 0 |

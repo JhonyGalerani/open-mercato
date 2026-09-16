@@ -7,7 +7,7 @@
 
 <!-- soanas:derived-counts:start -->
 ```
-Blueprint coverage (IDs): ANALYZED 233 | IMPLEMENTED 52 | TESTED 18 | VALIDATED 0 / 303
+Blueprint coverage (IDs): ANALYZED 233 | IMPLEMENTED 41 | TESTED 29 | VALIDATED 0 / 303
 Validated (DoD completa): 0.0%
 ```
 <!-- soanas:derived-counts:end -->
@@ -34,11 +34,11 @@ Progress = checklist items done / total. **Primary** product metric (not Bluepri
 | 12 | Blind closing works | done |
 | 13 | Idempotent completeSale | done (planner + orphan order adopt + unit tests) |
 | 14 | Recovery after crash mid-complete | done (`/recover` + checkpoints) |
-| 15 | Concurrent stock contention deterministic | done (policy + lock unit tests; full DB race pending env) |
+| 15 | Concurrent stock contention deterministic | done (API race on ephemeral Postgres + `PESSIMISTIC_WRITE`) |
 | 16 | Sales history UI | done |
-| 17 | E2E Playwright retail path | in progress (`TC-SOANAS-RETAIL-001` API spec written; needs migrations + ephemeral run) |
+| 17 | E2E Playwright retail path | in progress (`TC-SOANAS-RETAIL-001` API+concurrency+recovery green; browser UI E2E running) |
 
-**Retail Sale v1:** ~94% (16/17 done; E2E executable pending migrate/ephemeral)  
+**Retail Sale v1:** ~94% (16/17; browser UI E2E is the remaining gate for VALIDATED)  
 **Retail Sale + Pix:** 0%  
 **Retail Fiscal NFC-e:** 0%  
 **Retail Offline:** 0%  
