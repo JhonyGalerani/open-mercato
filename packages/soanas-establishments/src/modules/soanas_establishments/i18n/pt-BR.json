@@ -1,0 +1,15 @@
+{
+  "soanas_establishments": {
+    "errors": {
+      "not_found": "Estabelecimento fiscal não encontrado"
+    },
+    "audit": {
+      "create": "Criar estabelecimento fiscal",
+      "update": "Atualizar estabelecimento fiscal",
+      "delete": "Excluir estabelecimento fiscal"
+    },
+    "nav": {
+      "title": "Estabelecimentos"
+    }
+  }
+}
