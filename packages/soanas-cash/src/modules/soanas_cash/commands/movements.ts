@@ -119,7 +119,7 @@ const createWithdrawalCommand: CommandHandler<CashWithdrawalCreateInput, Movemen
             const sessionApproverId = await enforceDualCustody({
               ctx,
               requirement,
-              operatorUserId: parsed.operatorUserId,
+              operatorUserId: session.operatorUserId,
             })
 
             const { totals } = await loadSessionTotals(em, session)
