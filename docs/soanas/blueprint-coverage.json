@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-16T03:16:57.347Z",
-  "commit": "01e1ca952",
+  "generatedAt": "2026-09-16T04:47:22.273120Z",
+  "commit": "9903c82f8",
   "version": "0.7.0",
   "rows": [
     {
@@ -1259,8 +1259,8 @@
       }
     },
     {
-      "status": "VALIDATED",
-      "notes": "PosTransaction+lines+state machine; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
+      "status": "TESTED",
+      "notes": "Rebaseline Gate0 2026-09-16: PosTransaction SM exercised by retail E2E; cadastro hardware/versão mínima incomplete | PosTransaction+lines+state machine; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
       "id": "POS-002",
       "domain": "POS",
       "feature": "Terminal",
@@ -1285,8 +1285,8 @@
       }
     },
     {
-      "status": "VALIDATED",
-      "notes": "Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI); hold/cancel/reverse continue on same terminal surface",
+      "status": "IMPLEMENTED",
+      "notes": "Rebaseline Gate0 2026-09-16: Terminal status is active|inactive only; offline/bloqueado/versão mínima not built | Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI); hold/cancel/reverse continue on same terminal surface",
       "id": "POS-003",
       "domain": "POS",
       "feature": "Terminal",
@@ -1315,8 +1315,8 @@
       }
     },
     {
-      "status": "VALIDATED",
-      "notes": "sell UI; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
+      "status": "TESTED",
+      "notes": "Rebaseline Gate0 2026-09-16: SKU/barcode/name search only; PLU/favoritos/teclas deferred | sell UI; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
       "id": "POS-UI-001",
       "domain": "POS",
       "feature": "Venda",
@@ -1341,8 +1341,8 @@
       }
     },
     {
-      "status": "VALIDATED",
-      "notes": "cart UI; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
+      "status": "TESTED",
+      "notes": "Rebaseline Gate0 2026-09-16: Qty+variant lines only; weight/lote/serial operator UI deferred | cart UI; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
       "id": "POS-UI-002",
       "domain": "POS",
       "feature": "Venda",
@@ -1367,8 +1367,8 @@
       }
     },
     {
-      "status": "VALIDATED",
-      "notes": "cash checkout; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
+      "status": "IMPLEMENTED",
+      "notes": "Rebaseline Gate0 2026-09-16: Line update/remove exist without mandatory motivo; notes previously mislabeled cash checkout | cash checkout; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
       "id": "POS-UI-003",
       "domain": "POS",
       "feature": "Venda",
@@ -1393,8 +1393,8 @@
       }
     },
     {
-      "status": "VALIDATED",
-      "notes": "sales history; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
+      "status": "TESTED",
+      "notes": "Rebaseline Gate0 2026-09-16: Totals UI exists; impostos stub; history is separate ID | sales history; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
       "id": "POS-UI-004",
       "domain": "POS",
       "feature": "Venda",
@@ -1445,8 +1445,8 @@
       }
     },
     {
-      "status": "VALIDATED",
-      "notes": "recovery+replay; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
+      "status": "TESTED",
+      "notes": "Rebaseline Gate0 2026-09-16: Recovery proven for cash path; PIX/SYNC/offline states unused | recovery+replay; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
       "id": "POS-TXN-002",
       "domain": "POS",
       "feature": "State machine",
@@ -1611,8 +1611,8 @@
       }
     },
     {
-      "status": "VALIDATED",
-      "notes": "expected float on register; manager approval path partial; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
+      "status": "IMPLEMENTED",
+      "notes": "Rebaseline Gate0 2026-09-16: Expected float on register; manager approval path still partial | expected float on register; manager approval path partial; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
       "id": "CASH-OPEN-003",
       "domain": "Cash",
       "feature": "Abertura",
@@ -1637,8 +1637,8 @@
       }
     },
     {
-      "status": "VALIDATED",
-      "notes": "one-open unique index + idempotency unique; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
+      "status": "TESTED",
+      "notes": "Rebaseline Gate0 2026-09-16: One-open + idempotency unique; offline open/sync not built | one-open unique index + idempotency unique; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
       "id": "CASH-OPEN-004",
       "domain": "Cash",
       "feature": "Abertura",
@@ -1753,8 +1753,8 @@
       "module": "soanas_cash"
     },
     {
-      "status": "VALIDATED",
-      "notes": " | sessions.close+count+reconciliation; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
+      "status": "ANALYZED",
+      "notes": "Rebaseline Gate0 2026-09-16: Close works for cash-only; no gate for pending card/Pix/fiscal/offline | | sessions.close+count+reconciliation; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
       "id": "CASH-CLOSE-001",
       "domain": "Cash",
       "feature": "Fechamento",
@@ -1779,8 +1779,8 @@
       }
     },
     {
-      "status": "VALIDATED",
-      "notes": "Closing count with blind mode; multi-tender counting pending; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
+      "status": "TESTED",
+      "notes": "Rebaseline Gate0 2026-09-16: Blind cash count works; multi-tender counting pending | Closing count with blind mode; multi-tender counting pending; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
       "id": "CASH-CLOSE-002",
       "domain": "Cash",
       "feature": "Fechamento",
@@ -1831,8 +1831,8 @@
       }
     },
     {
-      "status": "VALIDATED",
-      "notes": " | sessions.close+count+reconciliation; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
+      "status": "ANALYZED",
+      "notes": "Rebaseline Gate0 2026-09-16: No per-payment PDF/email/finance handoff yet | | sessions.close+count+reconciliation; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
       "id": "CASH-CLOSE-004",
       "domain": "Cash",
       "feature": "Fechamento",
@@ -1907,8 +1907,8 @@
       "module": "soanas_payments_br"
     },
     {
-      "status": "VALIDATED",
-      "notes": "PaymentTender CASH + change tests; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
+      "status": "TESTED",
+      "notes": "Rebaseline Gate0 2026-09-16: CASH tender + change covered; limit/cédulas/arredondamento incomplete | PaymentTender CASH + change tests; Retail Sale v1 VALIDATED on ephemeral Postgres (API+concurrency+recovery+browser UI)",
       "id": "PAY-CASH-001",
       "domain": "Payments",
       "feature": "Dinheiro",
@@ -3447,8 +3447,8 @@
       "module": "soanas_core"
     },
     {
-      "status": "TESTED",
-      "notes": "ADR-007 saga",
+      "status": "IMPLEMENTED",
+      "notes": "Rebaseline Gate0 2026-09-16: POS/Cash SMs exist; Fiscal/KDS machines not built | ADR-007 saga",
       "id": "ARCH-006",
       "domain": "Architecture",
       "feature": "State machines",
@@ -3547,5 +3547,18 @@
       "module": "soanas_core"
     }
   ],
-  "updatedAt": "2026-09-16"
+  "updatedAt": "2026-09-16",
+  "rebaseline": {
+    "at": "2026-09-16T04:47:22.273120Z",
+    "reason": "Honest Gate 0 rebaseline — downgrade over-validated IDs lacking full DoD",
+    "keptValidated": [
+      "POS-001",
+      "POS-TXN-001",
+      "CASH-001",
+      "CASH-002",
+      "CASH-OPEN-001",
+      "CASH-OPEN-002",
+      "CASH-CLOSE-003"
+    ]
+  }
 }

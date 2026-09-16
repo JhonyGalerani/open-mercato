@@ -2,12 +2,34 @@ import { Entity, Index, PrimaryKey, Property, Unique } from '@mikro-orm/decorato
 
 /**
  * Stock enforcement when the requested quantity exceeds the WMS availability.
- * BLOCK refuses the line, WARN needs an approver feature, ALLOW sells anyway
- * (negative stock is reconciled later by inventory).
+ * BLOCK refuses the line, WARN needs an approver feature.
+ * ALLOW is retained for backward-compatible terminal rows but is NOT honored at
+ * WMS adjust time until core WMS supports negative stock (Gate 0 / TD-012).
  */
 export type PosStockPolicy = 'BLOCK' | 'WARN' | 'ALLOW'
 
 export type PosTerminalStatus = 'active' | 'inactive'
+
+export type PosPrintJobStatus =
+  | 'QUEUED'
+  | 'PRINTING'
+  | 'PRINTED'
+  | 'FAILED'
+  | 'RETRYING'
+  | 'CANCELLED'
+
+export type PosAllocationStepStatus = 'PENDING' | 'COMPLETED' | 'FAILED'
+
+export type PosAllocationStep = {
+  catalogVariantId: string
+  locationId: string
+  lotId: string | null
+  serialNumber: string | null
+  plannedQuantity: string
+  movementId: string | null
+  status: PosAllocationStepStatus
+  idempotencyKey: string
+}
 
 /**
  * Lifecycle of a POS sale. FISCAL_PENDING is intentionally absent: fiscal
@@ -385,6 +407,17 @@ export class PosRecoveryState {
   @Property({ name: 'wms_movement_id', type: 'uuid', nullable: true })
   wmsMovementId?: string | null
 
+  /** All WMS movement ids produced by the frozen allocation plan (Gate 0 recovery). */
+  @Property({ name: 'wms_movement_ids', type: 'json', nullable: true })
+  wmsMovementIds?: string[] | null
+
+  /**
+   * Frozen multi-location allocation checkpoints. Once written, recovery must replay
+   * only PENDING steps — never re-plan from live balances (A=3/B=4/sale=5 safety).
+   */
+  @Property({ name: 'allocation_plan', type: 'json', nullable: true })
+  allocationPlan?: PosAllocationStep[] | null
+
   @Property({ name: 'cash_movement_id', type: 'uuid', nullable: true })
   cashMovementId?: string | null
 
@@ -475,4 +508,59 @@ export class PosApprovalRequest {
 
   @Property({ name: 'updated_at', type: Date, onCreate: () => new Date(), onUpdate: () => new Date() })
   updatedAt: Date = new Date()
+}
+
+/**
+ * Durable print spooler (Gate 0). Sale completion enqueues a job; printer failures
+ * never undo or duplicate the commercial sale. Hardware Agent will drain this queue.
+ */
+@Entity({ tableName: 'soanas_pos_print_jobs' })
+@Index({ name: 'soanas_pos_print_jobs_scope_idx', properties: ['organizationId', 'tenantId'] })
+@Index({ name: 'soanas_pos_print_jobs_tx_idx', properties: ['transactionId', 'status'] })
+@Unique({ name: 'soanas_pos_print_jobs_idempotency_unique', properties: ['tenantId', 'idempotencyKey'] })
+export class PosPrintJob {
+  @PrimaryKey({ type: 'uuid', defaultRaw: 'gen_random_uuid()' })
+  id!: string
+
+  @Property({ name: 'tenant_id', type: 'uuid' })
+  tenantId!: string
+
+  @Property({ name: 'organization_id', type: 'uuid' })
+  organizationId!: string
+
+  @Property({ name: 'transaction_id', type: 'uuid' })
+  transactionId!: string
+
+  @Property({ type: 'text', default: 'sale_receipt' })
+  kind: string = 'sale_receipt'
+
+  @Property({ type: 'text', default: 'QUEUED' })
+  status: PosPrintJobStatus = 'QUEUED'
+
+  @Property({ type: 'json' })
+  payload!: Record<string, unknown>
+
+  @Property({ type: 'int', default: 0 })
+  attempts: number = 0
+
+  @Property({ name: 'last_error', type: 'text', nullable: true })
+  lastError?: string | null
+
+  @Property({ name: 'printer_job_id', type: 'text', nullable: true })
+  printerJobId?: string | null
+
+  @Property({ name: 'idempotency_key', type: 'text' })
+  idempotencyKey!: string
+
+  @Property({ name: 'printed_at', type: Date, nullable: true })
+  printedAt?: Date | null
+
+  @Property({ name: 'created_at', type: Date, onCreate: () => new Date() })
+  createdAt: Date = new Date()
+
+  @Property({ name: 'updated_at', type: Date, onCreate: () => new Date(), onUpdate: () => new Date() })
+  updatedAt: Date = new Date()
+
+  @Property({ name: 'deleted_at', type: Date, nullable: true })
+  deletedAt?: Date | null
 }

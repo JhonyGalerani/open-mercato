@@ -104,7 +104,7 @@
           "priceKindId": "Price kind id",
           "cashRegisterId": "Cash register id",
           "stockPolicy": "Stock policy",
-          "stockPolicyHelp": "BLOCK refuses a sale without stock, WARN needs an approval, ALLOW always sells.",
+          "stockPolicyHelp": "BLOCK refuses a sale without stock. WARN needs an approval. ALLOW is disabled until WMS supports negative stock.",
           "status": "Status"
         },
         "action": {

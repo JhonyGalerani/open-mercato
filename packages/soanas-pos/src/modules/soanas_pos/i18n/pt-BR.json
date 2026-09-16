@@ -104,7 +104,7 @@
           "priceKindId": "Id da tabela de preço",
           "cashRegisterId": "Id do caixa",
           "stockPolicy": "Política de estoque",
-          "stockPolicyHelp": "BLOCK recusa a venda sem estoque, WARN exige aprovação, ALLOW sempre vende.",
+          "stockPolicyHelp": "BLOCK recusa a venda sem estoque. WARN exige aprovação. ALLOW está desabilitado até o WMS aceitar estoque negativo.",
           "status": "Situação"
         },
         "action": {

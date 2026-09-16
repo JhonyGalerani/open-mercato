@@ -87,7 +87,6 @@ export default function CashSessionPage() {
 
   const [openingFloat, setOpeningFloat] = React.useState('')
   const [withdrawalAmount, setWithdrawalAmount] = React.useState('')
-  const [withdrawalApprover, setWithdrawalApprover] = React.useState('')
   const [supplyAmount, setSupplyAmount] = React.useState('')
   const [countedAmount, setCountedAmount] = React.useState('')
 
@@ -229,7 +228,6 @@ export default function CashSessionPage() {
         amountCents: cents,
         reasonCode: 'excess_cash',
         destination: 'safe',
-        ...(withdrawalApprover.trim() ? { approverUserId: withdrawalApprover.trim() } : {}),
         idempotencyKey: newIdempotencyKey('sangria'),
       },
       resourceId: sessionId,
@@ -238,9 +236,8 @@ export default function CashSessionPage() {
     })
     if (done) {
       setWithdrawalAmount('')
-      setWithdrawalApprover('')
     }
-  }, [current?.session?.id, runCashMutation, t, withdrawalAmount, withdrawalApprover])
+  }, [current?.session?.id, runCashMutation, t, withdrawalAmount])
 
   const handleSupply = React.useCallback(async () => {
     const sessionId = current?.session?.id
@@ -408,14 +405,12 @@ export default function CashSessionPage() {
                       value={withdrawalAmount}
                       onChange={(event) => setWithdrawalAmount(event.target.value)}
                     />
-                    <Label htmlFor="soanas-cash-approver">
-                      {t('soanas_cash.session.field.approver', 'Approver user id (when required)')}
-                    </Label>
-                    <Input
-                      id="soanas-cash-approver"
-                      value={withdrawalApprover}
-                      onChange={(event) => setWithdrawalApprover(event.target.value)}
-                    />
+                    <p className="text-sm text-muted-foreground">
+                      {t(
+                        'soanas_cash.session.help.approverSession',
+                        'When approval is required, the authenticated supervisor session is the approver — never a client-supplied user id.',
+                      )}
+                    </p>
                     <Button variant="secondary" onClick={handleWithdrawal}>
                       {t('soanas_cash.session.action.withdrawal', 'Register withdrawal')}
                     </Button>

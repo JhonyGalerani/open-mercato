@@ -259,13 +259,12 @@ export type StockGuardArgs = {
 
 /**
  * Enforces the terminal stock policy before a line is sold. BLOCK refuses, WARN requires an
- * approval feature, ALLOW always passes. Without a warehouse or a variant there is nothing
- * to check, so the sale proceeds (services and unmanaged SKUs).
+ * approval feature. ALLOW is coerced to BLOCK until WMS supports negative stock (Gate 0 / TD-012).
  */
 export async function enforceStockPolicy(args: StockGuardArgs): Promise<StockEvaluation | null> {
   const { ctx, em, terminal } = args
   if (!terminal.warehouseId || !args.catalogVariantId) return null
-  if (terminal.stockPolicy === 'ALLOW') return null
+  const policy = terminal.stockPolicy === 'ALLOW' ? 'BLOCK' : terminal.stockPolicy
 
   const { available, hasBalances } = await resolveAvailableQuantity(em, {
     tenantId: args.tenantId,
@@ -273,7 +272,7 @@ export async function enforceStockPolicy(args: StockGuardArgs): Promise<StockEva
     warehouseId: terminal.warehouseId,
     catalogVariantId: args.catalogVariantId,
   })
-  const evaluation = evaluateStock(hasBalances ? available : '0', args.quantity, terminal.stockPolicy)
+  const evaluation = evaluateStock(hasBalances ? available : '0', args.quantity, policy)
   if (evaluation.decision === 'allow') return evaluation
 
   const { translate } = await resolveTranslations()

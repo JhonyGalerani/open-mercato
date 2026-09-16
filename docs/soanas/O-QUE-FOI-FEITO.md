@@ -1,8 +1,8 @@
 # Soanas — O que foi feito
 
 **Data:** 2026-09-16  
-**Base:** Open Mercato `0.7.0` @ `30d509eeb`  
-**Branch:** `cursor/soanas-retail-gate-validation-4347`  
+**Base:** Open Mercato `0.7.0` @ `9903c82f8`  
+**Branch:** `cursor/soanas-rebaseline-gate0-9e05`  
 **PR:** https://github.com/JhonyGalerani/open-mercato/pull/1  
 
 Documento de entrega: o que já existe no repositório.  
@@ -22,10 +22,10 @@ Foi entregue a **fundação Soanas**, o **Retail Vertical Slice v1 VALIDATED** (
 | Métrica | Valor |
 |---------|------:|
 | IDs do Blueprint | 303 |
-| ANALYZED | 227 |
-| IMPLEMENTED | 36 |
-| TESTED | 20 |
-| VALIDATED | **20** |
+| ANALYZED | 229 |
+| IMPLEMENTED | 40 |
+| TESTED | 27 |
+| VALIDATED | **7** |
 <!-- soanas:derived-counts:end -->
 
 **Métrica principal do produto:** checklist Vertical Slice em [`IMPLEMENTATION-STATUS.md`](./IMPLEMENTATION-STATUS.md) — não o percentual bruto da matriz.

@@ -70,6 +70,7 @@ export const pixWebhookPayloadSchema = z.object({
 
 export const pixApplyWebhookSchema = z.object({
   tenantId: z.string().uuid(),
+  organizationId: z.string().uuid(),
   payload: pixWebhookPayloadSchema,
 })
 export type PixApplyWebhookInput = z.infer<typeof pixApplyWebhookSchema>

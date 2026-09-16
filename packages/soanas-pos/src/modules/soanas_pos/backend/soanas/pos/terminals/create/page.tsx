@@ -84,13 +84,12 @@ export default function CreatePosTerminalPage() {
             label: t('soanas_pos.terminals.form.field.stockPolicy', 'Stock policy'),
             helpText: t(
               'soanas_pos.terminals.form.field.stockPolicyHelp',
-              'BLOCK refuses a sale without stock, WARN needs an approval, ALLOW always sells.',
+              'BLOCK refuses a sale without stock. WARN needs an approval. ALLOW is disabled until WMS supports negative stock.',
             ),
             defaultValue: 'BLOCK',
             options: [
               { value: 'BLOCK', label: 'BLOCK' },
               { value: 'WARN', label: 'WARN' },
-              { value: 'ALLOW', label: 'ALLOW' },
             ],
           },
         ],
@@ -117,11 +116,12 @@ export default function CreatePosTerminalPage() {
                 t('soanas_pos.terminals.form.errors.required', 'Code and name are required'),
               )
             }
+            const requestedPolicy = String(values.stockPolicy || 'BLOCK')
             await createCrud('soanas_pos/terminals', {
               code,
               name,
               status: values.status === 'inactive' ? 'inactive' : 'active',
-              stockPolicy: String(values.stockPolicy || 'BLOCK'),
+              stockPolicy: requestedPolicy === 'ALLOW' ? 'BLOCK' : requestedPolicy,
               warehouseId: optionalId(values.warehouseId),
               salesChannelId: optionalId(values.salesChannelId),
               priceKindId: optionalId(values.priceKindId),

@@ -183,7 +183,7 @@ test.describe('TC-SOANAS-RETAIL-RECOVERY: crash mid-complete then recover', () =
         name: `Recover Terminal ${suffix}`,
         warehouseId,
         cashRegisterId: registerId,
-        stockPolicy: 'ALLOW',
+        stockPolicy: 'BLOCK',
         status: 'active',
       })
 

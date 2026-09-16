@@ -69,10 +69,22 @@ const createPixChargeCommand: CommandHandler<PixCreateInput, { chargeId: string;
     if (parsed.idempotencyKey) {
       const existing = await em.findOne(PixCharge, {
         tenantId: parsed.tenantId,
+        provider: 'mock',
         idempotencyKey: parsed.idempotencyKey,
         deletedAt: null,
       })
-      if (existing) return { chargeId: existing.id, txid: existing.txid }
+      if (existing) {
+        if (existing.organizationId !== parsed.organizationId) {
+          const { translate } = await resolveTranslations()
+          throw conflict(
+            translate(
+              'soanas_payments_br.errors.idempotency_org_mismatch',
+              'Idempotency key already used by another organization',
+            ),
+          )
+        }
+        return { chargeId: existing.id, txid: existing.txid }
+      }
     }
 
     const provider = resolvePixProvider(ctx)
@@ -117,6 +129,24 @@ const createPixChargeCommand: CommandHandler<PixCreateInput, { chargeId: string;
         const { translate } = await resolveTranslations()
         throw conflict(translate('soanas_payments_br.errors.txid_taken', 'A Pix charge with this txid already exists'))
       }
+      if (isUniqueViolation(err, 'soanas_payments_br_pix_charges_idempotency_unique') && parsed.idempotencyKey) {
+        const raced = await em.findOne(PixCharge, {
+          tenantId: parsed.tenantId,
+          provider: 'mock',
+          idempotencyKey: parsed.idempotencyKey,
+          deletedAt: null,
+        })
+        if (raced && raced.organizationId === parsed.organizationId) {
+          return { chargeId: raced.id, txid: raced.txid }
+        }
+        const { translate } = await resolveTranslations()
+        throw conflict(
+          translate(
+            'soanas_payments_br.errors.idempotency_conflict',
+            'A concurrent Pix charge with this idempotency key already exists',
+          ),
+        )
+      }
       throw err
     }
 
@@ -154,7 +184,11 @@ const getPixChargeCommand: CommandHandler<PixGetInput, PixChargeSnapshot> = {
   async execute(input, ctx) {
     const parsed = pixGetSchema.parse(input)
     const em = forkEm(ctx)
-    const charge = await loadPixChargeOrThrow(em, { tenantId: parsed.tenantId, txid: parsed.txid })
+    const charge = await loadPixChargeOrThrow(em, {
+      tenantId: parsed.tenantId,
+      organizationId: parsed.organizationId,
+      txid: parsed.txid,
+    })
 
     const provider = resolvePixProvider(ctx)
     const remoteStatus = await provider.getPaymentStatus(charge.txid)
@@ -183,7 +217,11 @@ const cancelPixChargeCommand: CommandHandler<PixCancelInput, { chargeId: string;
   async execute(input, ctx) {
     const parsed = pixCancelSchema.parse(input)
     const em = forkEm(ctx)
-    const charge = await loadPixChargeOrThrow(em, { tenantId: parsed.tenantId, txid: parsed.txid })
+    const charge = await loadPixChargeOrThrow(em, {
+      tenantId: parsed.tenantId,
+      organizationId: parsed.organizationId,
+      txid: parsed.txid,
+    })
 
     if (charge.status === 'CANCELLED') {
       return { chargeId: charge.id, status: charge.status }
@@ -223,7 +261,11 @@ const refundPixChargeCommand: CommandHandler<PixRefundInput, { chargeId: string;
   async execute(input, ctx) {
     const parsed = pixRefundSchema.parse(input)
     const em = forkEm(ctx)
-    const charge = await loadPixChargeOrThrow(em, { tenantId: parsed.tenantId, txid: parsed.txid })
+    const charge = await loadPixChargeOrThrow(em, {
+      tenantId: parsed.tenantId,
+      organizationId: parsed.organizationId,
+      txid: parsed.txid,
+    })
 
     if (charge.status !== 'PAID' && charge.status !== 'PARTIALLY_REFUNDED') {
       const { translate } = await resolveTranslations()
@@ -261,7 +303,11 @@ const applyPixWebhookCommand: CommandHandler<PixApplyWebhookInput, { chargeId: s
   async execute(input, ctx) {
     const parsed = pixApplyWebhookSchema.parse(input)
     const em = forkEm(ctx)
-    const charge = await loadPixChargeOrThrow(em, { tenantId: parsed.tenantId, txid: parsed.payload.txid })
+    const charge = await loadPixChargeOrThrow(em, {
+      tenantId: parsed.tenantId,
+      organizationId: parsed.organizationId,
+      txid: parsed.payload.txid,
+    })
 
     const previousStatus = charge.status
     const previousE2eId = charge.e2eId ?? null

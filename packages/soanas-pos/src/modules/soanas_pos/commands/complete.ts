@@ -8,11 +8,13 @@ import { SalesOrder, SalesPayment } from '@open-mercato/core/modules/sales/data/
 import { InventoryBalance, WarehouseLocation } from '@open-mercato/core/modules/wms/data/entities'
 import {
   PaymentTender,
+  PosPrintJob,
   PosRecoveryState,
   PosStateTransition,
   PosTerminal,
   PosTransaction,
   PosTransactionLine,
+  type PosAllocationStep,
   type PosRecoveryStep,
 } from '../data/entities'
 import { posCompleteSchema, type PosCompleteInput } from '../data/validators'
@@ -20,6 +22,7 @@ import { centsToDecimalString, centsToString } from '../lib/money'
 import { planCompleteSale } from '../lib/completeSale'
 import { planStockDeductions } from '../lib/quantity'
 import { planLocationDeductions } from '../lib/stockAllocation'
+import { allocationPlanComplete, buildAllocationSteps } from '../lib/allocationCheckpoints'
 import {
   buildSaleReceiptDocument,
   MockReceiptPrinter,
@@ -46,6 +49,64 @@ function resolveReceiptPrinter(ctx: CommandRuntimeContext): ReceiptPrinter {
     // Container may not have the registrar in isolated command unit tests.
   }
   return new MockReceiptPrinter()
+}
+
+/**
+ * Persist a PrintJob BEFORE calling the printer. A printer failure marks the job FAILED
+ * but never rolls back the COMPLETED sale (Gate 0). Replay can re-attempt PRINTING.
+ */
+async function enqueueAndAttemptPrint(args: {
+  em: EntityManager
+  ctx: CommandRuntimeContext
+  transaction: PosTransaction
+  receipt: SaleReceiptDocument
+}): Promise<void> {
+  const { em, ctx, transaction, receipt } = args
+  const idempotencyKey = `sale_receipt:${transaction.id}`
+  let job = await em.findOne(PosPrintJob, {
+    tenantId: transaction.tenantId,
+    idempotencyKey,
+    deletedAt: null,
+  })
+  if (!job) {
+    job = em.create(PosPrintJob, {
+      tenantId: transaction.tenantId,
+      organizationId: transaction.organizationId,
+      transactionId: transaction.id,
+      kind: 'sale_receipt',
+      status: 'QUEUED',
+      payload: receipt as unknown as Record<string, unknown>,
+      attempts: 0,
+      idempotencyKey,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+    em.persist(job)
+    await em.flush()
+  }
+
+  if (job.status === 'PRINTED') return
+
+  job.status = 'PRINTING'
+  job.attempts = (job.attempts ?? 0) + 1
+  job.updatedAt = new Date()
+  await em.flush()
+
+  try {
+    const receiptPrinter = resolveReceiptPrinter(ctx)
+    const printed = await receiptPrinter.print(receipt)
+    job.status = 'PRINTED'
+    job.printerJobId = printed.jobId
+    job.printedAt = new Date()
+    job.lastError = null
+    job.updatedAt = new Date()
+    await em.flush()
+  } catch (err) {
+    job.status = 'FAILED'
+    job.lastError = err instanceof Error ? err.message : String(err)
+    job.updatedAt = new Date()
+    await em.flush()
+  }
 }
 
 export type CompletePosSaleResult = {
@@ -93,12 +154,19 @@ async function ensureRecoveryState(
 async function checkpoint(
   em: EntityManager,
   recovery: PosRecoveryState,
-  patch: Partial<Pick<PosRecoveryState, 'lastStep' | 'salesOrderId' | 'wmsMovementId' | 'cashMovementId'>>,
+  patch: Partial<
+    Pick<
+      PosRecoveryState,
+      'lastStep' | 'salesOrderId' | 'wmsMovementId' | 'wmsMovementIds' | 'cashMovementId' | 'allocationPlan'
+    >
+  >,
 ): Promise<void> {
   if (patch.lastStep !== undefined) recovery.lastStep = patch.lastStep as PosRecoveryStep
   if (patch.salesOrderId !== undefined) recovery.salesOrderId = patch.salesOrderId
   if (patch.wmsMovementId !== undefined) recovery.wmsMovementId = patch.wmsMovementId
+  if (patch.wmsMovementIds !== undefined) recovery.wmsMovementIds = patch.wmsMovementIds
   if (patch.cashMovementId !== undefined) recovery.cashMovementId = patch.cashMovementId
+  if (patch.allocationPlan !== undefined) recovery.allocationPlan = patch.allocationPlan
   recovery.errorCode = null
   recovery.errorMessage = null
   recovery.updatedAt = new Date()
@@ -276,69 +344,117 @@ async function runWmsStep(args: {
   terminal: PosTerminal
   lines: PosTransactionLine[]
   salesOrderId: string | null
+  recovery: PosRecoveryState
 }): Promise<string[]> {
-  const { ctx, em, transaction, terminal, lines } = args
+  const { ctx, em, transaction, terminal, lines, recovery } = args
   if (!terminal.warehouseId) return []
   const salesOrderId = args.salesOrderId
   if (!salesOrderId) {
     throw new Error('[internal] soanas_pos WMS step requires salesOrderId for referenceType=so')
   }
   const commandBus = ctx.container.resolve('commandBus') as CommandBus
-  const movementIds: string[] = []
-  const allowShortage = terminal.stockPolicy === 'ALLOW'
 
-  for (const deduction of planStockDeductions(lines)) {
-    const { buckets, fallbackLocationId } = await loadVariantBalanceBuckets(
-      em,
-      { tenantId: transaction.tenantId, organizationId: transaction.organizationId },
-      terminal.warehouseId,
-      deduction.catalogVariantId,
-    )
-    const plan = planLocationDeductions({
-      quantity: deduction.quantity,
-      balances: buckets,
-      fallbackLocationId,
-      allowShortage,
-    })
-    if (plan.shortfall !== '0.0000' && !allowShortage) {
-      throw new Error(
-        `[internal] soanas_pos multi-location plan shortfall=${plan.shortfall} for variant ${deduction.catalogVariantId}`,
+  // Gate 0: WMS rejects negative stock. Terminal ALLOW is not honored until core supports it.
+  const allowShortage = false
+
+  let plan: PosAllocationStep[] = Array.isArray(recovery.allocationPlan)
+    ? (recovery.allocationPlan as PosAllocationStep[])
+    : []
+
+  if (!plan.length) {
+    const built: PosAllocationStep[] = []
+    for (const deduction of planStockDeductions(lines)) {
+      const { buckets, fallbackLocationId } = await loadVariantBalanceBuckets(
+        em,
+        { tenantId: transaction.tenantId, organizationId: transaction.organizationId },
+        terminal.warehouseId,
+        deduction.catalogVariantId,
+      )
+      const locationPlan = planLocationDeductions({
+        quantity: deduction.quantity,
+        balances: buckets,
+        fallbackLocationId,
+        allowShortage,
+      })
+      if (locationPlan.shortfall !== '0.0000') {
+        throw new Error(
+          `[internal] soanas_pos multi-location plan shortfall=${locationPlan.shortfall} for variant ${deduction.catalogVariantId}`,
+        )
+      }
+      if (!locationPlan.deductions.length) {
+        throw new Error('[internal] soanas_pos found no warehouse location to deduct stock from')
+      }
+      built.push(
+        ...buildAllocationSteps({
+          transactionId: transaction.id,
+          salesOrderId,
+          catalogVariantId: deduction.catalogVariantId,
+          deductions: locationPlan.deductions,
+        }),
       )
     }
-    if (!plan.deductions.length) {
-      throw new Error('[internal] soanas_pos found no warehouse location to deduct stock from')
+    plan = built
+    await checkpoint(em, recovery, { allocationPlan: plan })
+  }
+
+  const movementIds: string[] = [...(recovery.wmsMovementIds ?? [])]
+
+  for (let index = 0; index < plan.length; index += 1) {
+    const step = plan[index]
+    if (step.status === 'COMPLETED' && step.movementId) {
+      if (!movementIds.includes(step.movementId)) movementIds.push(step.movementId)
+      continue
     }
 
-    for (const locationDeduction of plan.deductions) {
-      // referenceType 'so' → Sales Order id. POS provenance stays in metadata (ADR-008).
-      const { result } = await commandBus.execute('wms.inventory.adjust', {
-        input: {
-          organizationId: transaction.organizationId,
-          tenantId: transaction.tenantId,
-          warehouseId: terminal.warehouseId,
-          locationId: locationDeduction.locationId,
-          catalogVariantId: deduction.catalogVariantId,
-          lotId: locationDeduction.lotId ?? undefined,
-          serialNumber: locationDeduction.serialNumber ?? undefined,
-          delta: `-${locationDeduction.quantity}`,
-          reason: `POS sale ${transaction.id}`,
-          reasonCode: 'pos_sale',
-          referenceType: 'so',
-          referenceId: salesOrderId,
-          performedBy: transaction.operatorUserId,
-          metadata: {
-            source: POS_SALES_SOURCE,
-            sourceTransactionId: transaction.id,
-            posLineIds: deduction.lineIds,
-            correlationId: transaction.correlationId,
-          },
+    const { result } = await commandBus.execute('wms.inventory.adjust', {
+      input: {
+        organizationId: transaction.organizationId,
+        tenantId: transaction.tenantId,
+        warehouseId: terminal.warehouseId,
+        locationId: step.locationId,
+        catalogVariantId: step.catalogVariantId,
+        lotId: step.lotId ?? undefined,
+        serialNumber: step.serialNumber ?? undefined,
+        delta: `-${step.plannedQuantity}`,
+        reason: `POS sale ${transaction.id}`,
+        reasonCode: 'pos_sale',
+        referenceType: 'so',
+        referenceId: salesOrderId,
+        performedBy: transaction.operatorUserId,
+        metadata: {
+          source: POS_SALES_SOURCE,
+          sourceTransactionId: transaction.id,
+          correlationId: transaction.correlationId,
+          allocationIdempotencyKey: step.idempotencyKey,
+          allocationStep: index,
         },
-        ctx: dispatchContext(ctx),
-      })
-      const movement = result as { movementId?: string } | undefined
-      if (movement?.movementId) movementIds.push(movement.movementId)
+      },
+      ctx: dispatchContext(ctx),
+    })
+    const movement = result as { movementId?: string } | undefined
+    const movementId = movement?.movementId ?? null
+    plan[index] = {
+      ...step,
+      movementId,
+      status: movementId ? 'COMPLETED' : 'FAILED',
+    }
+    if (movementId && !movementIds.includes(movementId)) movementIds.push(movementId)
+
+    await checkpoint(em, recovery, {
+      allocationPlan: plan,
+      wmsMovementIds: movementIds,
+      wmsMovementId: movementIds[0] ?? null,
+    })
+
+    if (!movementId) {
+      throw new Error(`[internal] soanas_pos WMS adjust returned no movementId for step ${index}`)
     }
   }
+
+  if (!allocationPlanComplete(plan)) {
+    throw new Error('[internal] soanas_pos WMS allocation plan incomplete after loop')
+  }
+
   return movementIds
 }
 
@@ -590,8 +706,13 @@ export async function completePosSale(
         terminal,
         lines,
         salesOrderId: transaction.salesOrderId ?? recovery.salesOrderId ?? null,
+        recovery,
       })
-      await checkpoint(em, recovery, { lastStep: 'wms', wmsMovementId: wmsMovementIds[0] ?? null })
+      await checkpoint(em, recovery, {
+        lastStep: 'wms',
+        wmsMovementId: wmsMovementIds[0] ?? null,
+        wmsMovementIds,
+      })
     }
 
     if (plan.steps.includes('cash')) {
@@ -671,8 +792,12 @@ export async function completePosSale(
   }
 
   const receipt = buildReceipt({ transaction, terminal, lines, tenders })
-  const receiptPrinter = resolveReceiptPrinter(ctx)
-  await receiptPrinter.print(receipt)
+  await enqueueAndAttemptPrint({
+    em,
+    ctx,
+    transaction,
+    receipt,
+  })
 
   await emitSoanasPosEvent('soanas.pos.transaction.completed', {
     id: transaction.id,
