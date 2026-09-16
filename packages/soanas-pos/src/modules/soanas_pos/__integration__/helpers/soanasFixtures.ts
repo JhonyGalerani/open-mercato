@@ -195,18 +195,21 @@ export async function seedPosContext(args: {
     isActive: true,
   })
 
-  await postJson(args.request, args.token, '/api/wms/inventory/adjust', {
-    organizationId: args.organizationId,
-    tenantId: args.tenantId,
-    warehouseId,
-    locationId: primaryLocationId,
-    catalogVariantId: variantId,
-    delta: args.initialStock ?? '100',
-    reason: 'soanas_manual_tender_seed',
-    referenceType: 'manual',
-    referenceId: randomUUID(),
-    performedBy: args.userId,
-  })
+  const initialStock = args.initialStock ?? '100'
+  if (BigInt(initialStock) !== 0n) {
+    await postJson(args.request, args.token, '/api/wms/inventory/adjust', {
+      organizationId: args.organizationId,
+      tenantId: args.tenantId,
+      warehouseId,
+      locationId: primaryLocationId,
+      catalogVariantId: variantId,
+      delta: initialStock,
+      reason: 'soanas_manual_tender_seed',
+      referenceType: 'manual',
+      referenceId: randomUUID(),
+      performedBy: args.userId,
+    })
+  }
 
   const registerId = await createCrudFixture(args.request, args.token, '/api/soanas_cash/registers', {
     organizationId: args.organizationId,
