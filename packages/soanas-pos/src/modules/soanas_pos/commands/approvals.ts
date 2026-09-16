@@ -129,8 +129,9 @@ const requestApprovalCommand: CommandHandler<
             }
           }
 
+          const now = new Date()
           const expiresAt =
-            parsed.expiresAt ?? new Date(Date.now() + DEFAULT_APPROVAL_TTL_MS)
+            parsed.expiresAt ?? new Date(now.getTime() + DEFAULT_APPROVAL_TTL_MS)
           const approval = em.create(PosApprovalRequest, {
             tenantId: parsed.tenantId,
             organizationId: parsed.organizationId,
@@ -146,6 +147,8 @@ const requestApprovalCommand: CommandHandler<
             afterJson: parsed.after ?? null,
             idempotencyKey: parsed.idempotencyKey ?? null,
             expiresAt,
+            createdAt: now,
+            updatedAt: now,
           })
           em.persist(approval)
           await em.flush()
