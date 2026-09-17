@@ -1,9 +1,11 @@
 # Soanas — Implementation Status
 
-**Updated:** 2026-09-16  
+**Updated:** 2026-09-17  
 **Base:** Open Mercato 0.7.0 @ `8d38af7ca` (main pós PR #3)  
 **Branch:** `cursor/soanas-gates01-validation-desktop-foundation-9e05`  
-**Strategy:** Validar Gates 0 e 1 (migrations + E2E) antes do Gate 2 (caixa completo) e fundação desktop.
+**Strategy:** Validar Gates 0 e 1 (migrations + E2E) antes do Gate 2 (caixa completo) e fundação desktop.  
+**PR:** https://github.com/JhonyGalerani/open-mercato/pull/5  
+**Gate 0/1:** migrations + E2E verdes em Postgres efêmero — **não** implica pronto para produção.
 
 <!-- soanas:derived-counts:start -->
 ```
@@ -11,6 +13,36 @@ Blueprint coverage (IDs): ANALYZED 229 | IMPLEMENTED 40 | TESTED 27 | VALIDATED 
 Validated (DoD completa): 2.3%
 ```
 <!-- soanas:derived-counts:end -->
+
+## Gate 0/1 validation evidence (2026-09-17)
+
+Runner: local Node 24 + Docker (storage-driver `vfs`) + PostgreSQL efêmero via testcontainers.  
+**Não** promove contadores de coverage; pagamentos permanecem manuais (maquininha externa, sem TEF).
+
+| Check | Result |
+|-------|--------|
+| `yarn install --immutable` | OK |
+| `yarn soanas:check-coverage` | OK — A229 I40 T27 V7 (inalterado) |
+| `@open-mercato/soanas-pos` unit | 68 passed |
+| `@open-mercato/soanas-cash` unit | 38 passed |
+| `@open-mercato/soanas-payments-br` unit | 28 passed |
+| typecheck soanas-pos / cash / payments-br | OK |
+| `yarn build:packages` + `yarn generate` | OK |
+| Docker disponível | OK (`docker info`) |
+| `yarn soanas:validate-migrations` | OK — migrations Soanas + `TC-SOANAS-RETAIL-001` green (revalidado 2026-09-17) |
+| Gate 0 E2E (`TC-SOANAS-GATE0-*`) | OK — 4/4 (CASH-APPROVAL, PIX-SCOPE, MULTILOC, PRINTJOB) |
+| Gate 1 E2E (`TC-SOANAS-POS-MANUAL-TENDERS-001`) | OK — 9/9 (split tenders manuais; sem TEF) |
+
+### Fixes desta rodada (commit remoto `e435f84fb` **não existia**; equivalentes + follow-ups)
+
+1. `PosApprovalRequest` create: `createdAt`/`updatedAt` explícitos (typecheck MikroORM)
+2. `yarn soanas:validate-migrations`: `--filter TC-SOANAS-RETAIL-001` (não `--` nu)
+3. `soanas-establishments`: `EntityManager` de `@mikro-orm/postgresql` + undo recreate completo
+4. `dynamicLoader`: `turbopackIgnore` em probes FS (Next 16 tracing)
+5. CLI ephemeral: rejeita `JWT_SECRET` placeholder do `.env` em `NODE_ENV=production`
+6. Gate0 fixture: skip WMS adjust quando `initialStock=0`
+7. Pix audit snapshot: `centsToString` (PG bigint → JSON; evita 500 em `pix.create`)
+8. `MockPixProvider` process-scoped + fallback DB no `pix.get` (create→get cross-request)
 
 ## Vertical Slices
 
@@ -36,7 +68,7 @@ Progress = checklist items done / total. **Primary** product metric (not Bluepri
 | 14 | Recovery after crash mid-complete | done (`/recover` + checkpoints) |
 | 15 | Concurrent stock contention deterministic | done (API race on ephemeral Postgres + `PESSIMISTIC_WRITE`) |
 | 16 | Sales history UI | done |
-| 17 | E2E Playwright retail path | done (`TC-SOANAS-RETAIL-001` + CONCURRENCY + RECOVERY + UI-001 green on ephemeral Postgres) |
+| 17 | E2E Playwright retail path | done (`TC-SOANAS-RETAIL-001` revalidado 2026-09-16 em Postgres efêmero) |
 
 **Retail Sale v1:** VALIDATED (17/17) — ephemeral migrate + API + concurrency + recovery + browser UI  
 **Retail Sale + Pix:** 0%  
@@ -51,8 +83,8 @@ Progress = checklist items done / total. **Primary** product metric (not Bluepri
 | Register/Drawer/Session/Supply/Sangria/Reverse | done |
 | Count + blind close + reconciliation + approvals | done |
 | Basic UI | done |
-| Unit tests (36) | done |
-| Migration applied on DB | done (ephemeral `open-mercato-soanas-ephemeral`) |
+| Unit tests (38) | done |
+| Migration applied on DB | done (ephemeral Postgres 2026-09-16) |
 
 ## POS DoD (domain)
 
@@ -65,16 +97,16 @@ Progress = checklist items done / total. **Primary** product metric (not Bluepri
 | Recovery / replay | done |
 | Mock receipt | done |
 | Sell + history UI | done |
-| Unit tests (51) | done |
+| Unit tests (68) | done |
 | Integration API `TC-SOANAS-RETAIL-001` + UI-001 | green on ephemeral Postgres |
 | Hold/resume | done (`HELD` status + hold/resume API; `TC-SOANAS-POS-HOLD-001` green; transfer/stock reserve pending) |
-| Migration applied on DB | done (ephemeral `open-mercato-soanas-ephemeral`) |
+| Migration applied on DB | done (ephemeral Postgres 2026-09-16) |
 
 ## Priority order (locked)
 
 1. ~~Finish Cash~~  
 2. ~~Build `soanas-pos` + integrations~~  
-3. Apply migrations in disposable DB + run `TC-SOANAS-RETAIL-001`  
+3. ~~Apply migrations in disposable DB + run `TC-SOANAS-RETAIL-001`~~  
 4. Mark Retail Vertical Slice v1 VALIDATED only after E2E green  
 5. External contracts + mocks (Pix/TEF/Fiscal) — **only after** step 4  
 
