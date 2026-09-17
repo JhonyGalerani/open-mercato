@@ -255,7 +255,7 @@ test.describe('TC-SOANAS-GATE0-CASH-APPROVAL-001: dual custody session operator'
         data: {
           sessionId,
           amountCents: '10000',
-          reasonCode: 'float_topup',
+          reasonCode: 'change_fund',
           origin: 'safe',
           denominations: { '100': 1 },
           operatorUserId: adminScope.userId,
@@ -271,7 +271,7 @@ test.describe('TC-SOANAS-GATE0-CASH-APPROVAL-001: dual custody session operator'
         data: {
           sessionId,
           amountCents: '10000',
-          reasonCode: 'float_topup',
+          reasonCode: 'change_fund',
           origin: 'safe',
           denominations: { '100': 1 },
           operatorUserId: superadminScope.userId,
