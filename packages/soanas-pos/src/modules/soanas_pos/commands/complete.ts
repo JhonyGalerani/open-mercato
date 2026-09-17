@@ -8,7 +8,6 @@ import { SalesOrder, SalesPayment } from '@open-mercato/core/modules/sales/data/
 import { InventoryBalance, WarehouseLocation } from '@open-mercato/core/modules/wms/data/entities'
 import {
   PaymentTender,
-  PosPrintJob,
   PosRecoveryState,
   PosStateTransition,
   PosTerminal,
@@ -23,90 +22,49 @@ import { planCompleteSale } from '../lib/completeSale'
 import { planStockDeductions } from '../lib/quantity'
 import { planLocationDeductions } from '../lib/stockAllocation'
 import { allocationPlanComplete, buildAllocationSteps } from '../lib/allocationCheckpoints'
-import {
-  buildSaleReceiptDocument,
-  MockReceiptPrinter,
-  type ReceiptPrinter,
-  type SaleReceiptDocument,
-} from '../lib/receipt'
+import { buildSaleReceiptDocument, type SaleReceiptDocument } from '../lib/receipt'
+import { enqueueAndAttemptPrint } from '../lib/printJob'
 import { posError } from '../lib/errors'
 import { emitSoanasPosEvent } from '../events'
-import { RECEIPT_PRINTER_DI_KEY } from '../di'
 import { forkEm, loadLines, loadTransactionForUpdate, transitionTo } from './helpers'
 
 export const POS_SALES_SOURCE = 'soanas_pos'
 
-/**
- * Resolves the ReceiptPrinter port from the request container (ADR-009). Falls back to a
- * process-local MockReceiptPrinter only when DI has not registered the key yet (unit tests /
- * partial boots), so the saga never hard-depends on a concrete ESC/POS driver.
- */
-function resolveReceiptPrinter(ctx: CommandRuntimeContext): ReceiptPrinter {
-  try {
-    const printer = ctx.container.resolve(RECEIPT_PRINTER_DI_KEY) as ReceiptPrinter | undefined
-    if (printer && typeof printer.print === 'function') return printer
-  } catch {
-    // Container may not have the registrar in isolated command unit tests.
-  }
-  return new MockReceiptPrinter()
-}
-
-/**
- * Persist a PrintJob BEFORE calling the printer. A printer failure marks the job FAILED
- * but never rolls back the COMPLETED sale (Gate 0). Replay can re-attempt PRINTING.
- */
-async function enqueueAndAttemptPrint(args: {
-  em: EntityManager
-  ctx: CommandRuntimeContext
-  transaction: PosTransaction
-  receipt: SaleReceiptDocument
-}): Promise<void> {
-  const { em, ctx, transaction, receipt } = args
-  const idempotencyKey = `sale_receipt:${transaction.id}`
-  let job = await em.findOne(PosPrintJob, {
-    tenantId: transaction.tenantId,
-    idempotencyKey,
+export async function retrySaleReceiptPrint(
+  input: PosCompleteInput,
+  ctx: CommandRuntimeContext,
+): Promise<{ jobId: string; status: string }> {
+  const parsed = posCompleteSchema.parse(input)
+  const em = forkEm(ctx)
+  const { translate } = await resolveTranslations()
+  const transaction = await em.findOne(PosTransaction, {
+    id: parsed.transactionId,
+    tenantId: parsed.tenantId,
+    organizationId: parsed.organizationId,
     deletedAt: null,
   })
-  if (!job) {
-    job = em.create(PosPrintJob, {
-      tenantId: transaction.tenantId,
-      organizationId: transaction.organizationId,
-      transactionId: transaction.id,
-      kind: 'sale_receipt',
-      status: 'QUEUED',
-      payload: receipt as unknown as Record<string, unknown>,
-      attempts: 0,
-      idempotencyKey,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    })
-    em.persist(job)
-    await em.flush()
+  if (!transaction) {
+    throw notFound(translate('soanas_pos.errors.transaction_not_found', 'POS transaction not found'))
   }
-
-  if (job.status === 'PRINTED') return
-
-  job.status = 'PRINTING'
-  job.attempts = (job.attempts ?? 0) + 1
-  job.updatedAt = new Date()
-  await em.flush()
-
-  try {
-    const receiptPrinter = resolveReceiptPrinter(ctx)
-    const printed = await receiptPrinter.print(receipt)
-    job.status = 'PRINTED'
-    job.printerJobId = printed.jobId
-    job.printedAt = new Date()
-    job.lastError = null
-    job.updatedAt = new Date()
-    await em.flush()
-  } catch (err) {
-    job.status = 'FAILED'
-    job.lastError = err instanceof Error ? err.message : String(err)
-    job.updatedAt = new Date()
-    await em.flush()
+  if (transaction.status !== 'COMPLETED') {
+    throw badRequest(
+      translate(
+        'soanas_pos.errors.print_retry_not_completed',
+        'Receipt print retry is only available for completed sales',
+      ),
+    )
   }
+  const terminal = await em.findOneOrFail(PosTerminal, {
+    id: transaction.terminalId,
+    tenantId: transaction.tenantId,
+  })
+  const lines = await loadLines(em, transaction)
+  const tenders = await em.find(PaymentTender, {
+    posTransactionId: transaction.id,
+    tenantId: transaction.tenantId,
+  })
+  const receipt = buildReceipt({ transaction, terminal, lines, tenders })
+  return enqueueAndAttemptPrint({ em, ctx, transaction, receipt })
 }
 
 export type CompletePosSaleResult = {
@@ -134,6 +92,7 @@ async function ensureRecoveryState(
   const existing = await em.findOne(PosRecoveryState, {
     transactionId: transaction.id,
     tenantId: transaction.tenantId,
+    organizationId: transaction.organizationId,
   })
   if (existing) return existing
   const now = new Date()
@@ -741,8 +700,16 @@ export async function completePosSale(
   } catch (err) {
     const described = describeError(err)
     const failureEm = forkEm(ctx)
-    const failed = await failureEm.findOne(PosTransaction, { id: transaction.id })
-    const failedRecovery = await failureEm.findOne(PosRecoveryState, { transactionId: transaction.id })
+    const failed = await failureEm.findOne(PosTransaction, {
+      id: transaction.id,
+      tenantId: transaction.tenantId,
+      organizationId: transaction.organizationId,
+    })
+    const failedRecovery = await failureEm.findOne(PosRecoveryState, {
+      transactionId: transaction.id,
+      tenantId: transaction.tenantId,
+      organizationId: transaction.organizationId,
+    })
     if (failed && failed.status === 'COMPLETING') {
       failed.status = 'FAILED_RECOVERABLE'
       failed.updatedAt = new Date()
@@ -837,5 +804,13 @@ const recoverCommand: CommandHandler<PosCompleteInput, CompletePosSaleResult> = 
   },
 }
 
+const retryPrintCommand: CommandHandler<PosCompleteInput, { jobId: string; status: string }> = {
+  id: 'soanas_pos.transactions.retry_print',
+  async execute(input, ctx) {
+    return retrySaleReceiptPrint(input, ctx)
+  },
+}
+
 registerCommand(completeCommand)
 registerCommand(recoverCommand)
+registerCommand(retryPrintCommand)

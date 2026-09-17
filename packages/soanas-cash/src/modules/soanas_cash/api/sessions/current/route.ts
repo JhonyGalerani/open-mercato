@@ -77,7 +77,7 @@ export async function GET(req: Request) {
 
   const movements = await em.find(
     CashMovement,
-    { sessionId: session.id, tenantId: auth.tenantId },
+    { sessionId: session.id, tenantId: auth.tenantId, organizationId },
     { orderBy: { createdAt: 'asc' } },
   )
   const totals = buildReconciliationTotals(
@@ -121,6 +121,8 @@ export async function GET(req: Request) {
       status: movement.status,
       amountCents: centsToWire(movement.amountCents),
       reasonCode: movement.reasonCode ?? null,
+      operatorUserId: movement.operatorUserId,
+      approverUserId: movement.approverUserId ?? null,
       createdAt: movement.createdAt.toISOString(),
     })),
   })

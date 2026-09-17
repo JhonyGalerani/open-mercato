@@ -10,8 +10,18 @@ import type { PixProvider } from './lib/pixProvider'
  */
 export const PIX_PROVIDER_DI_KEY = 'soanas.payments.pixProvider' as const
 
+/**
+ * Request containers call `register()` per request. The mock adapter is stateful
+ * (in-memory charges), so the default binding must be process-scoped — otherwise
+ * create→get round-trips lose the charge between requests.
+ */
+let sharedMockPixProvider: PixProvider | null = null
+
 export function createDefaultPixProvider(): PixProvider {
-  return new MockPixProvider()
+  if (!sharedMockPixProvider) {
+    sharedMockPixProvider = new MockPixProvider()
+  }
+  return sharedMockPixProvider
 }
 
 export function register(container: AppContainer): void {

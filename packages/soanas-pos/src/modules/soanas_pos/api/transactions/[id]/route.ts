@@ -4,6 +4,7 @@ import type { EntityManager } from '@mikro-orm/postgresql'
 import { resolveTranslations } from '@open-mercato/shared/lib/i18n/server'
 import {
   PaymentTender,
+  PosPrintJob,
   PosRecoveryState,
   PosTransaction,
   PosTransactionLine,
@@ -36,18 +37,37 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     }
     const lines = await em.find(
       PosTransactionLine,
-      { transactionId: transaction.id, tenantId: transaction.tenantId },
+      {
+        transactionId: transaction.id,
+        tenantId: transaction.tenantId,
+        organizationId: transaction.organizationId,
+      },
       { orderBy: { sortOrder: 'asc' } },
     )
     const tenders = await em.find(
       PaymentTender,
-      { posTransactionId: transaction.id, tenantId: transaction.tenantId },
+      {
+        posTransactionId: transaction.id,
+        tenantId: transaction.tenantId,
+        organizationId: transaction.organizationId,
+      },
       { orderBy: { createdAt: 'asc' } },
     )
     const recovery = await em.findOne(PosRecoveryState, {
       transactionId: transaction.id,
       tenantId: transaction.tenantId,
+      organizationId: transaction.organizationId,
     })
+    const printJobs = await em.find(
+      PosPrintJob,
+      {
+        transactionId: transaction.id,
+        tenantId: transaction.tenantId,
+        organizationId: transaction.organizationId,
+        deletedAt: null,
+      },
+      { orderBy: { createdAt: 'asc' } },
+    )
 
     return NextResponse.json({
       id: transaction.id,
@@ -119,6 +139,17 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
             errorMessage: recovery.errorMessage ?? null,
           }
         : null,
+      printJobs: printJobs.map((job) => ({
+        id: job.id,
+        kind: job.kind,
+        status: job.status,
+        attempts: job.attempts ?? 0,
+        printerJobId: job.printerJobId ?? null,
+        lastError: job.lastError ?? null,
+        printedAt: job.printedAt ? job.printedAt.toISOString() : null,
+        createdAt: job.createdAt.toISOString(),
+        updatedAt: job.updatedAt.toISOString(),
+      })),
     })
   } catch (err) {
     const scopeResponse = posScopeErrorResponse(err)

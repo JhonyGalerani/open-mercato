@@ -27,6 +27,7 @@
       "cancel_forbidden": "You are not allowed to cancel POS sales",
       "reverse_failed": "Failed to reverse the POS sale",
       "duplicate_tender": "Duplicate POS tender",
+      "idempotency_org_mismatch": "Idempotency key already used by another organization",
       "complete_failed_action": "Retry the completion from the POS recovery action",
       "list_failed": "Failed to load POS transactions",
       "detail_failed": "Failed to load the POS transaction",

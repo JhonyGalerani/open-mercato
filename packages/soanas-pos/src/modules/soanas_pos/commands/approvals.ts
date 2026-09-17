@@ -3,7 +3,7 @@ import type { EntityManager } from '@mikro-orm/postgresql'
 import { registerCommand } from '@open-mercato/shared/lib/commands'
 import type { CommandHandler, CommandRuntimeContext } from '@open-mercato/shared/lib/commands'
 import { withAtomicFlush } from '@open-mercato/shared/lib/commands/flush'
-import { badRequest, forbidden, notFound } from '@open-mercato/shared/lib/crud/errors'
+import { badRequest, conflict, forbidden, notFound } from '@open-mercato/shared/lib/crud/errors'
 import { resolveTranslations } from '@open-mercato/shared/lib/i18n/server'
 import {
   PosApprovalRequest,
@@ -104,6 +104,7 @@ const requestApprovalCommand: CommandHandler<
     const parsed = posApprovalRequestSchema.parse(input)
     const requesterUserId = requireAuthUserId(ctx)
     const em = forkEm(ctx)
+    const { translate } = await resolveTranslations()
     let result = {
       approvalRequestId: '',
       status: 'pending',
@@ -117,6 +118,7 @@ const requestApprovalCommand: CommandHandler<
           if (parsed.idempotencyKey) {
             const prior = await em.findOne(PosApprovalRequest, {
               tenantId: parsed.tenantId,
+              organizationId: parsed.organizationId,
               idempotencyKey: parsed.idempotencyKey,
             })
             if (prior) {
@@ -127,10 +129,23 @@ const requestApprovalCommand: CommandHandler<
               }
               return
             }
+            const otherOrg = await em.findOne(PosApprovalRequest, {
+              tenantId: parsed.tenantId,
+              idempotencyKey: parsed.idempotencyKey,
+            })
+            if (otherOrg && otherOrg.organizationId !== parsed.organizationId) {
+              throw conflict(
+                translate(
+                  'soanas_pos.errors.idempotency_org_mismatch',
+                  'Idempotency key already used by another organization',
+                ),
+              )
+            }
           }
 
+          const now = new Date()
           const expiresAt =
-            parsed.expiresAt ?? new Date(Date.now() + DEFAULT_APPROVAL_TTL_MS)
+            parsed.expiresAt ?? new Date(now.getTime() + DEFAULT_APPROVAL_TTL_MS)
           const approval = em.create(PosApprovalRequest, {
             tenantId: parsed.tenantId,
             organizationId: parsed.organizationId,
@@ -146,6 +161,8 @@ const requestApprovalCommand: CommandHandler<
             afterJson: parsed.after ?? null,
             idempotencyKey: parsed.idempotencyKey ?? null,
             expiresAt,
+            createdAt: now,
+            updatedAt: now,
           })
           em.persist(approval)
           await em.flush()

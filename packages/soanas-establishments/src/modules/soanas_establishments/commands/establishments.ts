@@ -4,7 +4,7 @@ import { emitCrudSideEffects, requireId } from '@open-mercato/shared/lib/command
 import { extractUndoPayload, type UndoPayload } from '@open-mercato/shared/lib/commands/undo'
 import { makeCreateRedo } from '@open-mercato/shared/lib/commands/redo'
 import { withAtomicFlush } from '@open-mercato/shared/lib/commands/flush'
-import type { EntityManager } from '@mikro-orm/core'
+import type { EntityManager } from '@mikro-orm/postgresql'
 import { conflict, isUniqueViolation, notFound } from '@open-mercato/shared/lib/crud/errors'
 import { resolveTranslations } from '@open-mercato/shared/lib/i18n/server'
 import type { CrudEventsConfig } from '@open-mercato/shared/lib/crud/types'
@@ -479,9 +479,42 @@ const deleteCommand: CommandHandler<FiscalEstablishmentDeleteInput, { establishm
         tenantId: before.tenantId,
         organizationId: before.organizationId,
         legalName: before.legalName,
+        tradeName: before.tradeName,
         cnpj: before.cnpj,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        stateRegistration: before.stateRegistration,
+        municipalRegistration: before.municipalRegistration,
+        primaryCnae: before.primaryCnae,
+        secondaryCnaes: before.secondaryCnaes,
+        crt: before.crt,
+        specialRegime: before.specialRegime,
+        ibgeCityCode: before.ibgeCityCode,
+        uf: before.uf,
+        addressLine1: before.addressLine1,
+        addressLine2: before.addressLine2,
+        addressNumber: before.addressNumber,
+        addressDistrict: before.addressDistrict,
+        city: before.city,
+        zip: before.zip,
+        phone: before.phone,
+        fiscalEmail: before.fiscalEmail,
+        accountantName: before.accountantName,
+        accountantCrc: before.accountantCrc,
+        fiscalEnvironment: before.fiscalEnvironment,
+        defaultWarehouseId: before.defaultWarehouseId,
+        defaultPriceKind: before.defaultPriceKind,
+        defaultSalesChannelId: before.defaultSalesChannelId,
+        nfceSeries: before.nfceSeries,
+        nfeSeries: before.nfeSeries,
+        nfceNumber: before.nfceNumber,
+        nfeNumber: before.nfeNumber,
+        nfceCscId: before.nfceCscId,
+        certificateId: before.certificateId,
+        timezone: before.timezone,
+        currencyCode: before.currencyCode,
+        policies: before.policies,
+        isActive: before.isActive,
+        createdAt: new Date(before.createdAt),
+        updatedAt: new Date(before.updatedAt),
       })
       em.persist(record)
     }

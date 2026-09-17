@@ -155,7 +155,27 @@ test.describe('TC-SOANAS-RETAIL-RECOVERY: crash mid-complete then recover', () =
         isActive: true,
         timezone: 'UTC',
       })
-      // Intentionally no location yet → WMS adjust cannot resolve a bucket.
+      const locationId = await createCrudFixture(request, adminToken, '/api/wms/locations', {
+        organizationId: scope.organizationId,
+        tenantId: scope.tenantId,
+        warehouseId,
+        code: `REC-LOC-${suffix}`,
+        type: 'bin',
+        isActive: true,
+      })
+      const seedBefore = await postJson(request, adminToken, '/api/wms/inventory/adjust', {
+        organizationId: scope.organizationId,
+        tenantId: scope.tenantId,
+        warehouseId,
+        locationId,
+        catalogVariantId: variantId,
+        delta: 5,
+        reason: 'recover_seed_before_sale',
+        referenceType: 'manual',
+        referenceId: randomUUID(),
+        performedBy: scope.userId,
+      })
+      expect(seedBefore.ok, `seed before sale → ${seedBefore.status}`).toBeTruthy()
 
       const registerId = await createCrudFixture(request, adminToken, '/api/soanas_cash/registers', {
         organizationId: scope.organizationId,
@@ -194,7 +214,7 @@ test.describe('TC-SOANAS-RETAIL-RECOVERY: crash mid-complete then recover', () =
         idempotencyKey: `rec-tx-${suffix}`,
       })
       const transactionId = expectId(tx.body.id as string | undefined, 'tx')
-      await postJson(request, adminToken, `/api/soanas_pos/transactions/${transactionId}/lines`, {
+      const addLine = await postJson(request, adminToken, `/api/soanas_pos/transactions/${transactionId}/lines`, {
         catalogProductId: productId,
         catalogVariantId: variantId,
         sku: `REC-SKU-${suffix}`,
@@ -202,11 +222,29 @@ test.describe('TC-SOANAS-RETAIL-RECOVERY: crash mid-complete then recover', () =
         quantity: '1',
         unitPriceCents: '2500',
       })
-      await postJson(request, adminToken, `/api/soanas_pos/transactions/${transactionId}/checkout`, {})
-      await postJson(request, adminToken, `/api/soanas_pos/transactions/${transactionId}/tenders/cash`, {
+      expect(addLine.ok, `add line → ${addLine.status} ${JSON.stringify(addLine.body)}`).toBeTruthy()
+      const checkout = await postJson(request, adminToken, `/api/soanas_pos/transactions/${transactionId}/checkout`, {})
+      expect(checkout.ok, `checkout → ${checkout.status}`).toBeTruthy()
+      const tender = await postJson(request, adminToken, `/api/soanas_pos/transactions/${transactionId}/tenders/cash`, {
         amountReceivedCents: '2500',
         idempotencyKey: `rec-tender-${suffix}`,
       })
+      expect(tender.ok, `tender → ${tender.status}`).toBeTruthy()
+
+      // Drain on-hand after payment so sales can checkpoint but WMS allocation shortfalls.
+      const drain = await postJson(request, adminToken, '/api/wms/inventory/adjust', {
+        organizationId: scope.organizationId,
+        tenantId: scope.tenantId,
+        warehouseId,
+        locationId,
+        catalogVariantId: variantId,
+        delta: -5,
+        reason: 'recover_drain_before_complete',
+        referenceType: 'manual',
+        referenceId: randomUUID(),
+        performedBy: scope.userId,
+      })
+      expect(drain.ok, `drain stock → ${drain.status}`).toBeTruthy()
 
       const failedComplete = await postJson(
         request,
@@ -243,16 +281,8 @@ test.describe('TC-SOANAS-RETAIL-RECOVERY: crash mid-complete then recover', () =
       const paymentsCrashBody = await readJsonSafe<{ items?: unknown[] }>(paymentsAfterCrash)
       expect(paymentsCrashBody?.items?.length).toBe(1)
 
-      // Repair WMS prerequisites and recover
-      const locationId = await createCrudFixture(request, adminToken, '/api/wms/locations', {
-        organizationId: scope.organizationId,
-        tenantId: scope.tenantId,
-        warehouseId,
-        code: `REC-LOC-${suffix}`,
-        type: 'bin',
-        isActive: true,
-      })
-      await postJson(request, adminToken, '/api/wms/inventory/adjust', {
+      // Repair WMS stock and recover
+      const reseed = await postJson(request, adminToken, '/api/wms/inventory/adjust', {
         organizationId: scope.organizationId,
         tenantId: scope.tenantId,
         warehouseId,
@@ -264,6 +294,7 @@ test.describe('TC-SOANAS-RETAIL-RECOVERY: crash mid-complete then recover', () =
         referenceId: randomUUID(),
         performedBy: scope.userId,
       })
+      expect(reseed.ok, `reseed → ${reseed.status}`).toBeTruthy()
 
       const recovered = await postJson(
         request,

@@ -17,6 +17,8 @@ import {
   type PixRefundInput,
 } from '../data/validators'
 import { emitSoanasPaymentsBrEvent } from '../events'
+import type { PixChargeStatus } from '../lib/pixProvider'
+import { centsToString } from '../lib/money'
 import { isPayableState } from '../lib/pixStateMachine'
 import { forkEm, loadPixChargeOrThrow, resolvePixProvider } from './helpers'
 
@@ -49,7 +51,7 @@ function toSnapshot(record: PixCharge): PixChargeSnapshot {
     salesOrderId: record.salesOrderId ?? null,
     txid: record.txid,
     status: record.status,
-    amountCents: record.amountCents,
+    amountCents: centsToString(record.amountCents),
     qrCode: record.qrCode,
     copiaECola: record.copiaECola,
     expiresAt: record.expiresAt.toISOString(),
@@ -191,7 +193,12 @@ const getPixChargeCommand: CommandHandler<PixGetInput, PixChargeSnapshot> = {
     })
 
     const provider = resolvePixProvider(ctx)
-    const remoteStatus = await provider.getPaymentStatus(charge.txid)
+    let remoteStatus: PixChargeStatus
+    try {
+      remoteStatus = await provider.getPaymentStatus(charge.txid)
+    } catch {
+      return toSnapshot(charge)
+    }
     if (remoteStatus !== charge.status) {
       charge.status = remoteStatus
       charge.updatedAt = new Date()

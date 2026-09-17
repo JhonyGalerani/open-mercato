@@ -30,6 +30,7 @@
       "duplicate_supply": "Duplicate supply",
       "duplicate_reversal": "Duplicate reversal",
       "duplicate_sale": "Duplicate cash sale",
+      "idempotency_org_mismatch": "Idempotency key already used by another organization",
       "open_failed": "Failed to open cash session",
       "close_failed": "Failed to close cash session",
       "withdrawal_failed": "Failed to create withdrawal",
