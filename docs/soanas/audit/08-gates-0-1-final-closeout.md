@@ -14,7 +14,8 @@
 | `38bd5ce8b` | Recovery failure lookups scoped by tenant+org |
 | `0e5288fd6` | Expose movement `operatorUserId`; widen Gate 0/1 Playwright discovery |
 | `a3595e529` | Defer stock BLOCK when warehouse has no balance rows (recovery path) |
-| _(follow-up)_ | Tender idempotent replay without pessimistic lock outside a transaction |
+| `5336231f1` | Tender idempotent replay without pessimistic lock outside a transaction |
+| `fb34172e9` | Restore empty-ledger stock BLOCK; recovery seed/drain/reseed fixture |
 
 ## Findings corrected
 
