@@ -17,6 +17,7 @@ import {
   type PixRefundInput,
 } from '../data/validators'
 import { emitSoanasPaymentsBrEvent } from '../events'
+import { centsToString } from '../lib/money'
 import { isPayableState } from '../lib/pixStateMachine'
 import { forkEm, loadPixChargeOrThrow, resolvePixProvider } from './helpers'
 
@@ -49,7 +50,7 @@ function toSnapshot(record: PixCharge): PixChargeSnapshot {
     salesOrderId: record.salesOrderId ?? null,
     txid: record.txid,
     status: record.status,
-    amountCents: record.amountCents,
+    amountCents: centsToString(record.amountCents),
     qrCode: record.qrCode,
     copiaECola: record.copiaECola,
     expiresAt: record.expiresAt.toISOString(),
