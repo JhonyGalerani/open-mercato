@@ -192,7 +192,12 @@ const getPixChargeCommand: CommandHandler<PixGetInput, PixChargeSnapshot> = {
     })
 
     const provider = resolvePixProvider(ctx)
-    const remoteStatus = await provider.getPaymentStatus(charge.txid)
+    let remoteStatus: string
+    try {
+      remoteStatus = await provider.getPaymentStatus(charge.txid)
+    } catch {
+      return toSnapshot(charge)
+    }
     if (remoteStatus !== charge.status) {
       charge.status = remoteStatus
       charge.updatedAt = new Date()
