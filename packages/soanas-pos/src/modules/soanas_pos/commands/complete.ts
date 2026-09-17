@@ -700,8 +700,16 @@ export async function completePosSale(
   } catch (err) {
     const described = describeError(err)
     const failureEm = forkEm(ctx)
-    const failed = await failureEm.findOne(PosTransaction, { id: transaction.id })
-    const failedRecovery = await failureEm.findOne(PosRecoveryState, { transactionId: transaction.id })
+    const failed = await failureEm.findOne(PosTransaction, {
+      id: transaction.id,
+      tenantId: transaction.tenantId,
+      organizationId: transaction.organizationId,
+    })
+    const failedRecovery = await failureEm.findOne(PosRecoveryState, {
+      transactionId: transaction.id,
+      tenantId: transaction.tenantId,
+      organizationId: transaction.organizationId,
+    })
     if (failed && failed.status === 'COMPLETING') {
       failed.status = 'FAILED_RECOVERABLE'
       failed.updatedAt = new Date()
