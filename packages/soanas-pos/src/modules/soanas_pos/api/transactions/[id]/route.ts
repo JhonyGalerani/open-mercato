@@ -37,21 +37,35 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     }
     const lines = await em.find(
       PosTransactionLine,
-      { transactionId: transaction.id, tenantId: transaction.tenantId },
+      {
+        transactionId: transaction.id,
+        tenantId: transaction.tenantId,
+        organizationId: transaction.organizationId,
+      },
       { orderBy: { sortOrder: 'asc' } },
     )
     const tenders = await em.find(
       PaymentTender,
-      { posTransactionId: transaction.id, tenantId: transaction.tenantId },
+      {
+        posTransactionId: transaction.id,
+        tenantId: transaction.tenantId,
+        organizationId: transaction.organizationId,
+      },
       { orderBy: { createdAt: 'asc' } },
     )
     const recovery = await em.findOne(PosRecoveryState, {
       transactionId: transaction.id,
       tenantId: transaction.tenantId,
+      organizationId: transaction.organizationId,
     })
     const printJobs = await em.find(
       PosPrintJob,
-      { transactionId: transaction.id, tenantId: transaction.tenantId, deletedAt: null },
+      {
+        transactionId: transaction.id,
+        tenantId: transaction.tenantId,
+        organizationId: transaction.organizationId,
+        deletedAt: null,
+      },
       { orderBy: { createdAt: 'asc' } },
     )
 

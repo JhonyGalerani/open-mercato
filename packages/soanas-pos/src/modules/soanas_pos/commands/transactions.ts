@@ -1,7 +1,7 @@
 import { registerCommand } from '@open-mercato/shared/lib/commands'
 import type { CommandHandler } from '@open-mercato/shared/lib/commands'
 import { withAtomicFlush } from '@open-mercato/shared/lib/commands/flush'
-import { badRequest, forbidden, notFound } from '@open-mercato/shared/lib/crud/errors'
+import { badRequest, conflict, forbidden, notFound } from '@open-mercato/shared/lib/crud/errors'
 import { resolveTranslations } from '@open-mercato/shared/lib/i18n/server'
 import { PosTransaction, PosTransactionLine } from '../data/entities'
 import {
@@ -76,10 +76,25 @@ const createTransactionCommand: CommandHandler<PosTransactionCreateInput, { tran
     if (parsed.idempotencyKey) {
       const prior = await em.findOne(PosTransaction, {
         tenantId: parsed.tenantId,
+        organizationId: parsed.organizationId,
         idempotencyKey: parsed.idempotencyKey,
         deletedAt: null,
       })
       if (prior) return { transactionId: prior.id }
+      const otherOrg = await em.findOne(PosTransaction, {
+        tenantId: parsed.tenantId,
+        idempotencyKey: parsed.idempotencyKey,
+        deletedAt: null,
+      })
+      if (otherOrg && otherOrg.organizationId !== parsed.organizationId) {
+        const { translate } = await resolveTranslations()
+        throw conflict(
+          translate(
+            'soanas_pos.errors.idempotency_org_mismatch',
+            'Idempotency key already used by another organization',
+          ),
+        )
+      }
     }
 
     const terminal = await loadTerminalOrThrow(em, {

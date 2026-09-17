@@ -3,6 +3,7 @@ import type { CommandHandler } from '@open-mercato/shared/lib/commands'
 import { withAtomicFlush } from '@open-mercato/shared/lib/commands/flush'
 import { badRequest, conflict, isUniqueViolation, notFound } from '@open-mercato/shared/lib/crud/errors'
 import { resolveTranslations } from '@open-mercato/shared/lib/i18n/server'
+import type { EntityManager } from '@mikro-orm/postgresql'
 import { PaymentTender } from '../data/entities'
 import {
   posCashTenderSchema,
@@ -27,32 +28,109 @@ type CashTenderResult = {
 
 type ManualTenderResult = CashTenderResult & { type: string }
 
+async function findTenderByIdempotencyKey(
+  em: EntityManager,
+  scope: { tenantId: string; organizationId: string; idempotencyKey: string },
+): Promise<PaymentTender | null> {
+  return em.findOne(PaymentTender, {
+    tenantId: scope.tenantId,
+    organizationId: scope.organizationId,
+    idempotencyKey: scope.idempotencyKey,
+  })
+}
+
+/**
+ * Unique index is (tenant_id, idempotency_key). Cross-org collisions must conflict.
+ * Same-org replay must also belong to the requested transaction.
+ */
+async function resolveIdempotentTenderOrConflict(
+  em: EntityManager,
+  scope: {
+    tenantId: string
+    organizationId: string
+    transactionId: string
+    idempotencyKey: string
+  },
+  conflictMessage: string,
+): Promise<PaymentTender> {
+  const sameOrg = await findTenderByIdempotencyKey(em, scope)
+  if (sameOrg) {
+    if (sameOrg.posTransactionId !== scope.transactionId) {
+      throw conflict(conflictMessage)
+    }
+    return sameOrg
+  }
+  const otherOrg = await em.findOne(PaymentTender, {
+    tenantId: scope.tenantId,
+    idempotencyKey: scope.idempotencyKey,
+  })
+  if (otherOrg && otherOrg.organizationId !== scope.organizationId) {
+    throw conflict(conflictMessage)
+  }
+  throw conflict(conflictMessage)
+}
+
+async function replayTenderResult(
+  em: EntityManager,
+  prior: PaymentTender,
+  scope: { transactionId: string; tenantId: string; organizationId: string },
+): Promise<CashTenderResult & { type?: string }> {
+  if (prior.posTransactionId !== scope.transactionId) {
+    const { translate } = await resolveTranslations()
+    throw conflict(translate('soanas_pos.errors.duplicate_tender', 'Duplicate POS tender'))
+  }
+  const transaction = await loadTransactionForUpdate(em, {
+    transactionId: scope.transactionId,
+    tenantId: scope.tenantId,
+    organizationId: scope.organizationId,
+  })
+  return {
+    tenderId: prior.id,
+    type: prior.type,
+    amountAppliedCents: prior.amountAppliedCents,
+    changeAmountCents: prior.changeAmountCents ?? '0',
+    remainingDueCents: (
+      BigInt(transaction.grandTotalCents) - BigInt(transaction.amountPaidCents)
+    ).toString(),
+    status: transaction.status,
+  }
+}
+
 const addCashTenderCommand: CommandHandler<PosCashTenderInput, CashTenderResult> = {
   id: 'soanas_pos.transactions.add_tender_cash',
   async execute(input, ctx) {
     const parsed = posCashTenderSchema.parse(input)
     const em = forkEm(ctx)
     const { translate } = await resolveTranslations()
+    const idempotencyScope = {
+      tenantId: parsed.tenantId,
+      organizationId: parsed.organizationId,
+      transactionId: parsed.transactionId,
+      idempotencyKey: parsed.idempotencyKey,
+    }
 
-    const prior = await em.findOne(PaymentTender, {
+    const prior = await findTenderByIdempotencyKey(em, idempotencyScope)
+    if (prior) {
+      const replayed = await replayTenderResult(em, prior, idempotencyScope)
+      return {
+        tenderId: replayed.tenderId,
+        amountAppliedCents: replayed.amountAppliedCents,
+        changeAmountCents: replayed.changeAmountCents,
+        remainingDueCents: replayed.remainingDueCents,
+        status: replayed.status,
+      }
+    }
+    const crossOrg = await em.findOne(PaymentTender, {
       tenantId: parsed.tenantId,
       idempotencyKey: parsed.idempotencyKey,
     })
-    if (prior) {
-      const transaction = await loadTransactionForUpdate(em, {
-        transactionId: parsed.transactionId,
-        tenantId: parsed.tenantId,
-        organizationId: parsed.organizationId,
-      })
-      return {
-        tenderId: prior.id,
-        amountAppliedCents: prior.amountAppliedCents,
-        changeAmountCents: prior.changeAmountCents ?? '0',
-        remainingDueCents: (
-          BigInt(transaction.grandTotalCents) - BigInt(transaction.amountPaidCents)
-        ).toString(),
-        status: transaction.status,
-      }
+    if (crossOrg && crossOrg.organizationId !== parsed.organizationId) {
+      throw conflict(
+        translate(
+          'soanas_pos.errors.idempotency_org_mismatch',
+          'Idempotency key already used by another organization',
+        ),
+      )
     }
 
     const tenderId = crypto.randomUUID()
@@ -145,20 +223,25 @@ const addCashTenderCommand: CommandHandler<PosCashTenderInput, CashTenderResult>
       )
     } catch (err) {
       if (isUniqueViolation(err, 'soanas_pos_payment_tenders_idempotency_unique')) {
-        const again = await forkEm(ctx).findOne(PaymentTender, {
+        const again = await resolveIdempotentTenderOrConflict(
+          forkEm(ctx),
+          idempotencyScope,
+          translate('soanas_pos.errors.duplicate_tender', 'Duplicate POS tender'),
+        )
+        const transaction = await loadTransactionForUpdate(forkEm(ctx), {
+          transactionId: parsed.transactionId,
           tenantId: parsed.tenantId,
-          idempotencyKey: parsed.idempotencyKey,
+          organizationId: parsed.organizationId,
         })
-        if (again) {
-          return {
-            tenderId: again.id,
-            amountAppliedCents: again.amountAppliedCents,
-            changeAmountCents: again.changeAmountCents ?? '0',
-            remainingDueCents: '0',
-            status: 'PAYMENT_PENDING',
-          }
+        return {
+          tenderId: again.id,
+          amountAppliedCents: again.amountAppliedCents,
+          changeAmountCents: again.changeAmountCents ?? '0',
+          remainingDueCents: (
+            BigInt(transaction.grandTotalCents) - BigInt(transaction.amountPaidCents)
+          ).toString(),
+          status: transaction.status,
         }
-        throw conflict(translate('soanas_pos.errors.duplicate_tender', 'Duplicate POS tender'))
       }
       throw err
     }
@@ -182,27 +265,36 @@ const addManualTenderCommand: CommandHandler<PosManualTenderInput, ManualTenderR
     const em = forkEm(ctx)
     const { translate } = await resolveTranslations()
     const tenderType = normalizeManualTenderType(parsed.type)
+    const idempotencyScope = {
+      tenantId: parsed.tenantId,
+      organizationId: parsed.organizationId,
+      transactionId: parsed.transactionId,
+      idempotencyKey: parsed.idempotencyKey,
+    }
 
-    const prior = await em.findOne(PaymentTender, {
+    const prior = await findTenderByIdempotencyKey(em, idempotencyScope)
+    if (prior) {
+      const replayed = await replayTenderResult(em, prior, idempotencyScope)
+      return {
+        tenderId: replayed.tenderId,
+        type: prior.type,
+        amountAppliedCents: replayed.amountAppliedCents,
+        changeAmountCents: '0',
+        remainingDueCents: replayed.remainingDueCents,
+        status: replayed.status,
+      }
+    }
+    const crossOrg = await em.findOne(PaymentTender, {
       tenantId: parsed.tenantId,
       idempotencyKey: parsed.idempotencyKey,
     })
-    if (prior) {
-      const transaction = await loadTransactionForUpdate(em, {
-        transactionId: parsed.transactionId,
-        tenantId: parsed.tenantId,
-        organizationId: parsed.organizationId,
-      })
-      return {
-        tenderId: prior.id,
-        type: prior.type,
-        amountAppliedCents: prior.amountAppliedCents,
-        changeAmountCents: '0',
-        remainingDueCents: (
-          BigInt(transaction.grandTotalCents) - BigInt(transaction.amountPaidCents)
-        ).toString(),
-        status: transaction.status,
-      }
+    if (crossOrg && crossOrg.organizationId !== parsed.organizationId) {
+      throw conflict(
+        translate(
+          'soanas_pos.errors.idempotency_org_mismatch',
+          'Idempotency key already used by another organization',
+        ),
+      )
     }
 
     const tenderId = crypto.randomUUID()
@@ -316,21 +408,26 @@ const addManualTenderCommand: CommandHandler<PosManualTenderInput, ManualTenderR
       )
     } catch (err) {
       if (isUniqueViolation(err, 'soanas_pos_payment_tenders_idempotency_unique')) {
-        const again = await forkEm(ctx).findOne(PaymentTender, {
+        const again = await resolveIdempotentTenderOrConflict(
+          forkEm(ctx),
+          idempotencyScope,
+          translate('soanas_pos.errors.duplicate_tender', 'Duplicate POS tender'),
+        )
+        const transaction = await loadTransactionForUpdate(forkEm(ctx), {
+          transactionId: parsed.transactionId,
           tenantId: parsed.tenantId,
-          idempotencyKey: parsed.idempotencyKey,
+          organizationId: parsed.organizationId,
         })
-        if (again) {
-          return {
-            tenderId: again.id,
-            type: again.type,
-            amountAppliedCents: again.amountAppliedCents,
-            changeAmountCents: '0',
-            remainingDueCents: '0',
-            status: 'PAYMENT_PENDING',
-          }
+        return {
+          tenderId: again.id,
+          type: again.type,
+          amountAppliedCents: again.amountAppliedCents,
+          changeAmountCents: '0',
+          remainingDueCents: (
+            BigInt(transaction.grandTotalCents) - BigInt(transaction.amountPaidCents)
+          ).toString(),
+          status: transaction.status,
         }
-        throw conflict(translate('soanas_pos.errors.duplicate_tender', 'Duplicate POS tender'))
       }
       throw err
     }

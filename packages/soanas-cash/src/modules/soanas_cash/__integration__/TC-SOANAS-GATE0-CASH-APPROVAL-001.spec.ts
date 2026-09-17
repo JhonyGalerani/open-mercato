@@ -11,8 +11,9 @@ import { expectId, getTokenScope, readJsonSafe } from '@open-mercato/core/helper
 /**
  * TC-SOANAS-GATE0-CASH-APPROVAL-001: ADR-012 — approver identity from session, not body
  *
- * Register with null withdrawalLimit requires approval. Client-supplied approverUserId is
- * ignored; sessions/current exposes the authenticated approver on the movement row.
+ * Register with null withdrawal/supply limits requires approval. Dual custody compares
+ * against session.operatorUserId (not payload operator). Client-supplied approverUserId
+ * is ignored; withdrawal and supply behave symmetrically.
  */
 export const integrationMeta = {
   dependsOnModules: ['soanas_cash', 'wms'],
@@ -101,8 +102,48 @@ async function postJsonWithOrg(
   return body ?? {}
 }
 
-test.describe('TC-SOANAS-GATE0-CASH-APPROVAL-001: withdrawal approver from session', () => {
-  test('ignores spoofed approverUserId and records the authenticated approver', async ({ request }) => {
+async function seedOpenSession(args: {
+  request: Parameters<typeof apiRequest>[0]
+  adminToken: string
+  organizationId: string
+  suffix: string
+}): Promise<{ registerId: string; sessionId: string }> {
+  const { request, adminToken, organizationId, suffix } = args
+  const warehouseBody = await postJsonWithOrg(request, adminToken, organizationId, '/api/wms/warehouses', {
+    name: `Gate0 WH ${suffix}`,
+    code: `G0-WH-${suffix}`,
+    isActive: true,
+    timezone: 'UTC',
+  })
+  const warehouseId = expectId(warehouseBody.id as string | undefined, 'warehouse id')
+
+  const registerBody = await postJsonWithOrg(request, adminToken, organizationId, '/api/soanas_cash/registers', {
+    code: `G0-REG-${suffix}`,
+    name: `Gate0 Register ${suffix}`,
+    warehouseId,
+    blindClosing: false,
+    withdrawalLimitWithoutApprovalCents: null,
+    supplyLimitWithoutApprovalCents: null,
+    discrepancyToleranceCents: '0',
+    isActive: true,
+  })
+  const registerId = expectId(registerBody.id as string | undefined, 'register id')
+
+  const sessionBody = await postJsonWithOrg(request, adminToken, organizationId, '/api/soanas_cash/sessions/open', {
+    registerId,
+    openingFloatCents: '50000',
+    openingDenominations: { '100': 5 },
+    idempotencyKey: `gate0-open-${suffix}`,
+  })
+  const sessionId = expectId(
+    (sessionBody.id as string | undefined) ?? (sessionBody.sessionId as string | undefined),
+    'session id',
+  )
+  return { registerId, sessionId }
+}
+
+test.describe('TC-SOANAS-GATE0-CASH-APPROVAL-001: dual custody session operator', () => {
+  test('manager approves withdrawal; spoofed approverUserId ignored', async ({ request }) => {
     const adminToken = await getAuthToken(request, 'admin')
     const superadminToken = await getAuthToken(request, 'superadmin')
     const adminScope = getTokenScope(adminToken)
@@ -126,54 +167,12 @@ test.describe('TC-SOANAS-GATE0-CASH-APPROVAL-001: withdrawal approver from sessi
         tenantId: adminScope.tenantId,
       })
 
-      const warehouseBody = await postJsonWithOrg(
+      const { registerId, sessionId } = await seedOpenSession({
         request,
         adminToken,
         organizationId,
-        '/api/wms/warehouses',
-        {
-          name: `Gate0 WH ${suffix}`,
-          code: `G0-WH-${suffix}`,
-          isActive: true,
-          timezone: 'UTC',
-        },
-      )
-      const warehouseId = expectId(warehouseBody.id as string | undefined, 'warehouse id')
-
-      const registerBody = await postJsonWithOrg(
-        request,
-        adminToken,
-        organizationId,
-        '/api/soanas_cash/registers',
-        {
-          code: `G0-REG-${suffix}`,
-          name: `Gate0 Register ${suffix}`,
-          warehouseId,
-          blindClosing: false,
-          withdrawalLimitWithoutApprovalCents: null,
-          supplyLimitWithoutApprovalCents: null,
-          discrepancyToleranceCents: '0',
-          isActive: true,
-        },
-      )
-      const registerId = expectId(registerBody.id as string | undefined, 'register id')
-
-      const sessionBody = await postJsonWithOrg(
-        request,
-        adminToken,
-        organizationId,
-        '/api/soanas_cash/sessions/open',
-        {
-          registerId,
-          openingFloatCents: '50000',
-          openingDenominations: { '100': 5 },
-          idempotencyKey: `gate0-open-${suffix}`,
-        },
-      )
-      const sessionId = expectId(
-        (sessionBody.id as string | undefined) ?? (sessionBody.sessionId as string | undefined),
-        'session id',
-      )
+        suffix,
+      })
 
       const withdrawalResponse = await apiRequestWithSelectedOrg(
         request,
@@ -188,6 +187,7 @@ test.describe('TC-SOANAS-GATE0-CASH-APPROVAL-001: withdrawal approver from sessi
             reasonCode: 'excess_cash',
             destination: 'safe',
             denominations: { '100': 1 },
+            operatorUserId: superadminScope.userId,
             approverUserId: spoofedApproverUserId,
             idempotencyKey: `gate0-withdraw-${suffix}`,
           },
@@ -203,14 +203,152 @@ test.describe('TC-SOANAS-GATE0-CASH-APPROVAL-001: withdrawal approver from sessi
       )
       expect(currentResponse.ok()).toBeTruthy()
       const currentBody = await readJsonSafe<{
-        movements?: Array<{ type?: string; approverUserId?: string | null }>
+        movements?: Array<{ type?: string; approverUserId?: string | null; operatorUserId?: string }>
       }>(currentResponse)
 
       const withdrawals = (currentBody?.movements ?? []).filter((movement) => movement.type === 'withdrawal')
       expect(withdrawals.length).toBe(1)
+      expect(withdrawals[0]?.operatorUserId).toBe(adminScope.userId)
       expect(withdrawals[0]?.approverUserId).toBe(superadminScope.userId)
       expect(withdrawals[0]?.approverUserId).not.toBe(spoofedApproverUserId)
       expect(withdrawals[0]?.approverUserId).not.toBe(adminScope.userId)
+    } finally {
+      await deleteOrganizationIfExists(request, superadminToken, organizationId)
+      await restoreAcl()
+    }
+  })
+
+  test('supply is symmetric with withdrawal for dual custody + spoofed approver', async ({ request }) => {
+    const adminToken = await getAuthToken(request, 'admin')
+    const superadminToken = await getAuthToken(request, 'superadmin')
+    const adminScope = getTokenScope(adminToken)
+    const superadminScope = getTokenScope(superadminToken)
+    const suffix = randomUUID().slice(0, 8)
+    const spoofedApproverUserId = '22222222-2222-4222-8222-222222222222'
+
+    const restoreAcl = await ensureRoleFeatures(
+      request,
+      superadminToken,
+      adminScope.tenantId,
+      'admin',
+      SOANAS_CASH_ACL_FEATURES,
+    )
+
+    let organizationId: string | null = null
+
+    try {
+      organizationId = await createOrganizationFixture(request, superadminToken, {
+        name: `Soanas Gate0 Supply Org ${suffix}`,
+        tenantId: adminScope.tenantId,
+      })
+
+      const { registerId, sessionId } = await seedOpenSession({
+        request,
+        adminToken,
+        organizationId,
+        suffix: `s-${suffix}`,
+      })
+
+      const selfSupply = await apiRequestWithSelectedOrg(request, 'POST', '/api/soanas_cash/supplies', {
+        token: adminToken,
+        selectedOrgId: organizationId,
+        data: {
+          sessionId,
+          amountCents: '10000',
+          reasonCode: 'float_topup',
+          origin: 'safe',
+          denominations: { '100': 1 },
+          operatorUserId: adminScope.userId,
+          approverUserId: spoofedApproverUserId,
+          idempotencyKey: `gate0-supply-self-${suffix}`,
+        },
+      })
+      expect(selfSupply.status()).toBe(403)
+
+      const supplyResponse = await apiRequestWithSelectedOrg(request, 'POST', '/api/soanas_cash/supplies', {
+        token: superadminToken,
+        selectedOrgId: organizationId,
+        data: {
+          sessionId,
+          amountCents: '10000',
+          reasonCode: 'float_topup',
+          origin: 'safe',
+          denominations: { '100': 1 },
+          operatorUserId: superadminScope.userId,
+          approverUserId: spoofedApproverUserId,
+          idempotencyKey: `gate0-supply-ok-${suffix}`,
+        },
+      })
+      expect(supplyResponse.ok(), `supply failed: ${supplyResponse.status()}`).toBeTruthy()
+
+      const currentResponse = await apiRequestWithSelectedOrg(
+        request,
+        'GET',
+        `/api/soanas_cash/sessions/current?registerId=${encodeURIComponent(registerId)}`,
+        { token: superadminToken, selectedOrgId: organizationId },
+      )
+      expect(currentResponse.ok()).toBeTruthy()
+      const currentBody = await readJsonSafe<{
+        movements?: Array<{ type?: string; approverUserId?: string | null; operatorUserId?: string }>
+      }>(currentResponse)
+
+      const supplies = (currentBody?.movements ?? []).filter((movement) => movement.type === 'supply')
+      expect(supplies.length).toBe(1)
+      expect(supplies[0]?.operatorUserId).toBe(adminScope.userId)
+      expect(supplies[0]?.approverUserId).toBe(superadminScope.userId)
+      expect(supplies[0]?.approverUserId).not.toBe(spoofedApproverUserId)
+      expect(supplies[0]?.approverUserId).not.toBe(adminScope.userId)
+    } finally {
+      await deleteOrganizationIfExists(request, superadminToken, organizationId)
+      await restoreAcl()
+    }
+  })
+
+  test('payload operatorUserId cannot bypass dual custody on withdrawal', async ({ request }) => {
+    const adminToken = await getAuthToken(request, 'admin')
+    const superadminToken = await getAuthToken(request, 'superadmin')
+    const adminScope = getTokenScope(adminToken)
+    const suffix = randomUUID().slice(0, 8)
+
+    const restoreAcl = await ensureRoleFeatures(
+      request,
+      superadminToken,
+      adminScope.tenantId,
+      'admin',
+      SOANAS_CASH_ACL_FEATURES,
+    )
+
+    let organizationId: string | null = null
+
+    try {
+      organizationId = await createOrganizationFixture(request, superadminToken, {
+        name: `Soanas Gate0 Bypass Org ${suffix}`,
+        tenantId: adminScope.tenantId,
+      })
+
+      const { sessionId } = await seedOpenSession({
+        request,
+        adminToken,
+        organizationId,
+        suffix: `b-${suffix}`,
+      })
+
+      // Operator A opens the session; A tries to approve by claiming a different operator in the body.
+      const selfWithdraw = await apiRequestWithSelectedOrg(request, 'POST', '/api/soanas_cash/withdrawals', {
+        token: adminToken,
+        selectedOrgId: organizationId,
+        data: {
+          sessionId,
+          amountCents: '10000',
+          reasonCode: 'excess_cash',
+          destination: 'safe',
+          denominations: { '100': 1 },
+          operatorUserId: '33333333-3333-4333-8333-333333333333',
+          approverUserId: '44444444-4444-4444-8444-444444444444',
+          idempotencyKey: `gate0-withdraw-bypass-${suffix}`,
+        },
+      })
+      expect(selfWithdraw.status()).toBe(403)
     } finally {
       await deleteOrganizationIfExists(request, superadminToken, organizationId)
       await restoreAcl()

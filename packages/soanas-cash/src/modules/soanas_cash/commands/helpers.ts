@@ -166,6 +166,7 @@ export async function loadSessionTotals(
   const movements = await em.find(CashMovement, {
     sessionId: session.id,
     tenantId: session.tenantId,
+    organizationId: session.organizationId,
   })
   const totals = buildReconciliationTotals(
     movements.map((movement) => ({

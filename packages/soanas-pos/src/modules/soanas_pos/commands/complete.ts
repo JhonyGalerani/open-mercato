@@ -92,6 +92,7 @@ async function ensureRecoveryState(
   const existing = await em.findOne(PosRecoveryState, {
     transactionId: transaction.id,
     tenantId: transaction.tenantId,
+    organizationId: transaction.organizationId,
   })
   if (existing) return existing
   const now = new Date()

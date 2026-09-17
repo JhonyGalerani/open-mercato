@@ -67,14 +67,29 @@ const openSessionCommand: CommandHandler<CashSessionOpenInput, OpenResult> = {
 
     const priorByKey = await em.findOne(CashSession, {
       tenantId: parsed.tenantId,
+      organizationId: parsed.organizationId,
       idempotencyKey: parsed.idempotencyKey,
       deletedAt: null,
     })
     if (priorByKey) return { sessionId: priorByKey.id, alreadyOpen: true }
+    const priorOtherOrg = await em.findOne(CashSession, {
+      tenantId: parsed.tenantId,
+      idempotencyKey: parsed.idempotencyKey,
+      deletedAt: null,
+    })
+    if (priorOtherOrg && priorOtherOrg.organizationId !== parsed.organizationId) {
+      throw conflict(
+        translate(
+          'soanas_cash.errors.idempotency_org_mismatch',
+          'Idempotency key already used by another organization',
+        ),
+      )
+    }
 
     const existingOpen = await em.findOne(CashSession, {
       registerId: parsed.registerId,
       tenantId: parsed.tenantId,
+      organizationId: parsed.organizationId,
       status: { $in: [...ACTIVE_SESSION_STATUSES] },
       deletedAt: null,
     })
@@ -142,10 +157,24 @@ const openSessionCommand: CommandHandler<CashSessionOpenInput, OpenResult> = {
       if (isUniqueViolation(err, 'soanas_cash_sessions_idempotency_unique')) {
         const again = await forkEm(ctx).findOne(CashSession, {
           tenantId: parsed.tenantId,
+          organizationId: parsed.organizationId,
           idempotencyKey: parsed.idempotencyKey,
           deletedAt: null,
         })
         if (again) return { sessionId: again.id, alreadyOpen: true }
+        const otherOrg = await forkEm(ctx).findOne(CashSession, {
+          tenantId: parsed.tenantId,
+          idempotencyKey: parsed.idempotencyKey,
+          deletedAt: null,
+        })
+        if (otherOrg && otherOrg.organizationId !== parsed.organizationId) {
+          throw conflict(
+            translate(
+              'soanas_cash.errors.idempotency_org_mismatch',
+              'Idempotency key already used by another organization',
+            ),
+          )
+        }
       }
       if (isUniqueViolation(err, 'soanas_cash_sessions_register_open_unique')) {
         throw conflict(
@@ -266,7 +295,7 @@ const closeSessionCommand: CommandHandler<CashSessionCloseInput, CashSessionClos
             kind: 'closing',
             denominations: parsed.denominations ?? null,
             totalCountedCents: countedCash.toString(),
-            operatorUserId: parsed.operatorUserId,
+            operatorUserId: session.operatorUserId,
             notes: parsed.notes ?? null,
             blindMode: blind,
             createdAt: now,
@@ -282,10 +311,12 @@ const closeSessionCommand: CommandHandler<CashSessionCloseInput, CashSessionClos
           }
           const now = new Date()
           const needsApproval = discrepancy.outcome === 'discrepancy'
+          const sessionOperatorUserId = currentSession.operatorUserId
           const sessionApproverId = ctx.auth?.sub ?? null
+          const requesterUserId = ctx.auth?.sub ?? parsed.operatorUserId
           const approverIsValid =
             !!sessionApproverId &&
-            sessionApproverId !== parsed.operatorUserId &&
+            sessionApproverId !== sessionOperatorUserId &&
             (await callerCanApprove(ctx))
 
           if (needsApproval) {
@@ -295,7 +326,7 @@ const closeSessionCommand: CommandHandler<CashSessionCloseInput, CashSessionClos
               organizationId: currentSession.organizationId,
               sessionId: currentSession.id,
               kind: 'discrepancy',
-              requesterUserId: parsed.operatorUserId,
+              requesterUserId,
               approverUserId: approverIsValid ? sessionApproverId : null,
               status: approverIsValid ? 'approved' : 'pending',
               reason: parsed.reason ?? null,
@@ -324,7 +355,7 @@ const closeSessionCommand: CommandHandler<CashSessionCloseInput, CashSessionClos
             status: reconciliationStatus,
             reason: parsed.reason ?? null,
             approvalId: approval?.id ?? null,
-            operatorUserId: parsed.operatorUserId,
+            operatorUserId: sessionOperatorUserId,
             createdAt: now,
             updatedAt: now,
           })
