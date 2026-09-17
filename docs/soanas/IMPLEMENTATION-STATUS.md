@@ -17,21 +17,33 @@ Validated (DoD completa): 2.3%
 ## Gate 0/1 validation evidence (2026-09-17)
 
 Runner: local Node 24 + Docker (storage-driver `vfs`) + PostgreSQL efêmero via testcontainers.  
-**Não** promove contadores de coverage; pagamentos permanecem manuais (maquininha externa, sem TEF).
+**Não** promove contadores de coverage; pagamentos permanecem manuais (maquininha externa, sem TEF).  
+Closeout definitivo: `docs/soanas/audit/08-gates-0-1-final-closeout.md`.
 
 | Check | Result |
 |-------|--------|
 | `yarn install --immutable` | OK |
 | `yarn soanas:check-coverage` | OK — A229 I40 T27 V7 (inalterado) |
-| `@open-mercato/soanas-pos` unit | 68 passed |
-| `@open-mercato/soanas-cash` unit | 38 passed |
+| `@open-mercato/soanas-pos` unit | 74 passed |
+| `@open-mercato/soanas-cash` unit | 42 passed |
 | `@open-mercato/soanas-payments-br` unit | 28 passed |
 | typecheck soanas-pos / cash / payments-br | OK |
-| `yarn build:packages` + `yarn generate` | OK |
+| Playwright specialized `--list` | 18 tests / 8 files (cash + Pix + retail + Gate0/1) |
 | Docker disponível | OK (`docker info`) |
-| `yarn soanas:validate-migrations` | OK — migrations Soanas + `TC-SOANAS-RETAIL-001` green (revalidado 2026-09-17) |
-| Gate 0 E2E (`TC-SOANAS-GATE0-*`) | OK — 4/4 (CASH-APPROVAL, PIX-SCOPE, MULTILOC, PRINTJOB) |
+| `yarn soanas:validate-migrations` | OK — migrations Soanas + `TC-SOANAS-RETAIL-001` green |
+| Gate 0 E2E (`TC-SOANAS-GATE0-*`) | OK — CASH-APPROVAL 3/3, PIX-SCOPE, MULTILOC, PRINTJOB |
+| Retail concurrency / recovery | OK |
 | Gate 1 E2E (`TC-SOANAS-POS-MANUAL-TENDERS-001`) | OK — 9/9 (split tenders manuais; sem TEF) |
+
+### Fixes do closeout definitivo (após HEAD `5e4ca8e23`)
+
+1. Dual custody ADR-012: sangria **e** suprimento usam `session.operatorUserId`; aprovador só `ctx.auth.sub`
+2. Idempotência/isolamento org em cash, tenders, approvals, transactions, PrintJob, recovery
+3. PrintJob: claim atômico + lease + fencing `attempts`
+4. `sessions/current` expõe `operatorUserId` nos movimentos
+5. Replay de tender sem `PESSIMISTIC_WRITE` fora de transação
+6. Stock BLOCK adia quando não há linhas de balance (recovery greenfield)
+7. Playwright Gate 0/1 descobre specs em cash e payments-br
 
 ### Fixes desta rodada (commit remoto `e435f84fb` **não existia**; equivalentes + follow-ups)
 

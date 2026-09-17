@@ -16,7 +16,7 @@ import {
 import { planCashTender } from '../lib/change'
 import { normalizeManualTenderType, planManualTender } from '../lib/manualTender'
 import { emitSoanasPosEvent } from '../events'
-import { forkEm, loadTransactionForUpdate, recalculateTransactionTotals, transitionTo } from './helpers'
+import { forkEm, loadTransactionForUpdate, loadTransactionScoped, recalculateTransactionTotals, transitionTo } from './helpers'
 
 type CashTenderResult = {
   tenderId: string
@@ -79,7 +79,7 @@ async function replayTenderResult(
     const { translate } = await resolveTranslations()
     throw conflict(translate('soanas_pos.errors.duplicate_tender', 'Duplicate POS tender'))
   }
-  const transaction = await loadTransactionForUpdate(em, {
+  const transaction = await loadTransactionScoped(em, {
     transactionId: scope.transactionId,
     tenantId: scope.tenantId,
     organizationId: scope.organizationId,
@@ -228,7 +228,7 @@ const addCashTenderCommand: CommandHandler<PosCashTenderInput, CashTenderResult>
           idempotencyScope,
           translate('soanas_pos.errors.duplicate_tender', 'Duplicate POS tender'),
         )
-        const transaction = await loadTransactionForUpdate(forkEm(ctx), {
+        const transaction = await loadTransactionScoped(forkEm(ctx), {
           transactionId: parsed.transactionId,
           tenantId: parsed.tenantId,
           organizationId: parsed.organizationId,
@@ -413,7 +413,7 @@ const addManualTenderCommand: CommandHandler<PosManualTenderInput, ManualTenderR
           idempotencyScope,
           translate('soanas_pos.errors.duplicate_tender', 'Duplicate POS tender'),
         )
-        const transaction = await loadTransactionForUpdate(forkEm(ctx), {
+        const transaction = await loadTransactionScoped(forkEm(ctx), {
           transactionId: parsed.transactionId,
           tenantId: parsed.tenantId,
           organizationId: parsed.organizationId,

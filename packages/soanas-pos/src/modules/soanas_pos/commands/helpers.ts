@@ -128,6 +128,24 @@ export async function loadTransactionForUpdate(
   return transaction
 }
 
+/** Scoped read without a row lock — safe outside an open DB transaction (idempotent replay). */
+export async function loadTransactionScoped(
+  em: EntityManager,
+  scope: { transactionId: string; tenantId: string; organizationId: string },
+): Promise<PosTransaction> {
+  const transaction = await em.findOne(PosTransaction, {
+    id: scope.transactionId,
+    tenantId: scope.tenantId,
+    organizationId: scope.organizationId,
+    deletedAt: null,
+  })
+  if (!transaction) {
+    const { translate } = await resolveTranslations()
+    throw notFound(translate('soanas_pos.errors.transaction_not_found', 'POS transaction not found'))
+  }
+  return transaction
+}
+
 export async function loadLines(em: EntityManager, transaction: PosTransaction): Promise<PosTransactionLine[]> {
   const lines = await em.find(PosTransactionLine, {
     transactionId: transaction.id,
