@@ -74,10 +74,8 @@ VALIDATED was **not** increased merely because suites passed.
 
 ## Open reviews
 
-- Prior Bugbot finding on dual custody: **fixed**.
-- Bugbot “Session movements omit operator identity”: **fixed** in `0e5288fd6`.
-- Bugbot “Tender replay lock lacks transaction”: **fixed** in follow-up commit.
-- Fresh Bugbot pass on latest HEAD may still be pending at closeout time.
+- Prior Bugbot findings (dual custody, tender replay lock, session operator identity, empty-ledger stock bypass): **corrigidos no código**; check `Cursor Bugbot` em `655c95833` concluiu **success** sem novos comentários após `fb34172e9`.
+- Comentários antigos do Bugbot permanecem no PR como histórico; o comportamento apontado já não está presente no HEAD.
 
 ## Remaining limitations
 
@@ -89,3 +87,5 @@ VALIDATED was **not** increased merely because suites passed.
 ## Declaration
 
 Gate 2 was **not** started. No automatic merge.
+
+**Status:** PR #5 pronto para revisão final.
