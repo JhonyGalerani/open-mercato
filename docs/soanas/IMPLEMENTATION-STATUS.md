@@ -42,7 +42,7 @@ Closeout definitivo: `docs/soanas/audit/08-gates-0-1-final-closeout.md`.
 3. PrintJob: claim atômico + lease + fencing `attempts`
 4. `sessions/current` expõe `operatorUserId` nos movimentos
 5. Replay de tender sem `PESSIMISTIC_WRITE` fora de transação
-6. Stock BLOCK adia quando não há linhas de balance (recovery greenfield)
+6. Recovery integration: seed → drain on-hand before complete → reseed + recover (sem bypass de stock policy)
 7. Playwright Gate 0/1 descobre specs em cash e payments-br
 
 ### Fixes desta rodada (commit remoto `e435f84fb` **não existia**; equivalentes + follow-ups)

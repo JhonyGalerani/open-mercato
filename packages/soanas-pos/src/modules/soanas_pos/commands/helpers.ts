@@ -278,8 +278,7 @@ export type StockGuardArgs = {
 /**
  * Enforces the terminal stock policy before a line is sold. BLOCK refuses, WARN requires an
  * approval feature. ALLOW is coerced to BLOCK until WMS supports negative stock (Gate 0 / TD-012).
- * When the warehouse has no inventory balance rows for the variant yet, the guard is deferred to
- * complete-time allocation (recovery / greenfield) instead of inventing a zero ledger.
+ * Missing inventory balance rows are treated as available=0 (same shortage as a zero on-hand row).
  */
 export async function enforceStockPolicy(args: StockGuardArgs): Promise<StockEvaluation | null> {
   const { ctx, em, terminal } = args
@@ -292,8 +291,7 @@ export async function enforceStockPolicy(args: StockGuardArgs): Promise<StockEva
     warehouseId: terminal.warehouseId,
     catalogVariantId: args.catalogVariantId,
   })
-  if (!hasBalances) return null
-  const evaluation = evaluateStock(available, args.quantity, policy)
+  const evaluation = evaluateStock(hasBalances ? available : '0', args.quantity, policy)
   if (evaluation.decision === 'allow') return evaluation
 
   const { translate } = await resolveTranslations()

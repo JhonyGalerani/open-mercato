@@ -23,7 +23,7 @@
 3. **PrintJob concurrency** — atomic claim (`QUEUED|FAILED` or abandoned `PRINTING` past lease) → fencing via `attempts` → finalize only by token owner.
 4. **Sessions/current** — movements expose `operatorUserId` for ADR-012 observability.
 5. **Tender unique-violation replay** — uses non-locking scoped read outside DB transactions (avoids MikroORM 500).
-6. **Recovery DRAFT stuck** — stock BLOCK no longer invents a zero ledger when no balance rows exist; complete can fail at WMS and park `FAILED_RECOVERABLE`.
+6. **Recovery DRAFT stuck** — recovery integration now seeds stock for BLOCK line-add, drains on-hand before complete so WMS allocation shortfalls after the sales checkpoint, then reseeds for `/recover`.
 
 ## Isolation scan (Gate 0/1 packages)
 
