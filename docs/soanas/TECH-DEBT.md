@@ -15,7 +15,11 @@
 | TD-011 | Pix charges not yet wired into POS complete saga; first launch uses manual card/Pix tenders | Payments package born as vertical slice first | Integrated Pix not on critical path for retail v1 | Manual tenders (Gate 1) first; wire PSP later as optional | Phase 2 |
 | TD-012 | Terminal `stockPolicy=ALLOW` promised negative stock but WMS adjust hard-rejects shortage | WMS has no allow-negative contract | UI/docs oversold ALLOW | Gate 0: UI removes ALLOW; coerce ALLOW→BLOCK; restore when WMS supports | Phase 1→3 |
 | TD-013 | Coverage over-validated 20 IDs with shared retail-gate evidence | Agent rubber-stamp after Retail Sale v1 | False readiness signal | Gate 0 rebaseline → 7 VALIDATED; CI coverage honesty check | Continuous |
-| TD-014 | Direct ORM reads of SalesOrder/SalesPayment/InventoryBalance/WarehouseLocation in POS complete/helpers/reverse | No public multi-location consume / orphan lookup API | Cross-module coupling (ADR-008) | Keep limited to helpers; replace with ports when WMS/Sales expose them | Phase 1→3 |
+| TD-014 | Direct ORM reads of SalesOrder/SalesPayment/InventoryBalance/WarehouseLocation in POS complete/helpers/reverse | No public multi-location consume / orphan lookup API | Cross-module coupling (ADR-008) | Keep limited to helpers; replace with ports when WMS/Sales expose them | Phase 1→3 / E2→E3 |
+| TD-015 | `STORE_CREDIT` existe no contrato/UI legado sem saldo+ledger reais | Prompt exige ledger real ou desabilitar | Crédito fictício / fraude | **Mitigado E0:** removido da UI operacional; API rejeita com erro explícito; reabilitar só com ledger | E2/E7 |
+| TD-016 | Desktop = foundations (`soanas-desktop` journal + shell contract); sem Electron empacotado nem .exe | E1 prova localidade antes de E8 | Instalador ausente | Empacotar Electron + serviços locais em E8; validar em Windows | E1→E8 |
 
 Regra: toda solução temporária nova ganha linha aqui no mesmo PR.
+
+**Nota de fases:** coluna “Target phase” legado Phase N mapeia via `ROADMAP.md` (Gates/Phases → E0–E9).
 

@@ -1,11 +1,16 @@
 # Soanas — Tudo que foi feito × O que falta × O que precisa
 
-**Data:** 2026-09-16  
-**Base Open Mercato:** `0.7.0` @ `9903c82f8`  
+**Data:** 2026-09-18  
+**Base Open Mercato:** `0.7.0` @ `8d38af7ca` (main)  
 **Fork / repo:** `JhonyGalerani/open-mercato`  
-**Branch:** `cursor/soanas-retail-gate-validation-4347`  
+**Branch de trabalho:** `cursor/soanas-e0-e1-local-foundation-f03d`  
+**Dependência:** PR #5 head `670c535e3` (Gates 0/1) — sem merge automático  
 **SSOT funcional:** Blueprint Funcional Completo do Soanas  
+**Ordem canônica:** [`ROADMAP.md`](./ROADMAP.md) **E0–E9**  
+**Retomada:** [`EXECUTION-CHECKPOINT.md`](./EXECUTION-CHECKPOINT.md)  
 **Matriz rastreável:** [`BLUEPRINT-COVERAGE.md`](./BLUEPRINT-COVERAGE.md) · [`blueprint-coverage.json`](./blueprint-coverage.json)
+
+> Contadores derivados via `yarn soanas:sync-status`. Narrativa histórica de Phases/Gates nas seções longas não reabre pacotes já existentes.
 
 ---
 
@@ -14,13 +19,14 @@
 | Pergunta | Resposta |
 |----------|----------|
 | Terminou o Blueprint? | **Não** |
-| Estratégia atual | **Gate 0** (segurança/recovery) → pagamentos manuais → caixa/POS → NFC-e |
-| Tem fundação documental? | **Sim** |
-| Tem código Soanas? | **Sim** — 5 pacotes (`core`, `establishments`, `cash`, `pos`, `payments-br`) |
-| Retail Vertical Slice v1 (cash-only) | Checklist E2E verde; DoD de IDs adjacentes rebaixada na rebaseline |
-| Pronto para SEFAZ / Pix integrado / TEF / hardware real? | **Não** (Pix inicial = manual na maquininha) |
+| Estratégia atual | **E0–E9** — E0 SSOT + E1 local/desktop foundations; Gates 0/1 = E2 parcial |
+| Tem fundação documental? | **Sim** (ROADMAP E0–E9, checkpoint, inventory, stage map) |
+| Tem código Soanas? | **Sim** — `core`, `establishments`, `cash`, `pos`, `payments-br`, + `soanas-desktop` foundations |
+| Retail Vertical Slice v1 (cash-only) | Checklist E2E verde em Postgres efêmero; ≠ offline-first |
+| Pronto para SEFAZ / Pix integrado / TEF / hardware real? | **Não** (manuais OK; Pix integrado fora do caminho crítico) |
+| Instalador Windows? | **instalador ainda não produzido/validado** |
 | Métrica principal | Checklist em `IMPLEMENTATION-STATUS.md` → Vertical Slices (não só % da matriz) |
-| `%` `VALIDATED` (Definition of Done) | **2.3%** (7/303) após rebaseline honesta |
+| `%` `VALIDATED` (Definition of Done) | **2.3%** (7/303) — **não** é % de código pronto |
 
 ---
 

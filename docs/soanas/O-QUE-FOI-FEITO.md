@@ -1,8 +1,8 @@
 # Soanas — O que foi feito
 
-**Data:** 2026-09-16  
+**Data:** 2026-09-18  
 **Base:** Open Mercato `0.7.0` @ `9903c82f8`  
-**Branch:** `cursor/soanas-retail-gate-validation-4347`  
+**Branch de trabalho:** `cursor/soanas-e0-e1-local-foundation-f03d`  
 **PR:** https://github.com/JhonyGalerani/open-mercato/pull/1  
 
 Documento de entrega: o que já existe no repositório.  

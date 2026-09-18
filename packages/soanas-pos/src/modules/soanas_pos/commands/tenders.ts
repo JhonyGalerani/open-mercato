@@ -14,7 +14,11 @@ import {
   type PosTenderRemoveInput,
 } from '../data/validators'
 import { planCashTender } from '../lib/change'
-import { normalizeManualTenderType, planManualTender } from '../lib/manualTender'
+import {
+  assertOperationalManualTender,
+  normalizeManualTenderType,
+  planManualTender,
+} from '../lib/manualTender'
 import { emitSoanasPosEvent } from '../events'
 import { forkEm, loadTransactionForUpdate, loadTransactionScoped, recalculateTransactionTotals, transitionTo } from './helpers'
 
@@ -265,6 +269,19 @@ const addManualTenderCommand: CommandHandler<PosManualTenderInput, ManualTenderR
     const em = forkEm(ctx)
     const { translate } = await resolveTranslations()
     const tenderType = normalizeManualTenderType(parsed.type)
+    try {
+      assertOperationalManualTender(tenderType)
+    } catch (error) {
+      if (error instanceof Error && error.message === 'STORE_CREDIT_DISABLED') {
+        throw badRequest(
+          translate(
+            'soanas_pos.errors.store_credit_disabled',
+            'Store credit is disabled until a real balance and ledger exist',
+          ),
+        )
+      }
+      throw error
+    }
     const idempotencyScope = {
       tenantId: parsed.tenantId,
       organizationId: parsed.organizationId,

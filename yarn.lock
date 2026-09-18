@@ -8699,6 +8699,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@open-mercato/soanas-desktop@workspace:packages/soanas-desktop":
+  version: 0.0.0-use.local
+  resolution: "@open-mercato/soanas-desktop@workspace:packages/soanas-desktop"
+  dependencies:
+    "@types/jest": "npm:^30.0.0"
+    "@types/node": "npm:^26.1.2"
+    jest: "npm:^30.4.2"
+    ts-jest: "npm:^29.4.12"
+    typescript: "npm:7.0.2"
+  languageName: unknown
+  linkType: soft
+
 "@open-mercato/soanas-establishments@workspace:*, @open-mercato/soanas-establishments@workspace:packages/soanas-establishments":
   version: 0.0.0-use.local
   resolution: "@open-mercato/soanas-establishments@workspace:packages/soanas-establishments"

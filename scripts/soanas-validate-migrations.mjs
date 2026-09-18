@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
- * Validates Soanas Gate 0/1 migrations via ephemeral integration (clean PostgreSQL).
- * Requires Docker/testcontainers — same runtime as `yarn test:integration:ephemeral`.
+ * Validates Soanas migrations via ephemeral integration on clean PostgreSQL.
+ * Delegates to `yarn soanas:validate-local --full` integration path semantics:
+ * specialized Gate 0/1 + manual tenders + E1 config (not RETAIL-001 alone).
  */
 import { spawnSync } from 'node:child_process'
 import path from 'node:path'
@@ -15,32 +16,19 @@ const EXPECTED_MIGRATIONS = [
   'Migration20260916140000_soanas_pos_manual_tenders',
 ]
 
-console.log('[soanas] Gate 0/1 migration validation')
+console.log('[soanas] Gate 0/1 + E1 migration/integration validation')
 console.log('[soanas] Expected migrations:', EXPECTED_MIGRATIONS.join(', '))
-console.log('[soanas] Bootstrapping ephemeral Postgres and running retail smoke test...')
+console.log('[soanas] Delegating to soanas:validate-local --full (includes units/typecheck/build + Gate matrix)')
 
-// Yarn forwards `--filter` to `mercato test:integration`. Do not pass a bare `--`
-// separator: the CLI treats unknown `--*` flags as hard errors.
-const result = spawnSync(
-  'yarn',
-  ['test:integration:ephemeral', '--filter', 'TC-SOANAS-RETAIL-001'],
-  {
-    cwd: root,
-    stdio: 'inherit',
-    env: {
-      ...process.env,
-      ENABLE_CRUD_API_CACHE: process.env.ENABLE_CRUD_API_CACHE ?? 'true',
-    },
-  },
-)
+const result = spawnSync('yarn', ['soanas:validate-local', '--full'], {
+  cwd: root,
+  stdio: 'inherit',
+  env: process.env,
+})
 
 if (result.error) {
-  console.error('[soanas] Failed to spawn integration runner:', result.error.message)
+  console.error('[soanas] Failed to spawn validate-local:', result.error.message)
   process.exit(1)
 }
 
-if (result.status !== 0) {
-  process.exit(result.status ?? 1)
-}
-
-console.log('[soanas] Migration validation finished successfully.')
+process.exit(result.status ?? 1)
