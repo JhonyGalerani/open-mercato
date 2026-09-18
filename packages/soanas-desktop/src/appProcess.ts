@@ -76,7 +76,7 @@ async function waitForPidsGone(pids: number[], timeoutMs: number): Promise<void>
  */
 export function clearServerStartLock(appDirectory: string, killedPids: number[] = []): boolean {
   const lockPath = path.join(appDirectory, '.mercato', 'server-start.lock')
-  if (!fs.existsSync(lockPath)) return false
+  if (!fs.existsSync(lockPath)) return true
   try {
     const raw = JSON.parse(fs.readFileSync(lockPath, 'utf8')) as { pid?: number }
     const lockPid = typeof raw.pid === 'number' ? raw.pid : null
