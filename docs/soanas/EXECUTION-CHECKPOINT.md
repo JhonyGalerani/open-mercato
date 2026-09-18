@@ -7,33 +7,37 @@
 
 | Campo | Valor |
 |-------|-------|
-| Branch de trabalho | `cursor/soanas-e0-e1-local-foundation-f03d` |
-| HEAD | atualizar após push desta fatia E1 operacional |
-| Base / dependência | PR #5 @ `670c535e3`; este trabalho = PR #6 |
-| PR desta linha | https://github.com/JhonyGalerani/open-mercato/pull/6 |
-| PR dependência | https://github.com/JhonyGalerani/open-mercato/pull/5 — aberto; sem merge automático |
+| Branch | `cursor/soanas-e0-e1-local-foundation-f03d` |
+| HEAD testado | `4ec8ecff4` (`yarn soanas:validate-local --full` PASS) |
+| PR | https://github.com/JhonyGalerani/open-mercato/pull/6 |
+| Dependência | PR #5 @ `670c535e3` — aberto; sem merge automático |
 
-## Etapa atual
+## Etapa
 
 | Campo | Valor |
 |-------|-------|
-| Etapa | **E0 CLOUD_VERIFIED**; **E1 IN_PROGRESS** (fatia operacional integrada) |
-| Implementação Cloud | assertLocalOrigin estrito; navigation guard; probeLocalBoot; restartStoreLocalAppProcess (SIGKILL); TC-SOANAS-E1-LOCAL-BOOT-001; journal JSONL = protótipo only |
-| Validação | `yarn soanas:validate-local --full` (Gate 0/1 + manuais + E1) — ver `audit/10` |
+| E0 | CLOUD_VERIFIED |
+| E1 | CLOUD_VERIFIED para fatia operacional (boot+Postgres+auth+UI+SIGKILL restart); **IN_PROGRESS** para Electron empacotado / instalador |
 | Coverage | Sem promoção VALIDATED |
 
-## Pendências (separadas)
+## Evidências
+
+- Nova: `docs/soanas/audit/10-e1-local-boot-operational.md` @ SHA `4ec8ecff4`
+- Histórica Gate 0/1: `docs/soanas/audit/08-gates-0-1-final-closeout.md`
+
+## Pendências separadas
 
 | Tipo | Item |
 |------|------|
-| Implementação pendente (Cloud) | Electron BrowserWindow empacotado; outbox E3; instalador |
-| Validação externa pendente | Windows limpo; hardware físico; NFC-e homologação |
-| instalador | **ainda não produzido/validado** |
+| Implementação Cloud | Outbox E3; Electron empacotado; E2 lacunas (transfer/reserva); instalador |
+| Validação externa | Windows; hardware; NFC-e homologação |
+| Instalador | **ainda não produzido/validado** |
 
 ## Próxima ação
 
-1. Confirmar `--full` verde no SHA testado; atualizar `audit/10` + este checkpoint.
-2. Seguir E2 lacunas (transfer/reserva) ou E3 outbox Postgres — sem merge automático.
+1. E2: transfer/reserva de estoque em hold/resume; manter STORE_CREDIT desabilitado.  
+2. Ou E3: outbox Postgres transacional (substituir qualquer uso operacional de JSONL).  
+3. Não declarar RELEASE_READY; não merge automático.
 
 ```bash
 git checkout cursor/soanas-e0-e1-local-foundation-f03d
