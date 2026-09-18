@@ -177,3 +177,4 @@ skills-lock.json
 # clean-tree guard refuse the next run.
 .stryker-tmp/
 **/reports/mutation/
+.soanas-local/
