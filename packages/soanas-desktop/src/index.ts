@@ -11,7 +11,7 @@ export {
   shouldAllowRemoteResource,
 } from './navigationGuard'
 export { probeLocalBoot, probeWanDocumentationAddress } from './localBoot'
-export { restartStoreLocalAppProcess, findPidsListeningOnPort, killPids } from './appProcess'
+export { restartStoreLocalAppProcess, findPidsListeningOnPort, killPids, clearServerStartLock } from './appProcess'
 export { resolveDesktopShellTarget, ELECTRON_MAIN_CONTRACT } from './shellTarget'
 
 /**

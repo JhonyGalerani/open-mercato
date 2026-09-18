@@ -279,8 +279,8 @@ test.describe('TC-SOANAS-RETAIL-UI-001: Retail operator browser path', () => {
       })
 
       // Checkout already opens the cash-payment dialog; do not click the
-      // underlying "Cash payment" button (it is covered by the overlay).
-      const paymentDialog = page.getByRole('dialog').filter({ hasText: /Cash payment/i })
+      // underlying payment confirm button (it is covered by the overlay).
+      const paymentDialog = page.getByRole('dialog').filter({ hasText: /Register payment/i })
       await expect(paymentDialog).toBeVisible({ timeout: 15000 })
       const received = paymentDialog.locator('#soanas-pos-received')
       await received.fill('100.00')

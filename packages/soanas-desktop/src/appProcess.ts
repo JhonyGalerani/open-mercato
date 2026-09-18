@@ -11,6 +11,7 @@ export type RestartResult = {
   baseUrl: string
   ready: boolean
   mode: 'sigkill-restart'
+  lockCleared: boolean
 }
 
 function projectRootFromHere(): string {
@@ -20,6 +21,15 @@ function projectRootFromHere(): string {
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function isPidAlive(pid: number): boolean {
+  try {
+    process.kill(pid, 0)
+    return true
+  } catch (error) {
+    return (error as NodeJS.ErrnoException).code === 'EPERM'
+  }
 }
 
 /** PIDs listening on TCP port (Linux ss). Empty if none / unsupported. */
@@ -54,22 +64,42 @@ export function killPids(pids: number[], signal: NodeJS.Signals = 'SIGKILL'): vo
 async function waitForPidsGone(pids: number[], timeoutMs: number): Promise<void> {
   const start = Date.now()
   while (Date.now() - start < timeoutMs) {
-    const alive = pids.filter((pid) => {
-      try {
-        process.kill(pid, 0)
-        return true
-      } catch {
-        return false
-      }
-    })
+    const alive = pids.filter((pid) => isPidAlive(pid))
     if (alive.length === 0) return
     await sleep(100)
   }
 }
 
 /**
+ * Clears apps/mercato/.mercato/server-start.lock when the holder is dead or was just killed.
+ * Required after SIGKILL — the lock file otherwise blocks the next `yarn start`.
+ */
+export function clearServerStartLock(appDirectory: string, killedPids: number[] = []): boolean {
+  const lockPath = path.join(appDirectory, '.mercato', 'server-start.lock')
+  if (!fs.existsSync(lockPath)) return false
+  try {
+    const raw = JSON.parse(fs.readFileSync(lockPath, 'utf8')) as { pid?: number }
+    const lockPid = typeof raw.pid === 'number' ? raw.pid : null
+    if (lockPid && killedPids.includes(lockPid)) {
+      fs.rmSync(lockPath, { force: true })
+      return true
+    }
+    if (lockPid && isPidAlive(lockPid)) {
+      killPids([lockPid], 'SIGKILL')
+      fs.rmSync(lockPath, { force: true })
+      return true
+    }
+    fs.rmSync(lockPath, { force: true })
+    return true
+  } catch {
+    fs.rmSync(lockPath, { force: true })
+    return true
+  }
+}
+
+/**
  * Abruptly kill the process(es) bound to the local UI port and respawn
- * `yarn start` in apps/mercato with the same DATABASE_URL / BASE_URL.
+ * `yarn start` in apps/mercato with the same DATABASE_URL / BASE_URL / PORT.
  * Postgres must keep running — this is the E1 process-restart proof.
  * Re-instantiating a class is NOT a restart.
  */
@@ -101,6 +131,8 @@ export async function restartStoreLocalAppProcess(options?: {
 
   const root = projectRootFromHere()
   const appDirectory = options?.appDirectory ?? path.join(root, 'apps/mercato')
+  const lockCleared = clearServerStartLock(appDirectory, previousPids)
+
   const logDir = path.join(root, '.soanas-local', 'restart-logs')
   fs.mkdirSync(logDir, { recursive: true })
   const outPath = path.join(logDir, `app-${Date.now()}.log`)
@@ -114,6 +146,8 @@ export async function restartStoreLocalAppProcess(options?: {
       BASE_URL: baseUrl,
       APP_URL: baseUrl,
       PORT: String(port),
+      HOST: '127.0.0.1',
+      HOSTNAME: '127.0.0.1',
     },
     stdio: ['ignore', outFd, outFd],
     detached: true,
@@ -125,9 +159,16 @@ export async function restartStoreLocalAppProcess(options?: {
   const started = Date.now()
   let ready = false
   while (Date.now() - started < readyTimeoutMs) {
-    const probe = await probeLocalBoot(runtime)
-    if (probe.loginPage.ok && probe.health.ok) {
-      ready = true
+    const listening = findPidsListeningOnPort(port)
+    if (listening.length > 0) {
+      const probe = await probeLocalBoot(runtime)
+      if (probe.loginPage.ok && probe.health.ok) {
+        ready = true
+        break
+      }
+    }
+    // Fail fast if child exited without binding the port
+    if (child.exitCode !== null && findPidsListeningOnPort(port).length === 0) {
       break
     }
     await sleep(2000)
@@ -140,5 +181,6 @@ export async function restartStoreLocalAppProcess(options?: {
     baseUrl,
     ready,
     mode: 'sigkill-restart',
+    lockCleared,
   }
 }

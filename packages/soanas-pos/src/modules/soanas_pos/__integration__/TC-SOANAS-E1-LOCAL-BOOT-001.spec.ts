@@ -280,6 +280,8 @@ test.describe('TC-SOANAS-E1-LOCAL-BOOT-001: store-local boot + process restart',
       expect(restart.ready, 'app ready after SIGKILL restart').toBeTruthy()
       expect(restart.previousPids.length).toBeGreaterThan(0)
       expect(restart.newPid).toBeTruthy()
+      expect(restart.lockCleared).toBe(true)
+      expect(restart.previousPids.includes(Number(restart.newPid))).toBe(false)
 
       // New Playwright request context still points at same baseURL; re-auth after restart.
       const adminTokenAfter = await getAuthToken(request, 'admin')

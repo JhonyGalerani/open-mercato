@@ -5,9 +5,9 @@
  *
  * Usage:
  *   yarn soanas:validate-local           # quick matrix (units + coverage)
- *   yarn soanas:validate-local --full    # + typecheck/build + Gate 0/1 + manual tenders + E1 boot
+ *   yarn soanas:validate-local --full    # + typecheck/build + Gate 0/1 + manual tenders + E1
  */
-import { spawnSync } from 'node:child_process'
+import { spawn, spawnSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
@@ -15,6 +15,8 @@ import { execSync } from 'node:child_process'
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..')
 const full = process.argv.includes('--full')
 const started = Date.now()
+const EPHEMERAL_ENV = path.join(ROOT, '.ai', 'qa', 'ephemeral-env.json')
+const SPECIALIZED_CONFIG = '.ai/qa/tests/soanas-retail-api.playwright.config.ts'
 
 /** @type {{ label: string, status: 'pass'|'fail'|'skip', detail?: string }[]} */
 const report = []
@@ -28,9 +30,8 @@ function run(label, command, args, opts = {}) {
   const result = spawnSync(command, args, {
     cwd: ROOT,
     stdio: 'inherit',
-    env: process.env,
+    env: opts.env ?? process.env,
     shell: false,
-    ...opts,
   })
   const code = result.status ?? 1
   if (code !== 0) {
@@ -68,6 +69,31 @@ function printReport() {
         2,
       ),
   )
+}
+
+function sleepSync(ms) {
+  spawnSync('sleep', [String(Math.ceil(ms / 1000))], { stdio: 'ignore' })
+}
+
+function readEphemeralState() {
+  try {
+    return JSON.parse(fs.readFileSync(EPHEMERAL_ENV, 'utf8'))
+  } catch {
+    return null
+  }
+}
+
+function stopProcessTree(child) {
+  if (!child.pid) return
+  try {
+    process.kill(-child.pid, 'SIGTERM')
+  } catch {
+    try {
+      child.kill('SIGTERM')
+    } catch {
+      /* ignore */
+    }
+  }
 }
 
 let sha = 'unknown'
@@ -143,13 +169,7 @@ if (full) {
   console.log('\n==> playwright --list (Gate 0/1 + manual tenders + E1)')
   const listResult = spawnSync(
     'yarn',
-    [
-      'playwright',
-      'test',
-      '--config',
-      '.ai/qa/tests/soanas-retail-api.playwright.config.ts',
-      '--list',
-    ],
+    ['playwright', 'test', '--config', SPECIALIZED_CONFIG, '--list'],
     { cwd: ROOT, encoding: 'utf8', env: process.env },
   )
   const listOut = `${listResult.stdout || ''}${listResult.stderr || ''}`
@@ -158,18 +178,89 @@ if (full) {
   const uniqueListed = [...new Set(listed)]
   console.log(`[info] discovered test ids in --list: ${uniqueListed.length} → ${uniqueListed.join(', ') || '(none)'}`)
   record('playwright-list', listResult.status === 0 ? 'pass' : 'fail', `ids=${uniqueListed.length}`)
+  if (listResult.status !== 0) {
+    printReport()
+    process.exit(listResult.status ?? 1)
+  }
+  for (const required of gateFilters) {
+    if (!uniqueListed.includes(required)) {
+      console.error(`[FAIL] required suite missing from discovery: ${required}`)
+      record('matrix-discovery', 'fail', `missing ${required}`)
+      printReport()
+      process.exit(1)
+    }
+  }
 
-  // Playwright file filters are path substrings (not regex). Use shared TC-SOANAS prefix
-  // so Gate 0/1, manual tenders, retail, recovery, concurrency, and E1 all run in one ephemeral boot.
-  // Discovery list above enumerates the specialized Gate matrix explicitly.
-  const filterPattern = 'TC-SOANAS'
-  console.log(`\n[info] ephemeral integration filter (path substring): ${filterPattern}`)
-  console.log(`[info] required matrix includes: ${gateFilters.join(', ')}`)
-  run(
-    'integration Gate0/1 + manual tenders + E1 (ephemeral Postgres)',
+  try {
+    fs.rmSync(path.join(ROOT, 'apps/mercato/.mercato/server-start.lock'), { force: true })
+  } catch {
+    /* ignore */
+  }
+
+  console.log('\n==> start ephemeral Postgres+app (yarn mercato test:ephemeral --no-reuse-env)')
+  const ephemeralChild = spawn(
     'yarn',
-    ['test:integration:ephemeral', '--filter', filterPattern, '--no-screenshots'],
+    ['mercato', 'test:ephemeral', '--no-reuse-env', '--no-screenshots'],
+    {
+      cwd: ROOT,
+      env: process.env,
+      stdio: ['ignore', 'pipe', 'pipe'],
+      detached: true,
+    },
   )
+  ephemeralChild.stdout?.on('data', (chunk) => process.stdout.write(chunk))
+  ephemeralChild.stderr?.on('data', (chunk) => process.stderr.write(chunk))
+
+  const bootDeadline = Date.now() + 900_000
+  let ephemeral = null
+  while (Date.now() < bootDeadline) {
+    if (ephemeralChild.exitCode !== null) {
+      record('ephemeral-boot', 'fail', `exited ${ephemeralChild.exitCode}`)
+      console.error(`[FAIL] ephemeral process exited before ready (code ${ephemeralChild.exitCode})`)
+      printReport()
+      process.exit(ephemeralChild.exitCode || 1)
+    }
+    ephemeral = readEphemeralState()
+    if (ephemeral?.status === 'running' && ephemeral.baseUrl && ephemeral.databaseUrl) {
+      break
+    }
+    sleepSync(2000)
+  }
+  if (!ephemeral?.baseUrl) {
+    stopProcessTree(ephemeralChild)
+    record('ephemeral-boot', 'fail', 'timeout')
+    console.error('[FAIL] timed out waiting for .ai/qa/ephemeral-env.json')
+    printReport()
+    process.exit(1)
+  }
+  record('ephemeral-boot', 'pass', ephemeral.baseUrl)
+  console.log(`[PASS] ephemeral-boot ${ephemeral.baseUrl}`)
+
+  try {
+    run(
+      'integration Gate0/1 + manual tenders + E1 (specialized config, E1 last)',
+      'yarn',
+      ['playwright', 'test', '--config', SPECIALIZED_CONFIG],
+      {
+        env: {
+          ...process.env,
+          BASE_URL: ephemeral.baseUrl,
+          APP_URL: ephemeral.baseUrl,
+          DATABASE_URL: ephemeral.databaseUrl,
+          PW_CAPTURE_SCREENSHOTS: '0',
+        },
+      },
+    )
+  } finally {
+    console.log('\n==> stopping ephemeral environment')
+    stopProcessTree(ephemeralChild)
+    sleepSync(2000)
+    try {
+      fs.rmSync(path.join(ROOT, 'apps/mercato/.mercato/server-start.lock'), { force: true })
+    } catch {
+      /* ignore */
+    }
+  }
 } else {
   record('integration Gate0/1 + E1', 'skip', 'pass --full when Docker ephemeral Postgres is required')
   console.log('[SKIP] Gate 0/1 + E1 integration — pass --full when Docker ephemeral Postgres is required')
