@@ -145,9 +145,21 @@ export async function restartStoreLocalAppProcess(options?: {
       DATABASE_URL: databaseUrl,
       BASE_URL: baseUrl,
       APP_URL: baseUrl,
+      NEXT_PUBLIC_APP_URL: baseUrl,
       PORT: String(port),
       HOST: '127.0.0.1',
       HOSTNAME: '127.0.0.1',
+      NODE_ENV: 'production',
+      // Match packages/cli ephemeral harness — production start rejects repo placeholder JWT_SECRET.
+      JWT_SECRET:
+        process.env.JWT_SECRET && !/change-me|placeholder|example/i.test(process.env.JWT_SECRET)
+          ? process.env.JWT_SECRET
+          : 'om-ephemeral-integration-jwt-secret',
+      OM_INIT_ADMIN_PASSWORD: process.env.OM_INIT_ADMIN_PASSWORD ?? 'secret',
+      OM_INIT_EMPLOYEE_PASSWORD: process.env.OM_INIT_EMPLOYEE_PASSWORD ?? 'secret',
+      OM_INTEGRATION_TEST: 'true',
+      OM_TEST_MODE: '1',
+      CACHE_STRATEGY: process.env.CACHE_STRATEGY ?? 'sqlite',
     },
     stdio: ['ignore', outFd, outFd],
     detached: true,

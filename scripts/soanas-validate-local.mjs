@@ -17,6 +17,7 @@ const full = process.argv.includes('--full')
 const started = Date.now()
 const EPHEMERAL_ENV = path.join(ROOT, '.ai', 'qa', 'ephemeral-env.json')
 const SPECIALIZED_CONFIG = '.ai/qa/tests/soanas-retail-api.playwright.config.ts'
+const E1_CONFIG = '.ai/qa/tests/soanas-e1-boot.playwright.config.ts'
 
 /** @type {{ label: string, status: 'pass'|'fail'|'skip', detail?: string }[]} */
 const report = []
@@ -163,26 +164,34 @@ if (full) {
     'TC-SOANAS-RETAIL-001',
     'TC-SOANAS-RETAIL-CONCURRENCY',
     'TC-SOANAS-RETAIL-RECOVERY',
-    'TC-SOANAS-E1-LOCAL-BOOT-001',
   ]
 
-  console.log('\n==> playwright --list (Gate 0/1 + manual tenders + E1)')
+  console.log('\n==> playwright --list (Gate 0/1 + manual tenders)')
   const listResult = spawnSync(
     'yarn',
     ['playwright', 'test', '--config', SPECIALIZED_CONFIG, '--list'],
     { cwd: ROOT, encoding: 'utf8', env: process.env },
   )
-  const listOut = `${listResult.stdout || ''}${listResult.stderr || ''}`
+  const listE1 = spawnSync(
+    'yarn',
+    ['playwright', 'test', '--config', E1_CONFIG, '--list'],
+    { cwd: ROOT, encoding: 'utf8', env: process.env },
+  )
+  const listOut = `${listResult.stdout || ''}${listResult.stderr || ''}\n${listE1.stdout || ''}${listE1.stderr || ''}`
   console.log(listOut)
   const listed = [...listOut.matchAll(/TC-SOANAS-[A-Z0-9-]+/g)].map((match) => match[0])
   const uniqueListed = [...new Set(listed)]
   console.log(`[info] discovered test ids in --list: ${uniqueListed.length} → ${uniqueListed.join(', ') || '(none)'}`)
-  record('playwright-list', listResult.status === 0 ? 'pass' : 'fail', `ids=${uniqueListed.length}`)
-  if (listResult.status !== 0) {
+  record(
+    'playwright-list',
+    listResult.status === 0 && listE1.status === 0 ? 'pass' : 'fail',
+    `ids=${uniqueListed.length}`,
+  )
+  if (listResult.status !== 0 || listE1.status !== 0) {
     printReport()
-    process.exit(listResult.status ?? 1)
+    process.exit(listResult.status || listE1.status || 1)
   }
-  for (const required of gateFilters) {
+  for (const required of [...gateFilters, 'TC-SOANAS-E1-LOCAL-BOOT-001']) {
     if (!uniqueListed.includes(required)) {
       console.error(`[FAIL] required suite missing from discovery: ${required}`)
       record('matrix-discovery', 'fail', `missing ${required}`)
@@ -236,21 +245,32 @@ if (full) {
   record('ephemeral-boot', 'pass', ephemeral.baseUrl)
   console.log(`[PASS] ephemeral-boot ${ephemeral.baseUrl}`)
 
+  const pwEnv = {
+    ...process.env,
+    BASE_URL: ephemeral.baseUrl,
+    APP_URL: ephemeral.baseUrl,
+    DATABASE_URL: ephemeral.databaseUrl,
+    JWT_SECRET: 'om-ephemeral-integration-jwt-secret',
+    OM_INIT_ADMIN_PASSWORD: 'secret',
+    OM_INIT_EMPLOYEE_PASSWORD: 'secret',
+    OM_INTEGRATION_TEST: 'true',
+    OM_TEST_MODE: '1',
+    PW_CAPTURE_SCREENSHOTS: '0',
+  }
+
   try {
-    run(
-      'integration Gate0/1 + manual tenders + E1 (specialized config, E1 last)',
-      'yarn',
-      ['playwright', 'test', '--config', SPECIALIZED_CONFIG],
-      {
-        env: {
-          ...process.env,
-          BASE_URL: ephemeral.baseUrl,
-          APP_URL: ephemeral.baseUrl,
-          DATABASE_URL: ephemeral.databaseUrl,
-          PW_CAPTURE_SCREENSHOTS: '0',
-        },
-      },
-    )
+    run('integration Gate0/1 + manual tenders + retail (specialized config)', 'yarn', [
+      'playwright',
+      'test',
+      '--config',
+      SPECIALIZED_CONFIG,
+    ], { env: pwEnv })
+    run('integration E1 local boot + process restart', 'yarn', [
+      'playwright',
+      'test',
+      '--config',
+      E1_CONFIG,
+    ], { env: pwEnv })
   } finally {
     console.log('\n==> stopping ephemeral environment')
     stopProcessTree(ephemeralChild)

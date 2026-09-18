@@ -20,10 +20,8 @@ export default defineConfig({
     '**/soanas_pos/__integration__/TC-SOANAS-GATE0-PRINTJOB-001.spec.ts',
     '**/soanas_cash/__integration__/TC-SOANAS-GATE0-CASH-APPROVAL-001.spec.ts',
     '**/soanas_payments_br/__integration__/TC-SOANAS-GATE0-PIX-SCOPE-001.spec.ts',
-    // E1 last: SIGKILL-restarts the app process; keep after other Gate specs
-    '**/soanas_pos/__integration__/TC-SOANAS-E1-LOCAL-BOOT-001.spec.ts',
   ],
-  timeout: 420_000,
+  timeout: 120_000,
   expect: { timeout: 20_000 },
   retries: 0,
   workers: 1,
