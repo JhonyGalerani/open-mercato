@@ -793,9 +793,6 @@ export default function PosSellPage() {
                 <SelectItem value="VOUCHER_MANUAL">
                   {t('soanas_pos.sell.payment.methods.voucherManual', 'Voucher (manual)')}
                 </SelectItem>
-                <SelectItem value="STORE_CREDIT">
-                  {t('soanas_pos.sell.payment.methods.storeCredit', 'Store credit')}
-                </SelectItem>
                 <SelectItem value="OTHER">{t('soanas_pos.sell.payment.methods.other', 'Other')}</SelectItem>
               </SelectContent>
             </Select>

@@ -63,6 +63,7 @@ const packageNames = [
   'soanas-cash',
   'soanas-pos',
   'soanas-payments-br',
+  'soanas-desktop',
 ]
 for (const name of packageNames) {
   if (!fs.existsSync(path.join(ROOT, 'packages', name))) {

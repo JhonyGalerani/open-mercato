@@ -16,6 +16,12 @@ export const MANUAL_TENDER_TYPES = [
 
 export type ManualTenderType = (typeof MANUAL_TENDER_TYPES)[number]
 
+/**
+ * Contract types preserved on the wire, but not operable until a real store-credit
+ * balance + ledger exists (master prompt / TD-015). Do not invent fictional credit.
+ */
+export const DISABLED_OPERATIONAL_MANUAL_TENDERS = new Set<ManualTenderType>(['STORE_CREDIT'])
+
 export function normalizeManualTenderType(type: string): ManualTenderType {
   switch (type) {
     case 'PIX':
@@ -28,6 +34,12 @@ export function normalizeManualTenderType(type: string): ManualTenderType {
       return 'VOUCHER_MANUAL'
     default:
       return type as ManualTenderType
+  }
+}
+
+export function assertOperationalManualTender(type: ManualTenderType): void {
+  if (DISABLED_OPERATIONAL_MANUAL_TENDERS.has(type)) {
+    throw new Error('STORE_CREDIT_DISABLED')
   }
 }
 

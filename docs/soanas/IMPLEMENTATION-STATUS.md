@@ -1,11 +1,13 @@
 # Soanas — Implementation Status
 
-**Updated:** 2026-09-17  
-**Base:** Open Mercato 0.7.0 @ `8d38af7ca` (main pós PR #3)  
-**Branch:** `cursor/soanas-gates01-validation-desktop-foundation-9e05`  
-**Strategy:** Validar Gates 0 e 1 (migrations + E2E) antes do Gate 2 (caixa completo) e fundação desktop.  
+**Updated:** 2026-09-18  
+**Base:** Open Mercato 0.7.0 @ `8d38af7ca` (main)  
+**Branch de trabalho:** `cursor/soanas-e0-e1-local-foundation-f03d` (baseado no head do PR #5)  
+**Dependência:** PR #5 @ `670c535e3` — Gates 0/1 closeout (sem merge automático)  
+**Estratégia canônica:** ROADMAP **E0–E9**. Etapa atual: E0→E1.  
 **PR:** https://github.com/JhonyGalerani/open-mercato/pull/5  
-**Gate 0/1:** migrations + E2E verdes em Postgres efêmero — **não** implica pronto para produção.
+**Gate 0/1 (legado → E2 parcial):** Postgres efêmero — **não** implica offline-first nem instalador Windows.  
+**Instalador:** ainda não produzido/validado.
 
 <!-- soanas:derived-counts:start -->
 ```

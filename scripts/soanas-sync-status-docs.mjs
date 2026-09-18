@@ -38,10 +38,20 @@ const codedPct = total ? ((coded / total) * 100).toFixed(0) : '0'
 const validatedPct = total ? ((counts.VALIDATED / total) * 100).toFixed(1) : '0.0'
 
 let commit = coverage.commit ?? 'unknown'
+let branch = 'unknown'
 try {
   commit = execSync('git rev-parse --short HEAD', { cwd: ROOT }).toString().trim()
 } catch {
   /* keep coverage.commit */
+}
+try {
+  branch = execSync('git rev-parse --abbrev-ref HEAD', { cwd: ROOT }).toString().trim()
+} catch {
+  /* keep unknown */
+}
+
+function currentBranch() {
+  return branch
 }
 
 const byModule = {}
@@ -177,8 +187,8 @@ const entregaBody = `
     content = replaceBlock(content, startMarker, endMarker, statusSnippet)
   }
   content = content.replace(
-    /\*\*Branch:\*\* `[^`]+`/,
-    '**Branch:** `cursor/soanas-retail-gate-validation-4347`',
+    /\*\*Branch de trabalho:\*\* `[^`]+`|\*\*Branch:\*\* `[^`]+`/,
+    `**Branch de trabalho:** \`${currentBranch()}\``,
   )
   content = content.replace(/\*\*Updated:\*\* \d{4}-\d{2}-\d{2}/, `**Updated:** ${new Date().toISOString().slice(0, 10)}`)
   fs.writeFileSync(STATUS, content)
@@ -209,8 +219,8 @@ const entregaBody = `
     `| \`%\` IDs com algum código (\`IMPLEMENTED\`+\`TESTED\`+\`VALIDATED\`) | **~${codedPct}%** (${coded}/${total}) — secundário |\n`,
   )
   content = content.replace(
-    /\*\*Branch:\*\* `[^`]+`/,
-    '**Branch:** `cursor/soanas-retail-gate-validation-4347`',
+    /\*\*Branch de trabalho:\*\* `[^`]+`|\*\*Branch:\*\* `[^`]+`/,
+    `**Branch de trabalho:** \`${currentBranch()}\``,
   )
   content = content.replace(/\*\*Data:\*\* \d{4}-\d{2}-\d{2}/, `**Data:** ${new Date().toISOString().slice(0, 10)}`)
   // Fix stale "soanas_pos ainda não" style claims if any remain in §2.4
@@ -234,11 +244,24 @@ const entregaBody = `
     content = replaceBlock(content, startMarker, endMarker, entregaBody)
   }
   content = content.replace(
-    /\*\*Branch:\*\* `[^`]+`/,
-    '**Branch:** `cursor/soanas-retail-gate-validation-4347`',
+    /\*\*Branch de trabalho:\*\* `[^`]+`|\*\*Branch:\*\* `[^`]+`/,
+    `**Branch de trabalho:** \`${currentBranch()}\``,
   )
   content = content.replace(/\*\*Data:\*\* \d{4}-\d{2}-\d{2}/, `**Data:** ${new Date().toISOString().slice(0, 10)}`)
   fs.writeFileSync(ENTREGA, content)
+}
+
+{
+  const ROADMAP = path.join(ROOT, 'docs/soanas/ROADMAP.md')
+  if (fs.existsSync(ROADMAP)) {
+    const startMarker = '<!-- soanas:derived-counts:start -->'
+    const endMarker = '<!-- soanas:derived-counts:end -->'
+    let content = fs.readFileSync(ROADMAP, 'utf8')
+    if (content.includes(startMarker) && content.includes(endMarker)) {
+      content = replaceBlock(content, startMarker, endMarker, statusSnippet)
+      fs.writeFileSync(ROADMAP, content)
+    }
+  }
 }
 
 console.log(
@@ -250,7 +273,14 @@ console.log(
       codedPct,
       validatedPct,
       commit,
-      updated: ['BLUEPRINT-COVERAGE.md', 'IMPLEMENTATION-STATUS.md', 'STATUS-FEITO-VS-FALTA.md', 'O-QUE-FOI-FEITO.md'],
+      branch: currentBranch(),
+      updated: [
+        'BLUEPRINT-COVERAGE.md',
+        'IMPLEMENTATION-STATUS.md',
+        'STATUS-FEITO-VS-FALTA.md',
+        'O-QUE-FOI-FEITO.md',
+        'ROADMAP.md',
+      ],
     },
     null,
     2,

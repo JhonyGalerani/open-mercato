@@ -4,24 +4,31 @@ Produto operacional brasileiro de varejo/restaurante construído **sobre** Open 
 
 ## Start here
 
-1. [audit/00-repository-overview.md](./audit/00-repository-overview.md)
-2. [O-QUE-FOI-FEITO.md](./O-QUE-FOI-FEITO.md) — **entrega atual (o que foi feito)**
-3. [BLUEPRINT-COVERAGE.md](./BLUEPRINT-COVERAGE.md)
-4. [ROADMAP.md](./ROADMAP.md)
-5. [IMPLEMENTATION-STATUS.md](./IMPLEMENTATION-STATUS.md)
-6. [adr/](./adr/)
+1. [EXECUTION-CHECKPOINT.md](./EXECUTION-CHECKPOINT.md) — **retomada exata** (branch/SHA/próximo passo)
+2. [ROADMAP.md](./ROADMAP.md) — ordem canônica **E0–E9**
+3. [IMPLEMENTATION-STATUS.md](./IMPLEMENTATION-STATUS.md) — estado por área + evidências
+4. [BLUEPRINT-COVERAGE.md](./BLUEPRINT-COVERAGE.md) / [blueprint-coverage.json](./blueprint-coverage.json) — 303 IDs
+5. [PACKAGE-INVENTORY.md](./PACKAGE-INVENTORY.md) — pacotes reais vs ausentes
+6. [RELEASE-CHECKLIST.md](./RELEASE-CHECKLIST.md) — critérios de instalação/liberação
+7. [adr/](./adr/) — decisões (incl. ADR-005, ADR-013 topologia local)
 
 ## Indexes
 
 | Doc | Purpose |
 |-----|---------|
-| `O-QUE-FOI-FEITO.md` | **Relatório do que já foi entregue** |
-| `audit/` | Repositório, reuse map, gaps, riscos, deps, baseline |
-| `BLUEPRINT-COVERAGE.md` | Matriz rastreável (IDs) |
-| `blueprint-coverage.json` | Fonte machine-readable |
+| `EXECUTION-CHECKPOINT.md` | Retomada pelo próximo agente |
+| `ROADMAP.md` | E0–E9 + mapeamento Gates/Phases legados |
+| `IMPLEMENTATION-STATUS.md` | Status atual + vertical slices |
+| `STATUS-FEITO-VS-FALTA.md` | Resumo derivado para produto (contadores sync) |
+| `O-QUE-FOI-FEITO.md` | Relatório de entrega (histórico + sync counts) |
+| `PACKAGE-INVENTORY.md` | Inventário técnico dos pacotes |
+| `RELEASE-CHECKLIST.md` | Evidências para release |
+| `TECH-DEBT.md` | Dívidas reais |
 | `RISK-REGISTER.md` | Riscos vivos |
-| `STATUS-FEITO-VS-FALTA.md` | O que foi feito × o que falta (visão executiva) |
-| `TECH-DEBT.md` | Dívidas explícitas |
+| `stage-assignment.json` | Todo ID → etapa E0–E9 |
+| `audit/` | Relatórios **históricos datados** — não substituem status atual |
+| `BLUEPRINT-COVERAGE.md` | Visão derivada do coverage |
+| `blueprint-coverage.json` | Fonte estruturada dos 303 requisitos |
 | `runbooks/` | Operação em incidente |
 | `../licenses/` | Licenças e notices |
 
@@ -29,11 +36,17 @@ Produto operacional brasileiro de varejo/restaurante construído **sobre** Open 
 
 `.ai/specs/2026-09-15-soanas-*.md`
 
-## Regenerar coverage
+## Comandos
 
 ```bash
-node scripts/soanas-generate-blueprint-coverage.mjs   # estrutura (CUIDADO: reseta status)
-node scripts/soanas-sync-status-docs.mjs             # deriva contadores → docs de status
+yarn soanas:sync-status          # deriva contadores → docs
+yarn soanas:check-coverage       # falha se drift / over-claim
+yarn soanas:check-stages         # todo ID atribuído a E0–E9
+yarn soanas:validate-local       # matriz rápida local
+yarn soanas:validate-local --full  # + migrations (Docker)
+yarn soanas:validate-migrations
 ```
 
 Nunca edite manualmente os blocos `<!-- soanas:derived-counts:* -->` / `<!-- soanas:coverage-summary:* -->`.
+
+**instalador ainda não produzido/validado.** Cloud green ≠ offline-first.

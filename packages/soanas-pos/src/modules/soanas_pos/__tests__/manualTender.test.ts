@@ -1,4 +1,9 @@
-import { normalizeManualTenderType, planManualTender, sumAppliedTenders } from '../lib/manualTender'
+import {
+  assertOperationalManualTender,
+  normalizeManualTenderType,
+  planManualTender,
+  sumAppliedTenders,
+} from '../lib/manualTender'
 
 describe('manual tender planning', () => {
   it('applies exact remaining due without change', () => {
@@ -53,5 +58,11 @@ describe('manual tender planning', () => {
       amountAppliedCents: '3000',
     })
     expect(afterPix.fullySettled).toBe(true)
+  })
+
+  it('keeps STORE_CREDIT on the contract but blocks operational use without a ledger', () => {
+    expect(normalizeManualTenderType('STORE_CREDIT')).toBe('STORE_CREDIT')
+    expect(() => assertOperationalManualTender('STORE_CREDIT')).toThrow('STORE_CREDIT_DISABLED')
+    expect(() => assertOperationalManualTender('PIX_MANUAL')).not.toThrow()
   })
 })

@@ -22,7 +22,7 @@
 ```
 Blueprint coverage (IDs): ANALYZED 229 | IMPLEMENTED 40 | TESTED 27 | VALIDATED 7 / 303
 Validated (DoD completa): 2.3%
-Derived at commit: 9d6473bfc
+Derived at commit: 670c535e3
 ```
 <!-- soanas:coverage-summary:end -->
 
@@ -30,7 +30,7 @@ Derived at commit: 9d6473bfc
 
 ```
 Overall progress: 2.3% VALIDATED (gate)
-Derived from blueprint-coverage.json @ 9d6473bfc
+Derived from blueprint-coverage.json @ 670c535e3
 ```
 
 Percentuais de domínio em `IMPLEMENTATION-STATUS.md` são derivados desta matriz.
