@@ -8,7 +8,7 @@
 | Campo | Valor |
 |-------|-------|
 | Branch de trabalho | `cursor/soanas-e0-e1-local-foundation-f03d` |
-| HEAD | atualizar após commit (`git rev-parse HEAD`) |
+| HEAD | `ae13dfffa` (`git rev-parse HEAD`) |
 | Base / dependência | PR #5 `cursor/soanas-gates01-validation-desktop-foundation-9e05` @ `670c535e39706aca7d4a71b13b5803a754b4bb1a` |
 | `main` observada | `8d38af7cafa6abd327c19cf7d36b0e2b7fb9a800` |
 | PR dependência | https://github.com/JhonyGalerani/open-mercato/pull/5 — **aberto**; sem merge automático |
