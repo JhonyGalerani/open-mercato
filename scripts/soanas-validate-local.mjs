@@ -205,8 +205,14 @@ if (full) {
   } catch {
     /* ignore */
   }
+  try {
+    fs.rmSync(EPHEMERAL_ENV, { force: true })
+  } catch {
+    /* ignore */
+  }
 
   console.log('\n==> start ephemeral Postgres+app (yarn mercato test:ephemeral --no-reuse-env)')
+  const bootStartedAt = Date.now()
   const ephemeralChild = spawn(
     'yarn',
     ['mercato', 'test:ephemeral', '--no-reuse-env', '--no-screenshots'],
@@ -230,9 +236,26 @@ if (full) {
       process.exit(ephemeralChild.exitCode || 1)
     }
     ephemeral = readEphemeralState()
-    if (ephemeral?.status === 'running' && ephemeral.baseUrl && ephemeral.databaseUrl) {
-      break
+    if (
+      ephemeral?.status === 'running' &&
+      ephemeral.baseUrl &&
+      ephemeral.databaseUrl &&
+      ephemeral.startedAt &&
+      Date.parse(ephemeral.startedAt) >= bootStartedAt - 5_000
+    ) {
+      // Confirm the HTTP port actually accepts connections (reject stale env files).
+      const probe = spawnSync(
+        process.execPath,
+        [
+          '-e',
+          `fetch(process.argv[1]+'/login',{signal:AbortSignal.timeout(3000)}).then(r=>process.exit(r.status?0:1)).catch(()=>process.exit(1))`,
+          ephemeral.baseUrl,
+        ],
+        { cwd: ROOT, stdio: 'ignore' },
+      )
+      if (probe.status === 0) break
     }
+    ephemeral = null
     sleepSync(2000)
   }
   if (!ephemeral?.baseUrl) {
