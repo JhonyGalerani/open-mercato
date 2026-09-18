@@ -56,9 +56,10 @@ Essential POS assets must be bundled or served from the local app. No involuntar
 
 ## Consequences
 
-- E1 delivers: documented topology, local boot smoke (Postgres + durable sale survival across process restart), desktop package skeleton pointing at **local** origin.  
-- E3 implements outbox/sync against this topology.  
-- Isolated terminal with **no LAN to store server** cannot safely complete stock-authoritative sales unless a future quota/reservation design is approved — **do not silently reclassify** the requirement; block unsafe actions and surface the limitation.  
+- E1 delivers: documented topology, **Postgres-backed** durable sale survival across **OS process** restart, desktop shell contract pointing at **local** origin, strict origin/navigation guards.
+- JSONL helpers under `soanas-desktop/src/prototype/` are **non-operational prototypes** — not sale authority and not transactional outbox.
+- E3 implements durable outbox/sync against this topology.
+- Isolated terminal with **no LAN to store server** cannot safely complete stock-authoritative sales unless a future quota/reservation design is approved — **do not silently reclassify** the requirement; block unsafe actions and surface the limitation.
 - Windows install validation remains `LOCAL_VALIDATION_PENDING` until E8 runs on Windows.
 
 ## References

@@ -1,4 +1,5 @@
 import path from 'node:path'
+import { assertLocalOrigin } from './localOrigin'
 
 export const DEFAULT_LOCAL_UI_ORIGIN = 'http://127.0.0.1:3000'
 
@@ -25,7 +26,9 @@ export function createLocalRuntimeConfig(args?: {
     /\/$/,
     '',
   )
-  const appPort = args?.appPort ?? Number(process.env.SOANAS_LOCAL_APP_PORT || 3000)
+  const parsedPort = new URL(uiOrigin).port
+  const fromEnv = process.env.SOANAS_LOCAL_APP_PORT
+  const appPort = args?.appPort ?? Number(fromEnv || parsedPort || '3000')
   assertLocalOrigin(uiOrigin)
   return {
     dataDir,
@@ -36,22 +39,4 @@ export function createLocalRuntimeConfig(args?: {
   }
 }
 
-export function assertLocalOrigin(origin: string): void {
-  let url: URL
-  try {
-    url = new URL(origin)
-  } catch {
-    throw new Error('[internal] soanas-desktop invalid uiOrigin')
-  }
-  const host = url.hostname.toLowerCase()
-  const local =
-    host === 'localhost' ||
-    host === '127.0.0.1' ||
-    host === '::1' ||
-    host.startsWith('10.') ||
-    host.startsWith('192.168.') ||
-    /^172\.(1[6-9]|2\d|3[0-1])\./.test(host)
-  if (!local) {
-    throw new Error('[internal] soanas-desktop uiOrigin must be loopback or private LAN (ADR-013)')
-  }
-}
+export { assertLocalOrigin, isLocalOrPrivateHost, expandIpv6 } from './localOrigin'

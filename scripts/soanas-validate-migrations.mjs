@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Validates Soanas Gate 0/1 migrations via ephemeral integration (clean PostgreSQL).
+ * Validates Soanas migrations via ephemeral integration on clean PostgreSQL.
+ * Runs the Gate 0/1 + retail + E1 filter set — NOT RETAIL-001 alone.
  * Requires Docker/testcontainers — same runtime as `yarn test:integration:ephemeral`.
  */
 import { spawnSync } from 'node:child_process'
@@ -15,15 +16,18 @@ const EXPECTED_MIGRATIONS = [
   'Migration20260916140000_soanas_pos_manual_tenders',
 ]
 
-console.log('[soanas] Gate 0/1 migration validation')
-console.log('[soanas] Expected migrations:', EXPECTED_MIGRATIONS.join(', '))
-console.log('[soanas] Bootstrapping ephemeral Postgres and running retail smoke test...')
+const FILTER = 'TC-SOANAS'
 
-// Yarn forwards `--filter` to `mercato test:integration`. Do not pass a bare `--`
-// separator: the CLI treats unknown `--*` flags as hard errors.
+console.log('[soanas] Gate 0/1 + E1 migration/integration validation')
+console.log('[soanas] Expected migrations:', EXPECTED_MIGRATIONS.join(', '))
+console.log(
+  '[soanas] Filter path substring TC-SOANAS (Gate0 + manual tenders + retail + concurrency + recovery + E1; not RETAIL-001 alone)',
+)
+console.log('[soanas] Filter:', FILTER)
+
 const result = spawnSync(
   'yarn',
-  ['test:integration:ephemeral', '--filter', 'TC-SOANAS-RETAIL-001'],
+  ['test:integration:ephemeral', '--filter', FILTER, '--no-screenshots'],
   {
     cwd: root,
     stdio: 'inherit',
@@ -43,4 +47,4 @@ if (result.status !== 0) {
   process.exit(result.status ?? 1)
 }
 
-console.log('[soanas] Migration validation finished successfully.')
+console.log('[soanas] Migration + Gate 0/1 + E1 validation finished successfully.')

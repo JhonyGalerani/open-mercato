@@ -2,6 +2,15 @@ import fs from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
 
+/**
+ * PROTOTYPE ONLY — NOT operational POS persistence and NOT a transactional outbox.
+ *
+ * ADR-013 / ADR-005 require store-local PostgreSQL as the sale authority.
+ * This JSONL helper must never be treated as proof of atomic sale+effects.
+ * Prefer Postgres-backed POS transactions (`soanas-pos` saga) for E1 durability.
+ *
+ * @deprecated Do not wire into completePosSale or sync. Kept for isolated unit demos.
+ */
 export type JournalSaleRecord = {
   idempotencyKey: string
   tenantId: string
@@ -12,21 +21,19 @@ export type JournalSaleRecord = {
   grandTotalCents: string
   status: 'recorded'
   createdAt: string
+  prototype: true
 }
 
-export type JournalAppendInput = Omit<JournalSaleRecord, 'status' | 'createdAt'> & {
+export type JournalAppendInput = Omit<JournalSaleRecord, 'status' | 'createdAt' | 'prototype'> & {
   createdAt?: string
 }
 
-/**
- * Append-only local sale journal used by E1 to prove durable recording across process restart.
- * E3 replaces/extends this with transactional Postgres outbox — this file-backed journal is not
- * the production sync transport.
- */
-export class LocalSaleJournal {
+/** @deprecated Prototype — see file header. */
+export class LocalSaleJournalPrototype {
   readonly filePath: string
+  readonly isPrototype = true as const
 
-  constructor(dataDir: string, fileName = 'sale-journal.jsonl') {
+  constructor(dataDir: string, fileName = 'PROTOTYPE-sale-journal.jsonl') {
     this.filePath = path.join(dataDir, fileName)
   }
 
@@ -47,7 +54,7 @@ export class LocalSaleJournal {
         duplicate.organizationId !== input.organizationId ||
         duplicate.grandTotalCents !== input.grandTotalCents
       ) {
-        throw new Error('[internal] soanas-desktop journal idempotency conflict')
+        throw new Error('[internal] soanas-desktop prototype journal idempotency conflict')
       }
       return duplicate
     }
@@ -55,6 +62,7 @@ export class LocalSaleJournal {
       ...input,
       status: 'recorded',
       createdAt: input.createdAt ?? new Date().toISOString(),
+      prototype: true,
     }
     fs.appendFileSync(this.filePath, `${JSON.stringify(record)}\n`, 'utf8')
     return record
@@ -66,11 +74,14 @@ export class LocalSaleJournal {
     if (!raw.trim()) return []
     return raw
       .split('\n')
-      .filter((line) => line.trim().length > 0)
-      .map((line) => JSON.parse(line) as JournalSaleRecord)
+      .filter((line: string) => line.trim().length > 0)
+      .map((line: string) => JSON.parse(line) as JournalSaleRecord)
   }
 
   static newIdempotencyKey(): string {
     return crypto.randomUUID()
   }
 }
+
+/** @deprecated Alias kept so old imports fail loudly in review — prefer LocalSaleJournalPrototype. */
+export const LocalSaleJournal = LocalSaleJournalPrototype
